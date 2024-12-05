@@ -90,24 +90,11 @@ class VideoPageAllVideosViewWidget extends HookWidget {
               itemBuilder: (context, index) {
                 final video = filteredVideos[index];
 
-                return Column(
-                  children: [
-                    if (index == 0)
-                      // Display the total count of videos as a header.
-                      [
-                        "videos: ${filteredVideos.length}"
-                            .text
-                            .minFontSize(12)
-                            .fontWeight(FontWeight.w500)
-                            .make(),
-                      ].row().pSymmetric(h: 12),
-                    ElegantVideoTileWidget(
-                      filteredVideos: filteredVideos,
-                      videoTitle: video.title,
-                      index: index,
-                      video: video,
-                    ),
-                  ],
+                return ElegantVideoTileWidget(
+                  filteredVideos: filteredVideos,
+                  videoTitle: video.title,
+                  index: index,
+                  video: video,
                 );
               },
             ),

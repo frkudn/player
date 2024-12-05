@@ -11,8 +11,10 @@ import 'package:open_player/data/services/file_service/file_service.dart';
 import 'package:open_player/logic/audio_player_bloc/audio_player_bloc.dart';
 import 'package:open_player/logic/video_player_bloc/video_player_bloc.dart';
 import 'package:open_player/logic/videos_bloc/videos_bloc.dart';
+import 'package:open_player/presentation/pages/audio/sub/albums/view/album_preview_page.dart';
 import 'package:open_player/utils/extensions.dart';
 import 'package:share_plus/share_plus.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class ElegantVideoTileWidget extends StatelessWidget {
   final List<VideoModel> filteredVideos;
@@ -57,10 +59,20 @@ class ElegantVideoTileWidget extends StatelessWidget {
                 color: Theme.of(context).primaryColor.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
-              child: Icon(
-                HugeIcons.strokeRoundedFileVideo,
-                color: Theme.of(context).primaryColor,
-                size: 24,
+              child: Stack(
+                children: [
+                  Icon(
+                    HugeIcons.strokeRoundedVideoReplay,
+                    color: Theme.of(context).primaryColor,
+                    size: 24,
+                  ),
+
+                  CircleAvatar(
+                    backgroundColor: isDarkMode? Colors.white:Colors.black,
+                    radius: 6,
+                    child: Text((index+1).toString(),style: TextStyle(fontSize: 8, color:  isDarkMode?Colors.black: Colors.white),),
+                  ).positioned(bottom: 0, right: 0)
+                ],
               ),
             ),
 
