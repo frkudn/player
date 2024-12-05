@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:open_player/base/strings/app_strings.dart';
-import 'package:open_player/presentation/common/widgets/custom_video_tile_widget.dart';
+import 'package:open_player/presentation/common/widgets/ElegantVideoTileWidget.dart';
 import 'package:open_player/presentation/common/widgets/nothing_widget.dart';
 import 'package:open_player/utils/extensions.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -82,7 +82,7 @@ class SearchVideosPage extends HookWidget {
             itemBuilder: (context, index) {
               final VideoModel video = searchVideos[index];
               final String videoTitle = video.title;
-              return CustomVideoTileWidget(
+              return ElegantVideoTileWidget(
                   filteredVideos: filteredVideos,
                   videoTitle: videoTitle,
                   video: video,

@@ -6,7 +6,7 @@ import 'package:open_player/base/db/hive_service.dart';
 import 'package:open_player/data/models/video_model.dart';
 import 'package:open_player/data/services/favorites_video_hive_service/favorites_video_hive_service.dart';
 import 'package:open_player/logic/videos_bloc/videos_bloc.dart';
-import 'package:open_player/presentation/common/widgets/custom_video_tile_widget.dart';
+import 'package:open_player/presentation/common/widgets/ElegantVideoTileWidget.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'video_page_title_and_sorting_button_widget.dart';
@@ -101,7 +101,7 @@ class VideoPageAllVideosViewWidget extends HookWidget {
                             .fontWeight(FontWeight.w500)
                             .make(),
                       ].row().pSymmetric(h: 12),
-                    CustomVideoTileWidget(
+                    ElegantVideoTileWidget(
                       filteredVideos: filteredVideos,
                       videoTitle: video.title,
                       index: index,

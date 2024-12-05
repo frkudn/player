@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hugeicons/hugeicons.dart';
-import 'package:open_player/presentation/common/widgets/custom_video_tile_widget.dart';
+import 'package:open_player/presentation/common/widgets/ElegantVideoTileWidget.dart';
 import 'package:open_player/utils/extensions.dart';
 import 'package:velocity_x/velocity_x.dart';
 
