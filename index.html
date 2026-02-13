@@ -1,137 +1,760 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player | Reimagine Media</title>
+    <title>Player — Pure Media Experience</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #007aff;
+            --primary-dark: #0051d5;
+            --text-primary: #1d1d1f;
+            --text-secondary: #6e6e73;
+            --bg-light: #fbfbfd;
+            --bg-card: #ffffff;
+            --accent: #5e5ce6;
+            --success: #34c759;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Smooth Scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Header Blur Effect */
+        .header-blur {
+            backdrop-filter: saturate(180%) blur(20px);
+            background: rgba(251, 251, 253, 0.72);
+            border-bottom: 0.5px solid rgba(0, 0, 0, 0.1);
+        }
+
+        /* Hero Section */
+        .hero-gradient {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e8ecf1 100%);
+        }
+
+        /* Animated Gradient Text */
         .gradient-text {
-            background: linear-gradient(45deg, #3b82f6, #9333ea);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Glass Card */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(40px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        /* Download Button */
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+            padding: 16px 32px;
+            border-radius: 980px;
+            font-weight: 600;
+            font-size: 17px;
+            letter-spacing: -0.022em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: scale(1.02);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            padding: 16px 32px;
+            border-radius: 980px;
+            font-weight: 600;
+            font-size: 17px;
+            letter-spacing: -0.022em;
+            transition: all 0.3s ease;
+            border: 2px solid var(--primary);
+            cursor: pointer;
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Feature Cards */
+        .feature-card {
+            background: white;
+            border-radius: 24px;
+            padding: 48px;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(0, 0, 0, 0.06);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Download Cards */
+        .download-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid rgba(0, 0, 0, 0.06);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--accent));
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+
+        .download-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .download-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 48px rgba(0, 122, 255, 0.15);
+            border-color: var(--primary);
+        }
+
+        /* Screenshot Gallery */
+        .screenshot-container {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .screenshot-container::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.02) 100%);
+            pointer-events: none;
+        }
+
+        .screenshot-container:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+        }
+
+        .screenshot-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Stats Section */
+        .stat-item {
+            text-align: center;
+            padding: 24px;
+        }
+
+        .stat-number {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 17px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Scroll Reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Badge */
+        .badge {
+            background: rgba(0, 122, 255, 0.1);
+            color: var(--primary);
+            padding: 8px 16px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        /* Icon Container */
+        .icon-container {
+            width: 64px;
+            height: 64px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+        }
+
+        /* Typography */
+        .display-large {
+            font-size: clamp(48px, 7vw, 96px);
+            font-weight: 700;
+            letter-spacing: -0.04em;
+            line-height: 1.05;
+        }
+
+        .display-medium {
+            font-size: clamp(36px, 5vw, 64px);
+            font-weight: 700;
+            letter-spacing: -0.03em;
+            line-height: 1.1;
+        }
+
+        .headline {
+            font-size: clamp(24px, 3vw, 40px);
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
+        }
+
+        .body-large {
+            font-size: 21px;
+            line-height: 1.5;
+            color: var(--text-secondary);
+            font-weight: 400;
+        }
+
+        /* Floating Animation */
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* Fade In Animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        .delay-400 { animation-delay: 0.4s; }
+        .delay-500 { animation-delay: 0.5s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .feature-card {
+                padding: 32px;
+            }
+            .download-card {
+                padding: 24px;
+            }
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 6px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+
+        /* Section Spacing */
+        .section-padding {
+            padding: 120px 0;
+        }
+
+        @media (max-width: 768px) {
+            .section-padding {
+                padding: 80px 0;
+            }
         }
     </style>
 </head>
-
-<body class="bg-black text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <nav class="flex justify-between items-center py-6">
-            <div class="flex items-center">
-                <img src="https://github.com/frkudn/player/raw/main/assets/svgs/logo.svg" alt="Player Logo"
-                    class="h-16 w-16 md:h-20 md:w-20 mr-3">
-            </div>
-            <div>
-                <a href="https://github.com/frkudn/player" target="_blank"
-                    class="bg-white text-black px-4 py-2 rounded-full hover:bg-gray-200 transition">
-                    GitHub
+<body>
+    <!-- Navigation -->
+    <nav class="header-blur fixed top-0 left-0 right-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <img src="https://github.com/frkudn/player/raw/main/assets/svgs/logo.svg" 
+                         alt="Player Logo"
+                         class="h-10 w-10 float">
+                    <span class="text-xl font-semibold">Player</span>
+                </div>
+                <a href="https://github.com/frkudn/player" 
+                   target="_blank"
+                   class="btn-secondary text-sm px-6 py-3">
+                    View on GitHub
                 </a>
             </div>
-        </nav>
+        </div>
+    </nav>
 
-        <main class="mt-16 sm:mt-24">
-            <div class="text-center">
-                <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight gradient-text">
-                    Media Reimagined
-                </h1>
-                <p class="mt-6 text-xl text-gray-300 max-w-3xl mx-auto">
-                    A next-generation multimedia player that puts you in complete control of your audio and video
-                    experience.
+    <!-- Hero Section -->
+    <section class="hero-gradient pt-32 pb-20 px-6">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="badge fade-in mb-6">Open Source • Privacy First • No Ads</div>
+            <h1 class="display-large fade-in delay-100 mb-6">
+                Pure Media.<br>
+                <span class="gradient-text">Pure Experience.</span>
+            </h1>
+            <p class="body-large fade-in delay-200 max-w-3xl mx-auto mb-12">
+                A beautifully crafted, feature-rich media player for Android. 
+                Enjoy your local audio and video files with complete privacy, 
+                zero ads, and endless customization.
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center fade-in delay-300">
+                <a href="#download" class="btn-primary">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Download for Android
+                </a>
+                <a href="https://github.com/frkudn/player" target="_blank" class="btn-secondary">
+                    Learn More
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Grid -->
+    <section class="section-padding px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="display-medium mb-4">Why Player?</h2>
+                <p class="body-large max-w-2xl mx-auto">
+                    Built with passion, designed for perfection.
                 </p>
+            </div>
 
-                <!-- Improved Download Section -->
-                <div class="mt-10 flex flex-col items-center">
-                    <h2 class="text-2xl font-bold mb-6">Download for Android</h2>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full max-w-3xl">
-                        <div
-                            class="flex flex-col items-center p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-blue-600 transition">
-                            <h3 class="text-lg font-semibold mb-2">ARM64</h3>
-                            <p class="text-sm text-gray-400 mb-4">For most modern devices</p>
-                            <a href="https://github.com/frkudn/player/releases/download/v1.2.0/app-arm64-v8a-release.apk"
-                                class="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-blue-500/50 flex items-center">
-                                Download (68.8 MB)
-                            </a>
-                        </div>
-
-                        <div
-                            class="flex flex-col items-center p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-blue-600 transition">
-                            <h3 class="text-lg font-semibold mb-2">ARM32</h3>
-                            <p class="text-sm text-gray-400 mb-4">For older devices</p>
-                            <a href="https://github.com/frkudn/player/releases/download/v1.2.0/app-armeabi-v7a-release.apk"
-                                class="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-blue-500/50 flex items-center">
-                                Download (62.8 MB)
-                            </a>
-                        </div>
-
-                        <div
-                            class="flex flex-col items-center p-4 bg-gray-900 rounded-xl border border-gray-800 hover:border-blue-600 transition">
-                            <h3 class="text-lg font-semibold mb-2">x86_64</h3>
-                            <p class="text-sm text-gray-400 mb-4">For Intel/AMD devices</p>
-                            <a href="https://github.com/frkudn/player/releases/download/v1.2.0/app-x86_64-release.apk"
-                                class="bg-blue-600 text-white px-6 py-2 rounded-full text-sm font-semibold hover:bg-blue-700 transition shadow-lg hover:shadow-blue-500/50 flex items-center">
-                                Download
-                            </a>
-                        </div>
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="feature-card reveal">
+                    <div class="icon-container">
+                        🔒
                     </div>
+                    <h3 class="headline mb-4">Zero Compromises</h3>
+                    <p class="body-large">
+                        No ads. No tracking. No subscriptions. Your media, your privacy, completely protected.
+                    </p>
+                </div>
 
-                    <p class="mt-6 text-sm text-gray-400">Not sure which version to download? Most modern Android
-                        devices use ARM64.</p>
+                <div class="feature-card reveal">
+                    <div class="icon-container">
+                        🎨
+                    </div>
+                    <h3 class="headline mb-4">Beautiful & Fast</h3>
+                    <p class="body-large">
+                        Elegantly designed with Flutter. Smooth playback, customizable themes, and intuitive controls.
+                    </p>
+                </div>
 
-                    <a href="https://github.com/frkudn/player" target="_blank"
-                        class="mt-8 border border-white px-8 py-3 rounded-full text-lg font-semibold hover:bg-white hover:text-black transition shadow-lg hover:shadow-white/50">
-                        View on GitHub
+                <div class="feature-card reveal">
+                    <div class="icon-container">
+                        ⚡
+                    </div>
+                    <h3 class="headline mb-4">Powerful Features</h3>
+                    <p class="body-large">
+                        Advanced equalizer, PIP mode, playlist creation, subtitle support, and so much more.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Download Section -->
+    <section id="download" class="section-padding px-6 bg-white">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="display-medium mb-4">Get Started Today</h2>
+                <p class="body-large">Choose your device architecture</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- ARM64 -->
+                <div class="download-card reveal">
+                    <div class="text-5xl mb-4">📱</div>
+                    <h3 class="text-2xl font-bold mb-2">ARM64</h3>
+                    <p class="text-gray-600 mb-1 text-sm">Recommended</p>
+                    <p class="text-gray-500 mb-4">Most modern devices</p>
+                    <div class="text-3xl font-bold text-blue-600 mb-6">68.8 MB</div>
+                    <a href="https://github.com/frkudn/player/releases/download/v1.2.0/app-arm64-v8a-release.apk"
+                       class="btn-primary w-full justify-center">
+                        Download
+                    </a>
+                </div>
+
+                <!-- ARM32 -->
+                <div class="download-card reveal">
+                    <div class="text-5xl mb-4">📲</div>
+                    <h3 class="text-2xl font-bold mb-2">ARM32</h3>
+                    <p class="text-gray-600 mb-1 text-sm">Legacy Support</p>
+                    <p class="text-gray-500 mb-4">Older Android devices</p>
+                    <div class="text-3xl font-bold text-blue-600 mb-6">62.8 MB</div>
+                    <a href="https://github.com/frkudn/player/releases/download/v1.2.0/app-armeabi-v7a-release.apk"
+                       class="btn-primary w-full justify-center">
+                        Download
+                    </a>
+                </div>
+
+                <!-- x86_64 -->
+                <div class="download-card reveal">
+                    <div class="text-5xl mb-4">💻</div>
+                    <h3 class="text-2xl font-bold mb-2">x86_64</h3>
+                    <p class="text-gray-600 mb-1 text-sm">Intel/AMD</p>
+                    <p class="text-gray-500 mb-4">Emulators & tablets</p>
+                    <div class="text-3xl font-bold text-blue-600 mb-6">—</div>
+                    <a href="https://github.com/frkudn/player/releases/download/v1.2.0/app-x86_64-release.apk"
+                       class="btn-primary w-full justify-center">
+                        Download
                     </a>
                 </div>
             </div>
 
-            <div class="mt-24 grid sm:grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Rest of the content remains the same -->
-                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-blue-600 transition">
-                    <h3 class="text-2xl font-bold mb-4 text-blue-400">Zero Compromises</h3>
-                    <p class="text-gray-300">No ads. No tracking. Pure media experience designed with your privacy in
-                        mind.</p>
+            <p class="text-center mt-12 text-gray-500 reveal">
+                💡 Not sure which version? Most modern Android devices use ARM64
+            </p>
+        </div>
+    </section>
+
+    <!-- Feature Highlights -->
+    <section class="section-padding px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-2 gap-16 items-center">
+                <div class="reveal">
+                    <h2 class="display-medium mb-6">Complete Control</h2>
+                    <div class="space-y-6">
+                        <div class="flex gap-4">
+                            <div class="text-3xl">🎵</div>
+                            <div>
+                                <h4 class="text-xl font-semibold mb-2">Audio & Video</h4>
+                                <p class="text-gray-600">Full support for all your local media files with multiple codec compatibility</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="text-3xl">🎚️</div>
+                            <div>
+                                <h4 class="text-xl font-semibold mb-2">10-Band Equalizer</h4>
+                                <p class="text-gray-600">Fine-tune your audio with a professional-grade equalizer</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="text-3xl">📝</div>
+                            <div>
+                                <h4 class="text-xl font-semibold mb-2">Lyrics & Subtitles</h4>
+                                <p class="text-gray-600">Display synchronized lyrics for audio and subtitles for videos</p>
+                            </div>
+                        </div>
+                        <div class="flex gap-4">
+                            <div class="text-3xl">🎨</div>
+                            <div>
+                                <h4 class="text-xl font-semibold mb-2">Customizable Themes</h4>
+                                <p class="text-gray-600">Dark mode, light mode, and custom accent colors to match your style</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-green-600 transition">
-                    <h3 class="text-2xl font-bold mb-4 text-green-400">Full Control</h3>
-                    <p class="text-gray-300">Customize your playback with advanced equalizer, themes, and comprehensive
-                        media management.</p>
-                </div>
-                <div class="bg-gray-900 p-6 rounded-xl border border-gray-800 hover:border-purple-600 transition">
-                    <h3 class="text-2xl font-bold mb-4 text-purple-400">High Performance</h3>
-                    <p class="text-gray-300">Built with Flutter. Smooth, efficient rendering across your entire media
-                        library.</p>
+                <div class="reveal">
+                    <div class="glass-card p-8 rounded-3xl">
+                        <h3 class="text-2xl font-bold mb-6">More Features</h3>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="text-center p-4">
+                                <div class="text-3xl mb-2">📋</div>
+                                <p class="text-sm font-medium">Playlists</p>
+                            </div>
+                            <div class="text-center p-4">
+                                <div class="text-3xl mb-2">🔍</div>
+                                <p class="text-sm font-medium">Smart Search</p>
+                            </div>
+                            <div class="text-center p-4">
+                                <div class="text-3xl mb-2">📱</div>
+                                <p class="text-sm font-medium">PIP Mode</p>
+                            </div>
+                            <div class="text-center p-4">
+                                <div class="text-3xl mb-2">💾</div>
+                                <p class="text-sm font-medium">Smart Cache</p>
+                            </div>
+                            <div class="text-center p-4">
+                                <div class="text-3xl mb-2">🖼️</div>
+                                <p class="text-sm font-medium">Album Art</p>
+                            </div>
+                            <div class="text-center p-4">
+                                <div class="text-3xl mb-2">📊</div>
+                                <p class="text-sm font-medium">History</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+    </section>
 
-            <section class="mt-24">
-                <h2 class="text-4xl font-bold text-center mb-12 gradient-text">
-                    App Preview
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <div
-                        class="md:col-span-1 lg:col-span-1 rounded-xl overflow-hidden shadow-2xl transform hover:scale-105 transition duration-300">
-                        <img src="https://github.com/frkudn/player/raw/main/assets/screenshot1.jpg"
-                            alt="Player App Screenshot 1" class="w-full object-cover">
+    <!-- Screenshots -->
+    <section class="section-padding px-6 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16 reveal">
+                <h2 class="display-medium mb-4">Beautiful Interface</h2>
+                <p class="body-large">Designed to delight</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="screenshot-container reveal">
+                    <img src="https://github.com/frkudn/player/raw/main/assets/screenshot1.jpg"
+                         alt="Player Screenshot 1" loading="lazy">
+                </div>
+                <div class="screenshot-container reveal">
+                    <img src="https://github.com/frkudn/player/raw/main/assets/screenshot2.jpg"
+                         alt="Player Screenshot 2" loading="lazy">
+                </div>
+                <div class="screenshot-container reveal lg:col-span-1 md:col-span-2">
+                    <img src="https://github.com/frkudn/player/raw/main/assets/screenshot3.jpg"
+                         alt="Player Screenshot 3" loading="lazy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="section-padding px-6">
+        <div class="max-w-6xl mx-auto">
+            <div class="glass-card rounded-3xl p-12 reveal">
+                <div class="grid md:grid-cols-4 gap-8">
+                    <div class="stat-item">
+                        <div class="stat-number">100%</div>
+                        <div class="stat-label">Open Source</div>
                     </div>
-                    <div
-                        class="md:col-span-1 lg:col-span-1 rounded-xl overflow-hidden shadow-2xl transform hover:scale-105 transition duration-300">
-                        <img src="https://github.com/frkudn/player/raw/main/assets/screenshot2.jpg"
-                            alt="Player App Screenshot 2" class="w-full object-cover">
+                    <div class="stat-item">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">Ads</div>
                     </div>
-                    <div
-                        class="md:col-span-2 lg:col-span-1 rounded-xl overflow-hidden shadow-2xl transform hover:scale-105 transition duration-300">
-                        <img src="https://github.com/frkudn/player/raw/main/assets/screenshot3.jpg"
-                            alt="Player App Screenshot 3" class="w-full object-cover">
+                    <div class="stat-item">
+                        <div class="stat-number">50+</div>
+                        <div class="stat-label">Formats</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-number">∞</div>
+                        <div class="stat-label">Possibilities</div>
                     </div>
                 </div>
-            </section>
-        </main>
+            </div>
+        </div>
+    </section>
 
-        <footer class="mt-24 text-center text-gray-500 py-8">
-            <p>© 2025 Player by Furqan Uddin | MIT License</p>
-        </footer>
-    </div>
+    <!-- Roadmap Section -->
+    <section class="section-padding px-6 bg-white">
+        <div class="max-w-6xl mx-auto text-center">
+            <div class="reveal mb-16">
+                <h2 class="display-medium mb-4">What's Next</h2>
+                <p class="body-large">The future of Player</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8 text-left">
+                <div class="feature-card reveal">
+                    <h3 class="text-2xl font-bold mb-3">🖥️ Desktop Version</h3>
+                    <p class="text-gray-600">
+                        Bringing Player to Windows, macOS, and Linux. Same beautiful experience on your desktop.
+                    </p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3 class="text-2xl font-bold mb-3">⚡ Performance Boost</h3>
+                    <p class="text-gray-600">
+                        Continuous optimizations for even smoother playback and faster load times.
+                    </p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3 class="text-2xl font-bold mb-3">🎼 More Codecs</h3>
+                    <p class="text-gray-600">
+                        Expanding support for additional audio and video formats.
+                    </p>
+                </div>
+                <div class="feature-card reveal">
+                    <h3 class="text-2xl font-bold mb-3">🌐 Community Features</h3>
+                    <p class="text-gray-600">
+                        Your ideas and contributions shape the future of Player.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section-padding px-6">
+        <div class="max-w-4xl mx-auto text-center reveal">
+            <h2 class="display-medium mb-6">
+                Ready to experience<br>
+                <span class="gradient-text">the future of media?</span>
+            </h2>
+            <p class="body-large mb-12">
+                Join thousands of users enjoying a pure, ad-free media experience.
+            </p>
+            <div class="flex flex-wrap gap-4 justify-center">
+                <a href="#download" class="btn-primary">
+                    Download Now
+                </a>
+                <a href="https://github.com/frkudn/player" target="_blank" class="btn-secondary">
+                    Star on GitHub
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 py-12 px-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="flex items-center gap-3">
+                    <img src="https://github.com/frkudn/player/raw/main/assets/svgs/logo.svg" 
+                         alt="Player Logo"
+                         class="h-10 w-10 opacity-60">
+                    <div>
+                        <p class="text-sm text-gray-600">
+                            © 2026 Player by Furqan Uddin
+                        </p>
+                        <p class="text-xs text-gray-500">
+                            MIT License • Open Source
+                        </p>
+                    </div>
+                </div>
+                <div class="flex gap-6">
+                    <a href="https://github.com/frkudn/player" target="_blank" class="text-gray-600 hover:text-blue-600 transition">
+                        GitHub
+                    </a>
+                    <a href="https://github.com/frkudn/player/issues" target="_blank" class="text-gray-600 hover:text-blue-600 transition">
+                        Issues
+                    </a>
+                    <a href="mailto:frkudn@protonmail.com" class="text-gray-600 hover:text-blue-600 transition">
+                        Contact
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Scroll Reveal
+        function reveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 100;
+                
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', reveal);
+        window.addEventListener('load', reveal);
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Parallax effect for hero section
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const hero = document.querySelector('.hero-gradient');
+            if (hero) {
+                hero.style.transform = `translateY(${scrolled * 0.5}px)`;
+            }
+        });
+
+        // Add loading complete class
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+        });
+    </script>
 </body>
-
 </html>
