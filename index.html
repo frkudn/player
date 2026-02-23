@@ -871,22 +871,62 @@
     </section>
 
     <!-- Developer -->
-    <section class="section" style="background: var(--bg-secondary);">
-        <a href ="https://www.frkudn.github.io" target="_blank" >
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-12">
-                <h2 class="headline mb-4">Created By</h2>
-            </div>
-            <div class="dev-card">
-                <div class="dev-avatar">F</div>
-                <div>
-                    <h3 class="text-2xl font-bold mb-1">Furkan Uddin <span style="color: var(--text-secondary); font-weight: 500;">(furkan)</span></h3>
-                    <p style="color: var(--text-secondary);">The Developer</p>
-                </div>
-            </div>
+    <section class="section" style="background: var(--bg-secondary); padding: 4rem 1rem;">
+    <style>
+        /* Premium Card Styling */
+        .dev-card-premium {
+            display: inline-flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1.5rem 2.5rem;
+            background: var(--bg-primary, #ffffff); /* Fallback to white if variable is missing */
+            border-radius: 1rem; /* Smooth rounded corners */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Float up and glow on hover */
+        .dev-card-premium:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            border-color: rgba(99, 102, 241, 0.3); /* Subtle indigo glow on the border */
+        }
+
+        /* Beautiful Profile Picture */
+        .dev-avatar-img {
+            width: 85px;
+            height: 85px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #6366f1; /* Indigo accent border */
+            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
+        }
+    </style>
+
+    <div class="max-w-7xl mx-auto text-center">
+        <div class="mb-10">
+            <h2 class="headline" style="font-size: 2rem; font-weight: 800;">Created By</h2>
         </div>
-            </a>
-    </section>
+        
+        <a href="https://frkudn.github.io" target="_blank" class="dev-card-premium">
+            
+            <img src="https://github.com/frkudn.png" alt="Furkan Uddin" class="dev-avatar-img">
+            
+            <div style="text-align: left;">
+                <h3 class="text-2xl font-bold mb-1" style="margin-bottom: 0.25rem;">
+                    Furkan Uddin
+                </h3>
+                <p style="color: var(--text-secondary, #6b7280); margin: 0; font-size: 1rem;">
+                    Full Stack Developer <span style="font-weight: 500; font-size: 0.9em; opacity: 0.8;">@frkudn</span>
+                </p>
+            </div>
+        </a>
+    </div>
+</section>
+
 
     <!-- Contact -->
     <section class="section">
