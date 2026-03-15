@@ -32,47 +32,47 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.8
-  flutter_bloc:
-  bloc_concurrency: ^0.2.5
-  bloc:
-  equatable:
-  just_audio:
-  animate_do:
-  permission_handler: ^11.3.1
+  flutter_bloc: ^9.1.1
+  bloc_concurrency: ^0.3.0 
+  bloc: ^9.2.0
+  equatable: ^2.0.8
+  just_audio: ^0.10.5
+  animate_do: ^4.2.0
+  permission_handler: ^12.0.1 
   rxdart:
   gap:
   device_info_plus: ^11.0.0
-  get_it: ^8.0.0
-  path_provider: ^2.1.4
+  get_it: ^9.2.1
+  path_provider: ^2.1.5
   hugeicons: ^0.0.7
   audiotags: ^1.4.1
-  go_router: ^14.3.0
+  go_router: ^17.1.0 
   flutter_slidable: ^3.1.1
   hive: ^2.2.3
-  intl: ^0.19.0
-  flutter_svg: ^2.0.10+1
+  intl: ^0.20.2
+  flutter_svg: ^2.2.4
   color_log: ^0.0.6
-  image_picker: ^1.1.2
+  image_picker: ^1.2.1
   percent_indicator: ^4.2.3
-  url_launcher: ^6.3.1
+  url_launcher: ^6.3.2
   share_plus: ^10.1.0
   uuid: ^4.5.1
   badges: ^3.1.2
   logger: ^2.4.0
   flutter_hooks: ^0.20.5
-  just_audio_background: ^0.0.1-beta.13
-  flutter_local_notifications: ^18.0.1
-  flutter_vlc_player: ^7.4.2
-  flutter_animate: ^4.5.0
+  just_audio_background: ^0.0.1-beta.17
+  flutter_local_notifications: ^21.0.0
+  flutter_vlc_player: ^7.4.4
+  flutter_animate: ^4.5.2
   amlv: ^1.0.2
-  external_path: ^2.0.1
+  # external_path: ^2.0.1
   animated_text_kit: ^4.2.2
-  velocity_x: ^4.2.1
+  velocity_x: ^4.3.1
   volume_controller: ^2.0.8
-  audio_metadata_reader: ^1.0.0
+  audio_metadata_reader: ^1.4.2
   flutter_native_splash: ^2.4.3
   icons_launcher: ^3.0.0
-  video_compress: ^3.1.3
+  video_compress: ^3.1.4
   flutter_email_sender: ^6.0.3
   marquee: ^2.3.0
   wakelock_plus: ^1.2.10
