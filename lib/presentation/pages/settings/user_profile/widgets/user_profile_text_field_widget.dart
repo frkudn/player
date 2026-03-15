@@ -18,15 +18,13 @@ class UserProfileTextFieldWidget extends HookWidget {
   final TextEditingController textEditingController;
   @override
   Widget build(BuildContext context) {
-    final ValueNotifier<bool> isLogin =
-       useState(
+    final ValueNotifier<bool> isLogin = useState(
         MyHiveBoxes.user.get(MyHiveKeys.userIsLoggedIn, defaultValue: false));
     final Size mq = MediaQuery.sizeOf(context);
     return Container(
       width: mq.width * 0.85,
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(10)),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       child: BlocBuilder<UserDataCubit, UserDataState>(
         builder: (context, userState) {
           return TextField(
@@ -38,14 +36,15 @@ class UserProfileTextFieldWidget extends HookWidget {
               FocusManager.instance.primaryFocus!.unfocus();
             },
             decoration: InputDecoration(
-                prefixIcon: const Icon(
-                  HugeIcons.strokeRoundedUser,
+                prefixIcon: const HugeIcon(
+                  icon: HugeIcons.strokeRoundedUser,
                   color: Colors.white,
                 ),
                 hintStyle: const TextStyle(
                     color: Colors.white24, fontFamily: AppFonts.poppins),
                 border: InputBorder.none,
-                hintText: isLogin.value ? userState.username : "Enter your name"),
+                hintText:
+                    isLogin.value ? userState.username : "Enter your name"),
           );
         },
       ),

@@ -37,7 +37,7 @@ class VideoPageAllVideosViewWidget extends HookWidget {
                       // Reload videos when refresh is clicked.
                       context.read<VideosBloc>().add(VideosLoadEvent());
                     },
-                    icon: const Icon(HugeIcons.strokeRoundedRefresh),
+                    icon: const HugeIcon(icon:HugeIcons.strokeRoundedRefresh),
                   ),
                 ],
               ),

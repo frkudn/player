@@ -57,7 +57,7 @@ class SearchVideosPage extends HookWidget {
                 onPressed: () {
                   context.read<VideosBloc>().add(VideosLoadEvent());
                 },
-                icon: const Icon(HugeIcons.strokeRoundedRefresh),
+                icon: const HugeIcon(icon: HugeIcons.strokeRoundedRefresh),
               ),
             ].column(
               alignment: MainAxisAlignment.center,

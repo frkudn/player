@@ -49,8 +49,8 @@ class AudioTileMoreButtonWidget extends StatelessWidget {
       },
       child: Padding(
         padding: EdgeInsets.all(8.0),
-        child: Icon(
-          HugeIcons.strokeRoundedMoreVerticalCircle01,
+        child: HugeIcon(
+          icon: HugeIcons.strokeRoundedMoreVerticalCircle01,
           color: isPlaying ? Colors.white : null,
         ),
       ),
@@ -73,8 +73,10 @@ PopupMenuItem<dynamic> _musicAddToFavorite(int id) {
       title: Text(
         isFavorite ? "Remove from Favorites" : "Add to Favorite",
       ),
-      trailing:
-          Icon(isFavorite ? Icons.favorite : HugeIcons.strokeRoundedFavourite),
+      trailing: HugeIcon(
+          icon: isFavorite
+              ? HugeIcons.strokeRoundedDispleased
+              : HugeIcons.strokeRoundedFavourite),
     ),
   );
 }
@@ -214,7 +216,7 @@ PopupMenuItem<dynamic> _share(AudioModel audio) {
       title: Text(
         "Share",
       ),
-      trailing: Icon(HugeIcons.strokeRoundedShare01),
+      trailing: HugeIcon(icon: HugeIcons.strokeRoundedShare01),
     ),
   );
 }
@@ -234,7 +236,7 @@ PopupMenuItem<dynamic> _more(BuildContext context, AudioModel audio) {
       title: Text(
         "Info",
       ),
-      trailing: Icon(HugeIcons.strokeRoundedInformationCircle),
+      trailing: HugeIcon(icon: HugeIcons.strokeRoundedInformationCircle),
     ),
   );
 }

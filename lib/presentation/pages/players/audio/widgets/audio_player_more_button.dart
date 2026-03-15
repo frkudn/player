@@ -14,7 +14,7 @@ final  void Function()? onPressed;
       color: Colors.white,
       iconSize: 25,
       tooltip: "More",
-      icon: const Icon(HugeIcons.strokeRoundedArrowLeft01),
+      icon: const HugeIcon(icon: HugeIcons.strokeRoundedArrowLeft01),
     );
   }
 }

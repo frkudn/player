@@ -5,7 +5,6 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:open_player/logic/theme_cubit/theme_cubit.dart';
 import 'package:open_player/utils/extensions.dart';
 
-
 class SettingMaterial3SwitchListTileWidget extends StatelessWidget {
   const SettingMaterial3SwitchListTileWidget({
     super.key,
@@ -23,8 +22,8 @@ class SettingMaterial3SwitchListTileWidget extends StatelessWidget {
           },
           title: const Row(
             children: [
-              Icon(
-                HugeIcons.strokeRoundedAndroid,
+              HugeIcon(
+                icon: HugeIcons.strokeRoundedAndroid,
               ),
               Gap(10),
               Text(

@@ -13,6 +13,7 @@ class AudioPlayerPlayPauseButtonWidget extends StatelessWidget {
   final double? iconSize;
   final IconData? playIcon;
   final IconData? pauseIcon;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -39,9 +40,12 @@ class AudioPlayerPlayPauseButtonWidget extends StatelessWidget {
                   icon: SpinPerfect(
                     animate: state.audioPlayer.playing,
                     duration: const Duration(milliseconds: 500),
-                    child: Icon(isPlay
-                        ? pauseIcon ?? HugeIcons.strokeRoundedPause
-                        : playIcon ?? HugeIcons.strokeRoundedPlay),
+                    // child: Icon(isPlay
+                    //     ? pauseIcon ?? HugeIcons.strokeRoundedPause
+                    //     : playIcon ?? HugeIcons.strokeRoundedPlay),
+                         child: HugeIcon(icon: isPlay
+                        ?  HugeIcons.strokeRoundedPause
+                        :  HugeIcons.strokeRoundedPlay),
                   ),
                 );
               });

@@ -63,8 +63,8 @@ class ElegantVideoTileWidget extends StatelessWidget {
               child: Stack(
                 children: [
                   video.thumbnail == null
-                      ? Icon(
-                          HugeIcons.strokeRoundedVideoReplay,
+                      ? HugeIcon(
+                          icon: HugeIcons.strokeRoundedVideoReplay,
                           color: Theme.of(context).primaryColor,
                           size: 24,
                         )

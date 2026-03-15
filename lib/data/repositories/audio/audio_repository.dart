@@ -177,6 +177,7 @@ class AudioRepository implements AudioRepositoryBase {
   /// Handles null values and cleanup of problematic characters.
   String _getSafeTitle(String audioPath, dynamic metadata) {
     try {
+      //TODO: Need to change the fileName
       final String fileName = path.basenameWithoutExtension(audioPath);
 
       return _cleanupText(fileName);
@@ -292,7 +293,9 @@ class AudioRepository implements AudioRepositoryBase {
       sampleRate: 0,
       language: "",
       year: DateTime(0000),
-      id: generateStableAudioId(audioPath,),
+      id: generateStableAudioId(
+        audioPath,
+      ),
       quality: "unknown",
       lastModified: audioFile.existsSync()
           ? audioFile.lastModifiedSync()
@@ -303,61 +306,58 @@ class AudioRepository implements AudioRepositoryBase {
     );
   }
 
+  /// Generates an ultra-fast stable ID for audio files.
+  /// The ID remains same even if file is renamed, but changes if content changes.
+  /// Uses MurmurHash for extremely fast hashing while maintaining good distribution.
+  int generateStableAudioId(String audioPath) {
+    try {
+      final File audioFile = File(audioPath);
+      if (!audioFile.existsSync()) return 0;
 
+      final int fileSize = audioFile.lengthSync();
+      if (fileSize == 0) return 0;
 
+      // Only read first 4KB for speed
+      final raf = audioFile.openSync();
+      final startBytes = Uint8List(4 * 1024); // 4KB is enough for uniqueness
+      final int bytesRead = raf.readIntoSync(startBytes);
 
-/// Generates an ultra-fast stable ID for audio files.
-/// The ID remains same even if file is renamed, but changes if content changes.
-/// Uses MurmurHash for extremely fast hashing while maintaining good distribution.
-int generateStableAudioId(String audioPath) {
-  try {
-    final File audioFile = File(audioPath);
-    if (!audioFile.existsSync()) return 0;
-    
-    final int fileSize = audioFile.lengthSync();
-    if (fileSize == 0) return 0;
+      // Also read last 1KB if file is big enough
+      Uint8List? endBytes;
+      int endBytesRead = 0;
+      if (fileSize > 8 * 1024) {
+        // If file is bigger than 8KB
+        raf.setPositionSync(fileSize - 1024); // Last 1KB
+        endBytes = Uint8List(1024);
+        endBytesRead = raf.readIntoSync(endBytes);
+      }
 
-    // Only read first 4KB for speed
-    final raf = audioFile.openSync();
-    final startBytes = Uint8List(4 * 1024);  // 4KB is enough for uniqueness
-    final int bytesRead = raf.readIntoSync(startBytes);
-    
-    // Also read last 1KB if file is big enough
-    Uint8List? endBytes;
-    int endBytesRead = 0;
-    if (fileSize > 8 * 1024) {  // If file is bigger than 8KB
-      raf.setPositionSync(fileSize - 1024);  // Last 1KB
-      endBytes = Uint8List(1024);
-      endBytesRead = raf.readIntoSync(endBytes);
+      raf.closeSync();
+
+      // Combine the important values for hashing
+      final StringBuffer keyBuffer = StringBuffer();
+
+      // Add start bytes
+      keyBuffer.write(String.fromCharCodes(startBytes.sublist(0, bytesRead)));
+
+      // Add file size
+      keyBuffer.write(fileSize.toString());
+
+      // Add end bytes if available
+      if (endBytes != null) {
+        keyBuffer
+            .write(String.fromCharCodes(endBytes.sublist(0, endBytesRead)));
+      }
+
+      // Generate hash using MurmurHash with a fixed seed
+      // Using 104729 as seed (a prime number) for good distribution
+      final int hash = MurmurHash.v3(keyBuffer.toString(), 104729);
+
+      // MurmurHash can return negative values, make it positive
+      return hash & 0x7FFFFFFF; // Ensure positive value
+    } catch (e) {
+      print('Error generating audio ID: $e');
+      return 0;
     }
-    
-    raf.closeSync();
-
-    // Combine the important values for hashing
-    final StringBuffer keyBuffer = StringBuffer();
-    
-    // Add start bytes
-    keyBuffer.write(String.fromCharCodes(startBytes.sublist(0, bytesRead)));
-    
-    // Add file size
-    keyBuffer.write(fileSize.toString());
-    
-    // Add end bytes if available
-    if (endBytes != null) {
-      keyBuffer.write(String.fromCharCodes(endBytes.sublist(0, endBytesRead)));
-    }
-
-    // Generate hash using MurmurHash with a fixed seed
-    // Using 104729 as seed (a prime number) for good distribution
-    final int hash = MurmurHash.v3(keyBuffer.toString(), 104729);
-    
-    // MurmurHash can return negative values, make it positive
-    return hash & 0x7FFFFFFF;  // Ensure positive value
-
-  } catch (e) {
-    print('Error generating audio ID: $e');
-    return 0;
   }
-}
-
 }

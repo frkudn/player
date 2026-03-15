@@ -97,7 +97,8 @@ class VideoPlayerTopBarWidget extends HookWidget {
                   children: [
                     //------------ Screen Rotation
                     VideoPlayerIconButtonWidget(
-                      icon: HugeIcons.strokeRoundedScreenRotation,
+                      
+                      hugeIconData: HugeIcons.strokeRoundedScreenRotation,
                       onTap: () {
                         if (MediaQuery.orientationOf(context) ==
                             Orientation.landscape) {
@@ -115,7 +116,7 @@ class VideoPlayerTopBarWidget extends HookWidget {
 
                     //------------ Audio Set Button
                     VideoPlayerIconButtonWidget(
-                      icon: HugeIcons.strokeRoundedFileMusic,
+                      hugeIconData: HugeIcons.strokeRoundedFileMusic,
                       onTap: () {
                         context
                             .read<ControlsVisibilityCubit>()
@@ -131,7 +132,7 @@ class VideoPlayerTopBarWidget extends HookWidget {
                     //------------ Lock Button
                     if (showMoreIcons.value)
                       VideoPlayerIconButtonWidget(
-                          icon: HugeIcons.strokeRoundedTouchLocked02,
+                          hugeIconData: HugeIcons.strokeRoundedTouchLocked02,
                           onTap: () {
                             context
                                 .read<ControlsVisibilityCubit>()
@@ -141,7 +142,7 @@ class VideoPlayerTopBarWidget extends HookWidget {
                     //---------- Picture in Picture
                     if (showMoreIcons.value)
                       VideoPlayerIconButtonWidget(
-                          icon: HugeIcons.strokeRoundedPictureInPictureOn,
+                          hugeIconData: HugeIcons.strokeRoundedPictureInPictureOn,
                           onTap: () async {
                             // // Create an instance of the PiP service
                             // final pipService = PictureInPictureService();
@@ -168,7 +169,7 @@ class VideoPlayerTopBarWidget extends HookWidget {
                     //---------- Background Play Button
                     if (showMoreIcons.value)
                       VideoPlayerIconButtonWidget(
-                          icon: HugeIcons.strokeRoundedHeadphones,
+                          hugeIconData: HugeIcons.strokeRoundedHeadphones,
                           onTap: () {
                             state.vlcPlayerController.allowBackgroundPlayback
                                 .toggle();
@@ -195,7 +196,7 @@ class VideoPlayerTopBarWidget extends HookWidget {
 
                     //---------- Arrow Button to toggle more buttons
                     VideoPlayerIconButtonWidget(
-                        icon: showMoreIcons.value
+                        hugeIconData: showMoreIcons.value
                             ? HugeIcons.strokeRoundedCircleArrowLeft01
                             : HugeIcons.strokeRoundedCircleArrowRight01,
                         onTap: () {

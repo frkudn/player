@@ -13,7 +13,9 @@ class AudioPlayerPreviousButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocSelector<AudioPlayerBloc, AudioPlayerState, bool?>(
       selector: (state) {
-        return state is AudioPlayerSuccessState? state.audioPlayer.hasPrevious:null;
+        return state is AudioPlayerSuccessState
+            ? state.audioPlayer.hasPrevious
+            : null;
       },
       builder: (context, state) {
         return IconButton(
@@ -21,9 +23,13 @@ class AudioPlayerPreviousButtonWidget extends StatelessWidget {
             clog.debug("Previous Button is pressed");
             context.read<AudioPlayerBloc>().add(AudioPlayerPreviousEvent());
           },
-          color:state!= null?state == true?  Colors.white:Colors.grey:Colors.white,
+          color: state != null
+              ? state == true
+                  ? Colors.white
+                  : Colors.grey
+              : Colors.white,
           iconSize: iconSize ?? 25,
-          icon: const Icon(HugeIcons.strokeRoundedPrevious),
+          icon: const HugeIcon(icon: HugeIcons.strokeRoundedPrevious),
         );
       },
     );

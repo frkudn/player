@@ -30,7 +30,7 @@ Future<dynamic> showAddToPlaylistModalBottomSheet(
                           final playlist = state.playlists[index];
                           return ListTile(
                             title: state.playlists[index].name.text.make(),
-                            leading: Icon(HugeIcons.strokeRoundedPlayList),
+                            leading: HugeIcon(icon: HugeIcons.strokeRoundedPlayList),
                             trailing: !AudioPlaylistService()
                                     .checkIfPlaylistAlreadyHaveAudio(
                                         playlist, audio)

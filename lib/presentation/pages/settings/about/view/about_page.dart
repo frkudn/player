@@ -154,9 +154,10 @@ class AboutPage extends StatelessWidget {
                                       .withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
-                                child: const SocialMediaIconButton(
+                                child: SocialMediaIconButton(
                                   url: "https://github.com/frkudn/player",
-                                  icon: HugeIcons.strokeRoundedGithub,
+                                  hugeIconData: HugeIcons.strokeRoundedGithub,
+
                                   iconSize: 40.0,
                                 ),
                               ),
@@ -170,9 +171,9 @@ class AboutPage extends StatelessWidget {
                                       .withValues(alpha: 0.1),
                                   shape: BoxShape.circle,
                                 ),
-                                child: const SocialMediaIconButton(
+                                child: SocialMediaIconButton(
                                   url: "https://gitlab.com/frkudn/player",
-                                  icon: HugeIcons.strokeRoundedGitlab,
+                                  hugeIconData: HugeIcons.strokeRoundedGitlab,
                                   iconSize: 40.0,
                                 ),
                               ),
@@ -219,22 +220,22 @@ class AboutPage extends StatelessWidget {
                                 ),
                           ),
                           const Gap(16),
-                          const Row(
+                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               SocialMediaIconButton(
                                 url: "https://www.linkedin.com/in/frkudn/",
-                                icon: HugeIcons.strokeRoundedLinkedin01,
+                                hugeIconData: HugeIcons.strokeRoundedLinkedin01,
                               ),
                               Gap(24),
                               SocialMediaIconButton(
                                 url: "https://www.twitter.com/frkudn",
-                                icon: HugeIcons.strokeRoundedTwitter,
+                                hugeIconData: HugeIcons.strokeRoundedTwitter,
                               ),
                               Gap(24),
                               SocialMediaIconButton(
                                 url: "",
-                                icon: HugeIcons.strokeRoundedMail01,
+                                hugeIconData: HugeIcons.strokeRoundedMail01,
                               ),
                             ],
                           ),

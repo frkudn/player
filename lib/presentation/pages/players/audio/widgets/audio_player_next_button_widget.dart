@@ -29,7 +29,7 @@ class AudioPlayerNextButtonWidget extends StatelessWidget {
                   : Colors.grey
               : Colors.white,
           iconSize: iconSize ?? 25,
-          icon: const Icon(HugeIcons.strokeRoundedNext),
+          icon: const HugeIcon(icon:HugeIcons.strokeRoundedNext),
         );
       },
     );

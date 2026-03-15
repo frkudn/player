@@ -51,8 +51,8 @@ class ChangePrimaryPageColorSelectorWidget extends StatelessWidget {
                     radius: 25,
                     backgroundColor: Color(color),
                     child: isSelected
-                        ? const Icon(
-                            HugeIcons.strokeRoundedTick01,
+                        ? const HugeIcon(
+                            icon: HugeIcons.strokeRoundedTick01,
                             color: Colors.white, // Tick icon for selected color
                           )
                         : null,

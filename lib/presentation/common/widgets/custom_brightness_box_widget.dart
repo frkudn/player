@@ -64,8 +64,8 @@ class CustomBrightnessBoxWidget extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 8),
-                Icon(
-                  HugeIcons.strokeRoundedBulb,
+                HugeIcon(
+                  icon: HugeIcons.strokeRoundedBulb,
                   color: Colors.white,
                   size: 25,
                 ),

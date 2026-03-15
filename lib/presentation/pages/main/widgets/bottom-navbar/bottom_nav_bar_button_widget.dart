@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:open_player/utils/extensions.dart';
 import '../../../../../logic/bottom_nav_bar_cubit/bottom_nav_bar_cubit.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -6,12 +7,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class BottomNavBarButtonWidget extends StatelessWidget {
   const BottomNavBarButtonWidget(
       {super.key,
-      required this.icon,
+       this.icon,
       required this.isSelected,
-      required this.pageIndex});
+      required this.pageIndex,
+      this.isHugeIcon = true,
+      this.hugeIconData
+      });
   final bool isSelected;
   final int pageIndex;
-  final IconData icon;
+  final IconData? icon;
+  final bool isHugeIcon;
+  final hugeIconData;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +42,7 @@ class BottomNavBarButtonWidget extends StatelessWidget {
           onPressed: () {
             context.read<BottomNavBarCubit>().changeIndex(index: pageIndex);
           },
-          icon: Icon(icon),
+          icon: isHugeIcon&&hugeIconData!=null? HugeIcon(icon: hugeIconData): icon!=null? Icon(icon): Icon(Icons.flutter_dash),
         ),
       ),
     );

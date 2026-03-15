@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:hugeicons/hugeicons.dart';
 import 'package:url_launcher/link.dart';
 
 class SocialMediaIconButton extends StatelessWidget {
-  const SocialMediaIconButton(
-      {super.key, required this.url, required this.icon, this.iconSize});
+  SocialMediaIconButton(
+      {super.key,
+      required this.url,
+       this.icon,
+      this.iconSize,
+      this.isHugeIcon = true, this.hugeIconData,
+      });
   final String url;
   // ignore: prefer_typing_uninitialized_variables
   final iconSize;
-  final IconData icon;
+   IconData? icon;
+  final hugeIconData;
+  final bool isHugeIcon;
   @override
   Widget build(BuildContext context) {
     return Link(
@@ -17,10 +25,12 @@ class SocialMediaIconButton extends StatelessWidget {
         onPressed: () {
           followLink!(); // Call followLink function to navigate
         },
-        icon: Icon(
-          icon,
-          size: iconSize ?? 40,
-        ),
+        icon: isHugeIcon
+            ? HugeIcon(icon: hugeIconData)
+            : Icon(
+                icon,
+                size: iconSize ?? 40,
+              ),
       ),
     );
   }

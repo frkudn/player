@@ -9,7 +9,6 @@ import 'package:open_player/presentation/pages/players/audio/widgets/audio_playe
 import 'package:open_player/presentation/pages/players/audio/widgets/audio_player_speed_changer_button_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-
 class AudioPlayerTopBarWidget extends StatelessWidget {
   const AudioPlayerTopBarWidget({
     super.key,
@@ -80,7 +79,7 @@ class _BackButton extends StatelessWidget {
       color: Colors.white,
       iconSize: 30,
       tooltip: "Back",
-      icon: const Icon(HugeIcons.strokeRoundedArrowDown01),
+      icon: const HugeIcon(icon: HugeIcons.strokeRoundedArrowDown01),
     );
   }
 }

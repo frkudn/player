@@ -21,11 +21,14 @@ class ViewDirectoryPage extends StatelessWidget {
           itemCount: 20,
           itemBuilder: (context, index) => ListTile(
             title: ListTile(
-              leading: Icon(
-                HugeIcons.strokeRoundedFolder03,
+              leading: HugeIcon(
+                icon: HugeIcons.strokeRoundedFolder03,
                 color: Theme.of(context).primaryColor,
               ),
-              title: Text("Title $index", style: const TextStyle(fontFamily: AppFonts.poppins),),
+              title: Text(
+                "Title $index",
+                style: const TextStyle(fontFamily: AppFonts.poppins),
+              ),
             ),
           ),
         ),

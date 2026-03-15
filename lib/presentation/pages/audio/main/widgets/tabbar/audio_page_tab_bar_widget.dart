@@ -30,12 +30,13 @@ class AudioPageTabBarWidget extends StatelessWidget {
                 tabs: [
                   Tab(
                     text: AppStrings.songs[lc],
-                    icon: const Icon(HugeIcons.strokeRoundedMusicNoteSquare02),
+                    icon: const HugeIcon(icon: HugeIcons.strokeRoundedMusicNoteSquare02),
                   ),
             
                   Tab(
                     text: AppStrings.artists[lc],
-                    icon: const Icon(HugeIcons.strokeRoundedMusicNoteSquare01),
+                    icon: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedMusicNoteSquare01),
                   ),
                   Tab(
                     text: AppStrings.albums[lc],
@@ -43,12 +44,14 @@ class AudioPageTabBarWidget extends StatelessWidget {
                   ),
                   Tab(
                     text: AppStrings.playlists[lc],
-                    icon: const Icon(HugeIcons.strokeRoundedPlayList),
+                    icon: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedPlayList),
                   ),
 
                   Tab(
                     text: AppStrings.folders[lc],
-                    icon: const Icon(HugeIcons.strokeRoundedFolder01),
+            icon: const HugeIcon(
+                        icon: HugeIcons.strokeRoundedFolder01),
                   ),
                 ],
               ),
