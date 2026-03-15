@@ -38,7 +38,8 @@ class VolumeCubit extends Cubit<VolumeState> {
     if (newVolume != state.systemVolume) {
       emit(state.copyWith(systemVolume: newVolume));
       // Set the system volume using VolumeController
-      VolumeController().setVolume(newVolume);
+      VolumeController.instance.setVolume(newVolume);
+      
     }
   }
 
