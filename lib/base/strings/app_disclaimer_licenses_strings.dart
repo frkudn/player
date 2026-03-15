@@ -32,7 +32,7 @@ class AppDisclaimerAndLicensesStrings {
 
   ///!------  Licenses
   static const mitLicensesEn = """
-Copyright (c) 2025 Player
+Copyright (c) 2026 Player
 frkudn@protonmail.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -61,7 +61,7 @@ SOFTWARE.
 
 سافٹ ویئر "جیسا ہے" فراہم کیا جاتا ہے، بغیر کسی قسم کی ضمانت کے، اظہار یا ضمنی، بشمول لیکن ان تک محدود نہیں ہے، مارکیٹ ایبلٹی کی ضمانت، کسی خاص مقصد کے لیے موزونیت، اور حقوق کی خلاف ورزی۔ کسی بھی صورت میں مصنفین یا کاپی رائٹ ہولڈرز کسی بھی دعوے، نقصانات یا دیگر ذمہ داریوں کے لیے ذمہ دار نہیں ہوں گے، چاہے وہ معاہدے، ٹارٹ، یا کسی اور طریقے سے ہوں، جو سافٹ ویئر یا اس کے استعمال یا دیگر لین دین سے پیدا ہوں۔
 
-کاپی رائٹ (c) 2024 اوپن پلیئر
+کاپی رائٹ (c) 2026 اوپن پلیئر
 ڈیولپر: فرقان الدین
 ای میل: frkudn@protonmail.com
 """;
@@ -73,7 +73,7 @@ SOFTWARE.
 
 يتم توفير البرنامج "كما هو"، دون أي ضمان من أي نوع، صريح أو ضمني، بما في ذلك على سبيل المثال لا الحصر ضمانات القابلية للتسويق، والملاءمة لغرض معين، وعدم التعدي. في أي حال من الأحوال، لا يتحمل المؤلفون أو حاملو حقوق الطبع والنشر أي مسؤولية عن أي مطالبة أو أضرار أو مسؤوليات أخرى، سواء كانت في دعوى عقد أو ضرر أو غير ذلك، ناشئة عن أو مرتبطة بالبرنامج أو باستخدامه أو غيره من التعاملات في البرنامج.
 
-حقوق الطبع والنشر (c) 2024  Player
+حقوق الطبع والنشر (c) 2026  Player
 المطور: فرقان الدين
 البريد الإلكتروني: frkudn@protonmail.com
 """;
@@ -85,7 +85,7 @@ El aviso de derechos de autor anterior y este aviso de permiso se incluirán en 
 
 EL SOFTWARE SE PROPORCIONA "TAL CUAL", SIN GARANTÍA DE NINGÚN TIPO, EXPRESA O IMPLÍCITA, INCLUYENDO, PERO NO LIMITÁNDOSE A, GARANTÍAS DE COMERCIALIZABILIDAD, ADECUACIÓN PARA UN PROPÓSITO PARTICULAR Y NO INFRACCIÓN. EN NINGÚN CASO LOS AUTORES O TITULARES DE DERECHOS DE AUTOR SERÁN RESPONSABLES DE CUALQUIER RECLAMO, DAÑOS O CUALQUIER OTRA RESPONSABILIDAD, YA SEA EN UNA ACCIÓN DE CONTRATO, AGRAVIO O DE OTRO MODO, QUE SURJA DE O EN CONEXIÓN CON EL SOFTWARE O EL USO O OTROS TRATOS EN EL SOFTWARE.
 
-Derechos de autor (c) 2024  Player
+Derechos de autor (c) 2026  Player
 Desarrollador: Furqan Uddin
 Correo electrónico: frkudn@protonmail.com
 """;
@@ -97,7 +97,7 @@ L'avis de droits d'auteur ci-dessus et cet avis de permission doivent être incl
 
 LE LOGICIEL EST FOURNI "EN L'ÉTAT", SANS GARANTIE D'AUCUNE SORTE, EXPRESSE OU IMPLICITE, Y COMPRIS, MAIS SANS S'Y LIMITER, LES GARANTIES DE COMMERCIALISATION, D'ADÉQUATION À UN OBJECTIF PARTICULIER ET D'NON-CONTRAVENTION. EN AUCUN CAS, LES AUTEURS OU DÉTENTEURS DE DROITS D'AUTEUR NE POURRONT ÊTRE TENUS RESPONSABLES D'AUCUNE RÉCLAMATION, DOMMAGES OU AUTRE RESPONSABILITÉ, QUE CE SOIT DANS UNE ACTION EN CONTRAT, EN RESPONSABILITÉ OU AUTRE, DÉCOULANT DE OU EN LIEN AVEC LE LOGICIEL OU L'UTILISATION OU D'AUTRES TRANSACTIONS DANS LE LOGICIEL.
 
-Droits d'auteur (c) 2024  Player
+Droits d'auteur (c) 2026  Player
 Développeur : Furqan Uddin
 Email : frkudn@protonmail.com
 """;
@@ -109,7 +109,7 @@ Email : frkudn@protonmail.com
 
 सॉफ़्टवेयर "जैसा है" प्रदान किया गया है, बिना किसी प्रकार की कोई वारंटी, स्पष्ट या निहित, जिसमें लेकिन सीमित नहीं है, व्यापारिता की वारंटी, किसी विशेष उद्देश्य के लिए उपयुक्तता, और गैर-उल्लंघन। किसी भी स्थिति में लेखक या कॉपीराइट धारक किसी भी दावे, नुकसान या अन्य देनदारियों के लिए उत्तरदायी नहीं होंगे, चाहे वह अनुबंध, टॉर्ट या अन्यथा में हो, जो सॉफ़्टवेयर या इसके उपयोग या अन्य लेन-देन से उत्पन्न होता है।
 
-कॉपीराइट (c) 2024 ओपन प्लेयर
+कॉपीराइट (c) 2026 ओपन प्लेयर
 डेवलपर: फरकान उडिन
 ईमेल: frkudn@protonmail.com
 """;
@@ -121,7 +121,7 @@ Email : frkudn@protonmail.com
 
 软件按“原样”提供，不提供任何类型的明示或暗示的保证，包括但不限于适销性、特定用途的适用性和不侵权的保证。在任何情况下，作者或版权持有人对任何索赔、损害或其他责任均不承担责任，无论是合同、侵权还是其他方式，均不因软件或软件的使用或其他交易而产生。
 
-版权 (c) 2024 Player
+版权 (c) 2026 Player
 开发者：Furqan Uddin
 电子邮件：frkudn@protonmail.com
 """;
@@ -133,7 +133,7 @@ Email : frkudn@protonmail.com
 
 소프트웨어는 "있는 그대로" 제공되며, 어떠한 종류의 보증도 제공되지 않습니다. 명시적이든 묵시적이든, 상업성, 특정 목적에 대한 적합성 및 비침해와 관련된 보증을 포함하되 이에 국한되지 않습니다. 저자나 저작권자는 소프트웨어 또는 소프트웨어의 사용 또는 기타 거래에서 발생하는 청구, 손해 또는 기타 책임에 대해 어떠한 경우에도 책임을 지지 않습니다.
 
-저작권 (c) 2024  Player
+저작권 (c) 2026  Player
 개발자: Furqan Uddin
 이메일: frkudn@protonmail.com
 """;
@@ -145,7 +145,7 @@ Email : frkudn@protonmail.com
 
 سافټویر "په همدغه حالت" کې وړاندې کیږي، پرته له کوم ډول تضمین، څرګند یا ضمني، په دې کې د بازارموندنې تضمین، د ځانګړي هدف لپاره مناسبیت، او د حقوقو د تخلف تضمین شامل دي. هیڅکله، لیکوالان یا د کاپی رایټ لرونکي د هر ډول دعوو، زیانونو یا نورو مسؤلیتونو لپاره مسؤل نه دي، که دا د قرارداد، ټورټ، یا نورو لارو چارو له مخې وي، چې د سافټویر یا د دې کارونې یا نورو معاملاتو څخه راپورته کیږي.
 
-کاپي رایټ (c) 2024 اوپن پلیئر
+کاپي رایټ (c) 2026 اوپن پلیئر
 پرورش کوونکی: فرقان الدین
 برېښنالیک: frkudn@protonmail.com
 """;
@@ -157,7 +157,7 @@ Email : frkudn@protonmail.com
 
 ПРОГРАММНОЕ ОБЕСПЕЧЕНИЕ ПРЕДОСТАВЛЯЕТСЯ "КАК ЕСТЬ", БЕЗ ГАРАНТИЙ ЛЮБОГО РОДА, ЯВНЫХ ИЛИ ПОДРАЗУМЕВАЕМЫХ, ВКЛЮЧАЯ, НО НЕ ОГРАНИЧИВАЯСЬ, ГАРАНТИЯМИ ТОРГОВОЙ ПРИГОДНОСТИ, ПРИГОДНОСТИ ДЛЯ ОПРЕДЕЛЕННОЙ ЦЕЛИ И НАРУШЕНИЯ ПРАВ. В НИКАКОМ СЛУЧАЕ АВТОРЫ ИЛИ ДЕРЖАТЕЛИ АВТОРСКИХ ПРАВ НЕ НОСЯТ ОТВЕТСТВЕННОСТИ ЗА ЛЮБЫЕ ИСКИ, УБЫТКИ ИЛИ ИНЫЕ ОБЯЗАТЕЛЬСТВА, ЛИЧНЫЕ В ИСКЕ ПО ДОГОВОРУ, ДЕЛИКТУ ИЛИ ИНЫМ ОБРАЗОМ, ВЫТЕКАЮЩИЕ ИЗ ИЛИ СВЯЗАННЫЕ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ ИЛИ ИСПОЛЬЗОВАНИЕМ ИЛИ ИНЫМИ СДЕЛКАМИ С ПРОГРАММНЫМ ОБЕСПЕЧЕНИЕМ.
 
-Авторские права (c) 2024  Player
+Авторские права (c) 2026  Player
 Разработчик: Furqan Uddin
 Электронная почта: frkudn@protonmail.com
 """;
