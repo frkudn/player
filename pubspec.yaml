@@ -39,44 +39,44 @@ dependencies:
   just_audio: ^0.10.5
   animate_do: ^4.2.0
   permission_handler: ^12.0.1 
-  rxdart:
+  rxdart: ^0.28.0
   gap:
-  device_info_plus: ^11.0.0
+  device_info_plus: ^12.3.0
   get_it: ^9.2.1
   path_provider: ^2.1.5
-  hugeicons: ^0.0.7
+  hugeicons: ^1.1.0
   audiotags: ^1.4.1
   go_router: ^17.1.0 
-  flutter_slidable: ^3.1.1
+  flutter_slidable: ^4.0.3
   hive: ^2.2.3
   intl: ^0.20.2
   flutter_svg: ^2.2.4
   color_log: ^0.0.6
   image_picker: ^1.2.1
-  percent_indicator: ^4.2.3
+  percent_indicator: ^4.2.5
   url_launcher: ^6.3.2
-  share_plus: ^10.1.0
-  uuid: ^4.5.1
+  share_plus: ^12.0.1
+  uuid: ^4.5.3
   badges: ^3.1.2
-  logger: ^2.4.0
-  flutter_hooks: ^0.20.5
+  logger: ^2.6.2
+  flutter_hooks: ^0.20.3+1
   just_audio_background: ^0.0.1-beta.17
   flutter_local_notifications: ^21.0.0
   flutter_vlc_player: ^7.4.4
   flutter_animate: ^4.5.2
   amlv: ^1.0.2
   # external_path: ^2.0.1
-  animated_text_kit: ^4.2.2
+  animated_text_kit: ^4.3.0
   velocity_x: ^4.3.1
-  volume_controller: ^2.0.8
+  volume_controller: ^3.4.2
   audio_metadata_reader: ^1.4.2
   flutter_native_splash: ^2.4.3
   icons_launcher: ^3.0.0
   video_compress: ^3.1.4
   flutter_email_sender: ^6.0.3
   marquee: ^2.3.0
-  wakelock_plus: ^1.2.10
-  crypto: ^3.0.6
+  wakelock_plus: ^1.5.1
+  crypto: ^3.0.7
   murmurhash: ^1.0.1
 
 
