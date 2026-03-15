@@ -17,7 +17,8 @@ android {
 
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        // ✅ Fix
+        jvmTarget = "1.8"
     }
 
     defaultConfig {
@@ -25,7 +26,8 @@ android {
         applicationId = "com.furqanuddin.player"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = 23
+        // ✅ Fix
+        minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
