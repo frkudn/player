@@ -13,7 +13,7 @@ class CreateNewPlaylistButton extends HookWidget {
       onPressed: () {
         showCreateAudioPlaylistDialog(context, playlistName);
       },
-      icon: HugeIcon(icon: HugeIcons.strokeRoundedPlaylist01),
+      icon: Icon(HugeIcons.strokeRoundedPlaylist01),
       label: Text("Create New Playlist"),
     );
   }

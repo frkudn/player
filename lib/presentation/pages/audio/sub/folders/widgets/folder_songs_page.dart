@@ -117,8 +117,7 @@ class FolderSongsPage extends StatelessWidget {
               context.read<AudiosBloc>().add(
                   AudiosLoadFromDirectoryEvent(directory: Directory(dirPath)));
             },
-            icon: HugeIcon(
-              icon:
+            icon: Icon(
               HugeIcons.strokeRoundedRefresh,
               color: Theme.of(context).primaryColor,
             ),
@@ -135,7 +134,7 @@ class FolderSongsPage extends StatelessWidget {
         "No Audios found".text.make(),
         IconButton(
           onPressed: () => context.read<AudiosBloc>().add(AudiosLoadAllEvent()),
-          icon: const HugeIcon(icon:HugeIcons.strokeRoundedRefresh),
+          icon: const Icon(HugeIcons.strokeRoundedRefresh),
         ),
       ].column(),
     );

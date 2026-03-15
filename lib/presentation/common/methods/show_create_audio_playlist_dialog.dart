@@ -25,7 +25,7 @@ Future<Object?> showCreateAudioPlaylistDialog(
                 playlistName.value = v.trim();
               },
               decoration: InputDecoration(
-                  suffixIcon: HugeIcon(icon: HugeIcons.strokeRoundedPlayList),
+                  suffixIcon: Icon(HugeIcons.strokeRoundedPlayList),
                   hintText: "playlist name"),
             ),
             Gap(10),

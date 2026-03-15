@@ -57,7 +57,7 @@ class PlaylistTile extends StatelessWidget {
                 _deletePlaylist(context, playlist),
               ]);
         },
-        child: HugeIcon(icon: HugeIcons.strokeRoundedMoreVertical,
+        child: Icon(HugeIcons.strokeRoundedMoreVertical,
             color: Colors.grey.shade500),
       ),
     );

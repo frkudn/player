@@ -60,7 +60,7 @@ class UserProfileCircleAvatarWidget extends StatelessWidget {
             backgroundColor: Theme.of(context).primaryColor,
             child: IconButton(
               onPressed: changeButtonOnPressed,
-              icon: const HugeIcon(icon:HugeIcons.strokeRoundedImageAdd01),
+              icon: const Icon(HugeIcons.strokeRoundedImageAdd01),
             ),
           ),
         ),

@@ -35,8 +35,8 @@ class VideoPlayerResumeButtonWidget extends StatelessWidget {
               ),
               child: [
                 "Resume ".text.black.make(),
-                HugeIcon(
-                  icon: HugeIcons.strokeRoundedPlay,
+                Icon(
+                  HugeIcons.strokeRoundedPlay,
                   color: Colors.black,
                 )
               ].row(
@@ -44,11 +44,7 @@ class VideoPlayerResumeButtonWidget extends StatelessWidget {
               ),
             ),
           ).p8(),
-        )
-            .hide(
-              isVisible: state.showResumeButton,
-            )
-            .positioned(top: 150, left: 0);
+        ).hide(isVisible: state.showResumeButton,).positioned(top: 150, left: 0);
       },
     );
   }

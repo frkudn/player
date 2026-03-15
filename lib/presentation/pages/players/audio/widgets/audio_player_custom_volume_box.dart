@@ -49,8 +49,8 @@ class AudioPlayerCustomVolumeBoxWidget extends StatelessWidget {
                                 Shadow(color: Colors.black, blurRadius: 1)
                               ]),
                             ),
-                            HugeIcon(
-                           icon:   volume >= 0.7
+                            Icon(
+                              volume >= 0.7
                                   ? HugeIcons.strokeRoundedVolumeHigh
                                   : mute
                                       ? HugeIcons.strokeRoundedVolumeMute01

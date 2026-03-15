@@ -13,10 +13,8 @@ class AudioPlayerRepeatButtonWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocSelector<AudioPlayerBloc, AudioPlayerState, Stream<LoopMode>?>(
-      selector: (state) => state is AudioPlayerSuccessState
-          ? state.audioPlayer.loopModeStream
-          : null,
+    return BlocSelector<AudioPlayerBloc, AudioPlayerState,Stream<LoopMode>?>(
+      selector: (state) => state is AudioPlayerSuccessState? state.audioPlayer.loopModeStream:null,
       builder: (context, state) {
         if (state != null) {
           return StreamBuilder(
@@ -32,8 +30,8 @@ class AudioPlayerRepeatButtonWidget extends StatelessWidget {
                   },
                   color: Colors.white,
                   iconSize: 25,
-                  icon: HugeIcon(
-                    icon: loopMode == LoopMode.all
+                  icon: Icon(
+                    loopMode == LoopMode.all
                         ? HugeIcons.strokeRoundedRepeat
                         : loopMode == LoopMode.one
                             ? HugeIcons.strokeRoundedRepeatOne02

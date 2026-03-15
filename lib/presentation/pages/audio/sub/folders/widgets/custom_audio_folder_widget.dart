@@ -51,12 +51,11 @@ class CustomAudioFolderWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         padding: EdgeInsets.all(10),
-        child:
-        HugeIcon(icon: HugeIcons.strokeRoundedFolder03, 
-                 color: Theme.of(context).primaryColor,
-              size: 28,
-        )
-
+        child: Icon(
+          HugeIcons.strokeRoundedFolder03,
+          color: Theme.of(context).primaryColor,
+          size: 28,
+        ),
       ),
       //------Title
       title: dirName.text.light.size(16).make(),

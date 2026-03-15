@@ -301,7 +301,7 @@ class SettingBottomNavigationBarCustomizationWidget extends StatelessWidget {
                 label: const Text(
                   "Position",
                 ),
-                icon: const HugeIcon(icon: HugeIcons.strokeRoundedNavigation01),
+                icon: const Icon(HugeIcons.strokeRoundedNavigation01),
               ),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(
@@ -315,7 +315,7 @@ class SettingBottomNavigationBarCustomizationWidget extends StatelessWidget {
                 label: const Text(
                   "Size",
                 ),
-                icon: const HugeIcon(icon: HugeIcons.strokeRoundedResize01),
+                icon: const Icon(HugeIcons.strokeRoundedResize01),
               ),
               ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(

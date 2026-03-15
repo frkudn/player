@@ -24,13 +24,13 @@ class SettingBlackModeSwitchListTileWidget extends StatelessWidget {
               },
               title: const Row(
                 children: [
-                  HugeIcon(
-                    icon: HugeIcons.strokeRoundedBlackHole,
+                  Icon(
+                    HugeIcons.strokeRoundedBlackHole,
                   ),
                   Gap(10),
                   Text(
-                    "Black Mode",
-                  ),
+                       "Black Mode",
+               ),
                 ],
               )),
         );

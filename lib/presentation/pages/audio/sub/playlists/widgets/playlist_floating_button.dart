@@ -14,8 +14,8 @@ class PlaylistFloatingButton extends HookWidget {
       onPressed: () {
         showCreateAudioPlaylistDialog(context, playlistName);
       },
-      child: HugeIcon(
-      icon:  HugeIcons.strokeRoundedPlayListAdd,
+      child: Icon(
+        HugeIcons.strokeRoundedPlayListAdd,
       ),
     ).pOnly(bottom: 100, right: 10);
   }

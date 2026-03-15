@@ -42,7 +42,7 @@ class LanguageSelectionTileWidget extends StatelessWidget {
             fontFamily: AppFonts.poppins),
       ),
       trailing: currentLanguageCode
-          ? const HugeIcon(icon: HugeIcons.strokeRoundedTick04)
+          ? const Icon(HugeIcons.strokeRoundedTick04)
           : null,
     );
   }

@@ -38,11 +38,11 @@ class AudioPlayerSeekingPositionBoxWidget extends StatelessWidget {
                             Duration(seconds: state.seekingPosition.toInt()))
                         .text
                         .white
-                        .size(18)
-                        .shadow(0, 0, 2, Colors.black)
+                        .size(18).shadow(0, 0, 2, Colors.black)
                         .make(),
-                    const HugeIcon(
-                      icon: HugeIcons.strokeRoundedScrollHorizontal,
+                   
+                    const Icon(
+                      HugeIcons.strokeRoundedScrollHorizontal,
                       color: Colors.white,
                     )
                   ],
@@ -50,9 +50,7 @@ class AudioPlayerSeekingPositionBoxWidget extends StatelessWidget {
               ),
             ),
           ),
-        )
-            .glassMorphic(blur: 20, border: Border.all(color: Colors.white38))
-            .centered();
+        ).glassMorphic(blur: 20,border: Border.all(color: Colors.white38)).centered();
       },
     );
   }

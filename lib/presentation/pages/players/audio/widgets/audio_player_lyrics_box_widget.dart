@@ -51,14 +51,14 @@ class AudioPlayerLyricsBoxWidget extends HookWidget {
                         onPressed: () {
                           fontSize.value = fontSize.value - 1;
                         },
-                        icon: HugeIcon(icon:HugeIcons.strokeRoundedRemove01),
+                        icon: Icon(HugeIcons.strokeRoundedRemove01),
                       ),
                       IconButton(
                         color: Colors.white,
                         onPressed: () {
                           fontSize.value = fontSize.value + 1;
                         },
-                        icon: HugeIcon(icon: HugeIcons.strokeRoundedAdd01),
+                        icon: Icon(HugeIcons.strokeRoundedAdd01),
                       ),
                     ].row(),
 

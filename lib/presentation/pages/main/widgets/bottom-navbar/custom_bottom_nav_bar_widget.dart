@@ -32,22 +32,21 @@ class CustomBottomNavBarWidget extends StatelessWidget {
         child: [
           //--- Audio Button ---//
           BottomNavBarButtonWidget(
-            hugeIconData: HugeIcons.strokeRoundedMusicNote02,
-
+            icon: HugeIcons.strokeRoundedMusicNote02,
             isSelected: currentIndex == 0,
             pageIndex: 0,
           ),
 
           //--- Video Button ---//
           BottomNavBarButtonWidget(
-           hugeIconData: HugeIcons.strokeRoundedVideo02,
+            icon: HugeIcons.strokeRoundedVideo02,
             isSelected: currentIndex == 1,
             pageIndex: 1,
           ),
 
           //--- Settings Button ---//
           BottomNavBarButtonWidget(
-              hugeIconData: HugeIcons.strokeRoundedSettings05,
+              icon: HugeIcons.strokeRoundedSettings05,
               isSelected: currentIndex == 2,
               pageIndex: 2),
         ].row(),

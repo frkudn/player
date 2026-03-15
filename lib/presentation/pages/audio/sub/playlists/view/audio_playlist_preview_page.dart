@@ -133,8 +133,8 @@ class _AppBar extends StatelessWidget {
             alignment: Alignment.bottomCenter,
             child: [
               //----- Thumbnail
-              HugeIcon(
-               icon: HugeIcons.strokeRoundedPlaylist01,
+              Icon(
+                HugeIcons.strokeRoundedPlaylist01,
                 color: Theme.of(context).primaryColor,
                 size: 45,
               ).p24().glassMorphic(
