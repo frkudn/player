@@ -29,7 +29,7 @@ class AppThemes {
         contrastLevel: themeState.contrastLevel,
       ),
       primaryColor: Color(themeState.primaryColor),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         unselectedLabelStyle: TextStyle(fontSize: 7),
         labelStyle: TextStyle(
             fontSize: 8,
@@ -74,7 +74,7 @@ class AppThemes {
           secondary: Color(themeState.primaryColor),
           brightness: Brightness.dark,
           contrastLevel: themeState.contrastLevel),
-      tabBarTheme: const TabBarTheme(
+      tabBarTheme: const TabBarThemeData(
         unselectedLabelStyle: TextStyle(fontSize: 7),
         labelStyle: TextStyle(
             fontSize: 8,
