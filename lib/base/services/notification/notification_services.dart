@@ -33,7 +33,7 @@ class NotificationServices implements NotificationServicesBase {
       const InitializationSettings initializationSettings =
           InitializationSettings(android: initializationSettingsAndroid);
 
-      await notificationsPlugin.initialize(initializationSettings);
+      await notificationsPlugin.initialize(settings: initializationSettings);
       clog.debug('initNotification completed');
     } catch (e, stackTrace) {
       log('initNotification error: $e', stackTrace: stackTrace);
@@ -77,7 +77,11 @@ class NotificationServices implements NotificationServicesBase {
 
   Future showNotification(
       {int id = 0, String? title, String? body, String? payload}) async {
-    await notificationsPlugin.show(id, title, body, notificationDetails(),
+    await notificationsPlugin.show(
+        id: id,
+        title: title,
+        body: body,
+        notificationDetails: notificationDetails(),
         payload: payload);
   }
 }
