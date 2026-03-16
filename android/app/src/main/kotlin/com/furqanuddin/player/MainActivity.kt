@@ -1,25 +1,36 @@
-// android/app/src/main/kotlin/com/yourpackage/MainActivity.kt
 package com.furqanuddin.player
 
-import android.media.audiofx.Equalizer
+import android.content.Context
 import android.media.audiofx.BassBoost
+import android.media.audiofx.Equalizer
 import android.media.audiofx.Virtualizer
-import android.media.audiofx.PresetReverb
+import android.os.Build
+import android.os.Environment
+import android.os.storage.StorageManager
+import android.os.storage.StorageVolume
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
+import java.io.File
 
 class MainActivity : FlutterActivity() {
 
-    private val CHANNEL = "com.furqanuddin.player/equalizer"
-    private var equalizer: Equalizer? = null
-    private var bassBoost: BassBoost? = null
+    // ── Channel names ────────────────────────────────────────────────────────
+    private val EQ_CHANNEL      = "com.furqanuddin.player/equalizer"
+    private val STORAGE_CHANNEL = "com.furqanuddin.player/storage"
+
+    // ── Equalizer instances ──────────────────────────────────────────────────
+    private var equalizer:   Equalizer?   = null
+    private var bassBoost:   BassBoost?   = null
     private var virtualizer: Virtualizer? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
 
-        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, CHANNEL)
+        // ════════════════════════════════════════════════════════════════════
+        //  EQUALIZER CHANNEL
+        // ════════════════════════════════════════════════════════════════════
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, EQ_CHANNEL)
             .setMethodCallHandler { call, result ->
                 when (call.method) {
 
@@ -40,14 +51,16 @@ class MainActivity : FlutterActivity() {
                     }
 
                     "getBandFreqRange" -> {
-                        val band = call.argument<Int>("band") ?: 0
+                        val band  = call.argument<Int>("band") ?: 0
                         val range = equalizer?.getBandFreqRange(band.toShort())
                         result.success(range?.toList())
                     }
 
                     "getBandLevel" -> {
                         val band = call.argument<Int>("band") ?: 0
-                        result.success(equalizer?.getBandLevel(band.toShort())?.toInt() ?: 0)
+                        result.success(
+                            equalizer?.getBandLevel(band.toShort())?.toInt() ?: 0
+                        )
                     }
 
                     "setBandLevel" -> {
@@ -68,7 +81,9 @@ class MainActivity : FlutterActivity() {
 
                     "getPresetName" -> {
                         val preset = call.argument<Int>("preset") ?: 0
-                        result.success(equalizer?.getPresetName(preset.toShort()) ?: "")
+                        result.success(
+                            equalizer?.getPresetName(preset.toShort()) ?: ""
+                        )
                     }
 
                     "usePreset" -> {
@@ -107,5 +122,93 @@ class MainActivity : FlutterActivity() {
                     else -> result.notImplemented()
                 }
             }
+
+        // ════════════════════════════════════════════════════════════════════
+        //  STORAGE CHANNEL
+        // ════════════════════════════════════════════════════════════════════
+        MethodChannel(flutterEngine.dartExecutor.binaryMessenger, STORAGE_CHANNEL)
+            .setMethodCallHandler { call, result ->
+                when (call.method) {
+
+                    "getStorageDirectories" -> {
+                        try {
+                            result.success(getStorageDirectories())
+                        } catch (e: Exception) {
+                            result.error(
+                                "STORAGE_ERROR",
+                                "Failed to get storage directories: ${e.message}",
+                                null
+                            )
+                        }
+                    }
+
+                    else -> result.notImplemented()
+                }
+            }
+    }
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  STORAGE HELPERS
+    // ════════════════════════════════════════════════════════════════════════
+
+    private fun getStorageDirectories(): List<String> {
+        val paths = mutableListOf<String>()
+
+        try {
+            val storageManager =
+                getSystemService(Context.STORAGE_SERVICE) as StorageManager
+
+            val volumes: List<StorageVolume> = storageManager.storageVolumes
+
+            for (volume in volumes) {
+                val volumePath = getVolumePath(volume) ?: continue
+                val dir        = File(volumePath)
+
+                if (!dir.exists()) continue
+
+                paths.add(volumePath)
+
+                if (volume.isRemovable) {
+                    android.util.Log.i(
+                        "Storage", "Removable (SD card): $volumePath")
+                } else {
+                    android.util.Log.i(
+                        "Storage", "Internal storage: $volumePath")
+                }
+            }
+        } catch (e: Exception) {
+            android.util.Log.e(
+                "Storage", "Error getting storage volumes: ${e.message}")
+        }
+
+        // ── Fallback: always include internal storage ────────────────────
+        val internal = Environment.getExternalStorageDirectory()?.absolutePath
+        if (internal != null &&
+            paths.none { it == internal }) {
+            paths.add(internal)
+        }
+
+        return paths.distinct()
+    }
+
+    private fun getVolumePath(volume: StorageVolume): String? {
+        return try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                // Android 12+ — public API, no reflection needed
+                volume.directory?.absolutePath
+            } else {
+                // Android 7–11 — use reflection
+                val method = StorageVolume::class.java
+                    .getDeclaredMethod("getPath")
+                method.isAccessible = true
+                method.invoke(volume) as? String
+            }
+        } catch (e: Exception) {
+            android.util.Log.w(
+                "Storage",
+                "Could not get path for volume '${volume.getDescription(this)}': ${e.message}"
+            )
+            null
+        }
     }
 }

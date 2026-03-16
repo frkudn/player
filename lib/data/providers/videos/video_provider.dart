@@ -1,13 +1,14 @@
 import 'dart:io';
 import 'dart:isolate';
 import 'package:color_log/color_log.dart';
-// ignore: depend_on_referenced_packages
+import 'package:flutter/services.dart';
 import 'package:path/path.dart' as path;
 
-/// A provider class that handles video file operations
 class VideoProvider {
-  /// List of supported video file extensions
-  static const List<String> _supportedFormats = [
+  static const _storageChannel =
+      MethodChannel('com.furqanuddin.player/storage');
+
+  static const Set<String> _supportedFormats = {
     '.mp4',
     '.avi',
     '.mov',
@@ -16,60 +17,75 @@ class VideoProvider {
     '.flv',
     '.webm',
     '.m4v',
-  ];
+    '.3gp',
+    '.ts',
+    '.rmvb',
+  };
 
-  /// Fetches all video file paths from external storage directories
-  /// Returns a list of video file paths
   Future<List<String>> fetchAllVideoFilePaths() async {
-    List<String> videoFiles = [];
-
-    // Define potential directories
-    List<Directory> directories = [
-      Directory("/storage/emulated/0/"), // Internal storage
-      Directory("/storage/sdcard1/"), // External storage
-      Directory("/storage/extsd/") // SD card
-    ];
+    final List<String> videoFiles = [];
 
     try {
-      // Create a list to store all futures from isolates
-      List<Future<List<String>>> futures = [];
+      // ── Get storage roots from Android via platform channel ────────
+      final List<String> roots = await _getStorageRoots();
 
-      for (var directory in directories) {
-        // Check if the directory exists before scanning
-        if (await directory.exists()) {
-          clog.info("ExternalStorageDirectory Path: ${directory.path}");
-          futures.add(_scanInIsolate(directory.path));
-        } else {
-          clog.warning("Directory does not exist: ${directory.path}");
-        }
+      clog.info('Storage roots found: $roots');
+
+      if (roots.isEmpty) {
+        clog.warning('No storage roots found — falling back to internal');
+        roots.add('/storage/emulated/0');
       }
 
-      // Wait for all isolates to complete and combine results
+      // ── Scan each root in its own isolate (parallel) ───────────────
+      final futures = roots.map((r) => _scanInIsolate(r)).toList();
       final results = await Future.wait(futures);
-      for (var result in results) {
+
+      for (final result in results) {
         videoFiles.addAll(result);
       }
+
+      // ── Deduplicate ────────────────────────────────────────────────
+      final seen = <String>{};
+      videoFiles.retainWhere((p) => seen.add(path.normalize(p).toLowerCase()));
+
+      clog.info('Total videos found: ${videoFiles.length}');
     } catch (e) {
-      clog.error('Error in fetchAllVideoFilePaths: ${e.toString()}');
+      clog.error('Error in fetchAllVideoFilePaths: $e');
     }
 
     return videoFiles;
   }
 
-  /// Creates an isolate to scan for video files in the given directory
-  /// Returns a future that completes with the list of video paths
+  // ── Ask Android for all storage volumes ────────────────────────────────
+
+  Future<List<String>> _getStorageRoots() async {
+    try {
+      final result = await _storageChannel
+          .invokeListMethod<String>('getStorageDirectories');
+      return result ?? [];
+    } on PlatformException catch (e) {
+      clog.error('Platform channel error getting storage: ${e.message}');
+      return [];
+    } catch (e) {
+      clog.error('Error getting storage roots: $e');
+      return [];
+    }
+  }
+
+  // ── Isolate scanner ────────────────────────────────────────────────────
+
   Future<List<String>> _scanInIsolate(String directoryPath) async {
     final receivePort = ReceivePort();
-
     try {
       await Isolate.spawn(
-          scanVideoFiles, [receivePort.sendPort, directoryPath]);
-
-      // Get the result from the isolate
+        _scanVideoFilesIsolate,
+        [receivePort.sendPort, directoryPath],
+      );
       final result = await receivePort.first as List<String>;
+      clog.info('Scanned $directoryPath — found ${result.length} videos');
       return result;
     } catch (e) {
-      clog.error('Error in _scanInIsolate: ${e.toString()}');
+      clog.error('Isolate scan error for $directoryPath: $e');
       return [];
     } finally {
       receivePort.close();
@@ -77,36 +93,56 @@ class VideoProvider {
   }
 }
 
-/// The isolate worker function that scans for video files
-/// Args should contain [SendPort, String] where String is the directory path
-void scanVideoFiles(List<dynamic> args) {
-  List<String> videoFilePaths = [];
-  SendPort sendPort = args[0];
-  final directoryPath = args[1];
+// ── Top-level isolate entry — must be outside the class ──────────────────────
 
-  try {
-    _scanDirectory(Directory(directoryPath), videoFilePaths);
-    sendPort.send(videoFilePaths);
-  } catch (e) {
-    clog.error('Error in scanVideoFiles isolate: $e');
-  }
+void _scanVideoFilesIsolate(List<dynamic> args) {
+  final SendPort sendPort = args[0];
+  final String rootPath = args[1];
+  final List<String> found = [];
+
+  _scanDir(Directory(rootPath), found);
+  sendPort.send(found);
 }
 
-void _scanDirectory(Directory directory, List<String> videoFilePaths) {
+void _scanDir(Directory dir, List<String> found) {
   try {
-    if (directory.path.contains('/Android')) return;
+    final name = path.basename(dir.path);
 
-    directory.listSync(recursive: false, followLinks: false).forEach((entity) {
+    // Skip Android system folders — huge and contain no user media
+    if (name == 'Android' ||
+        name == '.android_secure' ||
+        name == 'obb' ||
+        name == 'data' ||
+        dir.path.contains('/Android/data/') ||
+        dir.path.contains('/Android/obb/')) {
+      return;
+    }
+
+    for (final entity in dir.listSync(recursive: false, followLinks: false)) {
       if (entity is Directory) {
-        _scanDirectory(entity, videoFilePaths);
+        _scanDir(entity, found);
       } else if (entity is File) {
-        String ext = path.extension(entity.path).toLowerCase();
-        if (VideoProvider._supportedFormats.contains(ext)) {
-          videoFilePaths.add(entity.path);
+        final ext = path.extension(entity.path).toLowerCase();
+        if (_kFormats.contains(ext)) {
+          found.add(entity.path);
         }
       }
-    });
-  } catch (e) {
-    clog.error('Error scanning directory ${directory.path}: $e');
+    }
+  } catch (_) {
+    // Permission denied on some subdirs — skip silently
   }
 }
+
+const Set<String> _kFormats = {
+  '.mp4',
+  '.avi',
+  '.mov',
+  '.mkv',
+  '.wmv',
+  '.flv',
+  '.webm',
+  '.m4v',
+  '.3gp',
+  '.ts',
+  '.rmvb',
+};

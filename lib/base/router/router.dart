@@ -82,7 +82,7 @@ final GoRouter router = GoRouter(
     GoRoute(
       name: AppRoutes.viewDirectoryRoute,
       path: AppRoutes.viewDirectoryRoute,
-      builder: (context, state) => const ViewDirectoryPage(),
+      builder: (context, state) => const ViewDirectoryPage(title: '', path: '', items: [],),
     ),
     GoRoute(
       name: AppRoutes.equalizerRoute,
