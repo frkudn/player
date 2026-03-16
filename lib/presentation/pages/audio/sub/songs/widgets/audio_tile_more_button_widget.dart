@@ -208,7 +208,7 @@ PopupMenuItem<dynamic> _deleteMusic(
 PopupMenuItem<dynamic> _share(AudioModel audio) {
   return PopupMenuItem(
     onTap: () async {
-      await Share.shareXFiles([XFile(audio.path)]);
+      await SharePlus.instance.share(ShareParams(files: [XFile(audio.path)]));
     },
     child: const ListTile(
       title: Text(

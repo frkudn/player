@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:open_player/data/models/audio_model.dart';
 import 'package:open_player/utils/formater.dart';
-import 'package:velocity_x/velocity_x.dart';
 
 class AudioInfoSheetWidget extends StatelessWidget {
   const AudioInfoSheetWidget({super.key, required this.audio});
@@ -11,65 +10,213 @@ class AudioInfoSheetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return [
-      if (audio.thumbnail.isNotEmpty) Image.memory(audio.thumbnail.first.bytes),
-      _Tile(
-        leading: "Title",
-        title: audio.title,
+    final cs        = Theme.of(context).colorScheme;
+    final onSurface = cs.onSurface;
+    final primary   = cs.primary;
+    final scaffold  = Theme.of(context).scaffoldBackgroundColor;
+    final cardBg    = scaffold == Colors.black
+        ? const Color(0xFF0D0D0D)
+        : cs.surface;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: cardBg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
-      _Tile(
-        leading: "Album",
-        title: audio.album,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // ── Drag handle ──────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.only(top: 12, bottom: 4),
+            child: Container(
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: onSurface.withValues(alpha: 0.18),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+          ),
+
+          // ── Header ───────────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+            child: Row(
+              children: [
+                Container(
+                  width: 38,
+                  height: 38,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: primary.withValues(alpha: 0.12),
+                  ),
+                  child: Icon(Icons.info_outline_rounded,
+                      color: primary, size: 19),
+                ),
+                const Gap(12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Track Info',
+                        style: TextStyle(
+                          color: onSurface,
+                          fontSize: 17,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: -0.3,
+                        ),
+                      ),
+                      Text(
+                        audio.title,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: onSurface.withValues(alpha: 0.4),
+                          fontSize: 12,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          // ── Thumbnail ────────────────────────────────────────────────────
+          if (audio.thumbnail.isNotEmpty)
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(16),
+                child: Image.memory(
+                  audio.thumbnail.first.bytes,
+                  width: double.infinity,
+                  height: 180,
+                  fit: BoxFit.cover,
+                ),
+              ),
+            ),
+
+          // ── Info tiles ───────────────────────────────────────────────────
+          Flexible(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 32),
+              child: Column(
+                children: [
+                  Divider(
+                    color: onSurface.withValues(alpha: 0.06),
+                    height: 1,
+                  ),
+                  const Gap(8),
+
+                  // ── All your original fields, untouched ─────────────────
+                  _Tile(leading: "Title",     title: audio.title,       onSurface: onSurface, primary: primary),
+                  _Tile(leading: "Album",     title: audio.album,       onSurface: onSurface, primary: primary),
+                  _Tile(leading: "Artists",   title: audio.artists,     onSurface: onSurface, primary: primary),
+                  _Tile(
+                    leading: "Genre",
+                    title: audio.genre.isNotEmpty ? audio.genre.join(", ") : "Unknown",
+                    onSurface: onSurface,
+                    primary: primary,
+                  ),
+                  _Tile(
+                    leading: "Size",
+                    title: Formatter.formatBitSize(audio.size),
+                    onSurface: onSurface,
+                    primary: primary,
+                  ),
+                  _Tile(
+                    leading: "Bitrate",
+                    title: audio.bitrate != null
+                        ? Formatter.formatBitrate(audio.bitrate!)
+                        : "Unknown",
+                    onSurface: onSurface,
+                    primary: primary,
+                  ),
+                  _Tile(leading: "Sample Rate", title: audio.sampleRate,  onSurface: onSurface, primary: primary),
+                  _Tile(
+                    leading: "Year",
+                    title: audio.year != null
+                        ? Formatter.formatDate(audio.year!)
+                        : "Unknown",
+                    onSurface: onSurface,
+                    primary: primary,
+                  ),
+                  _Tile(leading: "Extension", title: audio.ext,         onSurface: onSurface, primary: primary),
+                ],
+              ),
+            ),
+          ),
+
+          Gap(80),
+        ],
       ),
-      _Tile(
-        leading: "Artists",
-        title: audio.artists,
-      ),
-      _Tile(
-        leading: "Genre",
-        title: audio.genre.isNotEmpty ? audio.genre.join(",") : "idk",
-      ),
-      _Tile(
-        leading: "Size",
-        title: Formatter.formatBitSize(audio.size),
-      ),
-      _Tile(
-        leading: "Bitrate",
-        title: audio.bitrate != null
-            ? Formatter.formatBitrate(audio.bitrate!)
-            : "idk",
-      ),
-      _Tile(
-        leading: "SampleRate",
-        title: audio.sampleRate,
-      ),
-      _Tile(
-        leading: "Year",
-        title: audio.year != null ? Formatter.formatDate(audio.year!) : "idk",
-      ),
-      _Tile(
-        leading: "Extension",
-        title:  audio.ext,
-      ),
-      Gap(100),
-    ].column().scrollVertical();
+    );
   }
 }
+
+// ── Info tile ─────────────────────────────────────────────────────────────────
 
 class _Tile extends StatelessWidget {
   const _Tile({
     required this.leading,
     required this.title,
+    required this.onSurface,
+    required this.primary,
   });
 
   final String leading;
-  final  title;
+  final dynamic title;
+  final Color onSurface;
+  final Color primary;
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: "$leading : ".text.make(),
-      title: "$title".text.make(),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Label
+          SizedBox(
+            width: 96,
+            child: Text(
+              leading,
+              style: TextStyle(
+                color: onSurface.withValues(alpha: 0.4),
+                fontSize: 12,
+                fontWeight: FontWeight.w600,
+                letterSpacing: 0.2,
+              ),
+            ),
+          ),
+          // Separator dot
+          Padding(
+            padding: const EdgeInsets.only(top: 1, right: 10),
+            child: Text(
+              '·',
+              style: TextStyle(
+                color: primary.withValues(alpha: 0.5),
+                fontSize: 14,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+          ),
+          // Value
+          Expanded(
+            child: Text(
+              '$title',
+              style: TextStyle(
+                color: onSurface,
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

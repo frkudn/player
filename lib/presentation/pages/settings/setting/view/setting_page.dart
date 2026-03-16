@@ -78,22 +78,22 @@ class _SettingPageState extends State<SettingPage> {
                   label: AppStrings.equalizer[lc]!,
                   iconData: Icons.equalizer,
                   onTap: () {
-                    // context.push(AppRoutes.equalizerRoute);
+                    context.push(AppRoutes.equalizerRoute);
 
-                    // TODO: Implement
-                    showCupertinoDialog(
-                      context: context,
-                      builder: (context) => CupertinoAlertDialog(
-                        title: const Text('Eqaualizer'),
-                        content: const Text('This features is on way'),
-                        actions: [
-                          CupertinoDialogAction(
-                            child: const Text('OK'),
-                            onPressed: () => Navigator.pop(context),
-                          ),
-                        ],
-                      ),
-                    );
+                    // // TODO: Implement
+                    // showCupertinoDialog(
+                    //   context: context,
+                    //   builder: (context) => CupertinoAlertDialog(
+                    //     title: const Text('Eqaualizer'),
+                    //     content: const Text('This features is on way'),
+                    //     actions: [
+                    //       CupertinoDialogAction(
+                    //         child: const Text('OK'),
+                    //         onPressed: () => Navigator.pop(context),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // );
                   },
                 ),
 
