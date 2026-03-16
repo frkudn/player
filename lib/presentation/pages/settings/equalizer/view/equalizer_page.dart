@@ -87,7 +87,7 @@ class _EqualizerPageState extends State<EqualizerPage>
       try {
         final blocState = context.read<AudioPlayerBloc>().state;
         if (blocState is AudioPlayerSuccessState) {
-          sessionId = await blocState.audioPlayer.androidAudioSessionId ?? 0;
+          sessionId = blocState.audioPlayer.androidAudioSessionId ?? 0;
         }
       } catch (_) {
         // No active player session — equalizer will still init with session 0

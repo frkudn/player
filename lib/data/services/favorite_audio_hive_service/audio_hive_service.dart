@@ -27,7 +27,7 @@ class FavoritesAudioHiveService {
   /// Checks if the audio is in the favorites list.
   Future<bool> _checkIsContain(int audioId) async {
     try {
-      return await _box.containsKey(audioId);
+      return _box.containsKey(audioId);
     } catch (e) {
       clog.error("Error checking if audio is in favorites: ${e.toString()}");
       return false; // In case of error, assume it's not in favorites
@@ -52,7 +52,7 @@ class FavoritesAudioHiveService {
       bool isContained = await _checkIsContain(audioId);
 
       if (isContained) {
-        bool currentStatus = await getFavoriteStatus(audioId);
+        bool currentStatus = getFavoriteStatus(audioId);
         if (currentStatus) {
           await _removeFromFavorite(audioId);
         } else {
