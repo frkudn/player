@@ -1,3 +1,5 @@
+import 'package:device_preview/device_preview.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_player/base/db/hive_service.dart';
@@ -32,7 +34,7 @@ void main() async {
   // The following line will enable the Android and iOS wakelock.
   WakelockPlus.enable();
 
-  runApp(const MyApp());
+  runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
 }
 
 class MyApp extends StatelessWidget {
