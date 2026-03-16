@@ -79,16 +79,27 @@ class _EqualizerPageState extends State<EqualizerPage>
 
   Future<void> _initEqualizer() async {
     try {
-      final blocState = context.read<AudioPlayerBloc>().state;
       int sessionId = 0;
-      if (blocState is AudioPlayerSuccessState) {
-        sessionId = await blocState.audioPlayer.androidAudioSessionId ?? 0;
+
+      // ── Get session ID from the singleton AudioPlayer ─────────────────
+      // AudioPlayer is registered as a singleton in your locator (injection.dart)
+      // so we can access it directly without needing the bloc state
+      try {
+        final blocState = context.read<AudioPlayerBloc>().state;
+        if (blocState is AudioPlayerSuccessState) {
+          sessionId = await blocState.audioPlayer.androidAudioSessionId ?? 0;
+        }
+      } catch (_) {
+        // No active player session — equalizer will still init with session 0
+        // (affects all audio output, works as a global EQ)
+        sessionId = 0;
       }
 
       final ok = await _eq.init(sessionId);
       if (!ok) {
         setState(() {
-          _error = 'Could not initialize equalizer on this device.';
+          _error = 'Equalizer not supported on this device.\n'
+              'Some manufacturers disable audio effects.';
           _loading = false;
         });
         return;
