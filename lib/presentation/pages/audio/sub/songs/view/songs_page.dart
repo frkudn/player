@@ -8,7 +8,7 @@ import 'package:open_player/data/models/audio_model.dart';
 import 'package:open_player/presentation/common/widgets/audio_tile_widget.dart';
 import 'package:open_player/presentation/pages/audio/sub/songs/widgets/songs_top_bar_buttons_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
-import '../../../../../../base/db/hive_service.dart';
+// import '../../../../../../base/db/hive_service.dart';
 import '../../../../../../data/services/favorite_audio_hive_service/audio_hive_service.dart';
 import '../../../../../../logic/audio_bloc/audios_bloc.dart';
 
@@ -26,9 +26,9 @@ class SongsPage extends HookWidget {
       builder: (context, audioState) {
         if (audioState is AudiosSuccess) {
           if (audioState.allSongs.isNotEmpty) {
-            final fvrKeys = MyHiveBoxes.favoriteAudios.keys;
+            // final fvrKeys = MyHiveBoxes.favoriteAudios.keys;
 
-            final allsongsByName = audioState.allSongs
+            final allSongsByName = audioState.allSongs
                 .where((audio) => !audio.title.startsWith('.'))
                 .toList()
               ..sort((a, b) => a.title.compareTo(b.title));
@@ -50,7 +50,7 @@ class SongsPage extends HookWidget {
               ..sort((a, b) => a.size.compareTo(b.size));
 
             final filteredSongs = _returnSongs(favoriteSongs, recentlyAdded,
-                allsongsByName, hiddenSongs, selectedFilter);
+                allSongsByName, hiddenSongs, selectedFilter);
 
             int songsLength = filteredSongs.length;
 
@@ -89,7 +89,7 @@ class SongsPage extends HookWidget {
 
                         //--- Scroll Top
                         if (selectedFilter.value == SongsFiltered.all &&
-                            allsongsByName.length > 10)
+                            allSongsByName.length > 10)
                           SliverToBoxAdapter(
                             child: TextButton.icon(
                               onPressed: () {
