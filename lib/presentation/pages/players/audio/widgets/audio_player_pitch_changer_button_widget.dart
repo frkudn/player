@@ -60,7 +60,7 @@ class AudioPlayerPitchChangerButtonWidget extends StatelessWidget {
                       ),
                       child: Center(
                         child: Text(
-                          '${pitch.toStringAsFixed(pitch == pitch.roundToDouble() ? 1 : 2)}',
+                          pitch.toStringAsFixed(pitch == pitch.roundToDouble() ? 1 : 2),
                           style: TextStyle(
                             // color: isModified ? primary : onSurface,
                             color: Colors.white,
@@ -431,7 +431,7 @@ class _PitchDialogContentState extends State<_PitchDialogContent>
               fontSize: 13,
               fontWeight: FontWeight.w700,
             ),
-            showValueIndicator: ShowValueIndicator.always,
+            showValueIndicator: ShowValueIndicator.onDrag,
           ),
           child: Slider(
             min: 0.5,

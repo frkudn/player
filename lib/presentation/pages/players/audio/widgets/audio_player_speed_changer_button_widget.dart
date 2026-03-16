@@ -411,7 +411,7 @@ class _SpeedDialogContentState extends State<_SpeedDialogContent>
               fontSize: 13,
               fontWeight: FontWeight.w700,
             ),
-            showValueIndicator: ShowValueIndicator.always,
+            showValueIndicator: ShowValueIndicator.onDrag,
           ),
           child: Slider(
             min: 0.25,
