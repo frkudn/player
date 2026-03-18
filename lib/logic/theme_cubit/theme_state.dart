@@ -4,32 +4,51 @@ import 'package:flutter/material.dart';
 import '../../base/db/hive_service.dart';
 
 class ThemeState extends Equatable {
- final bool isDarkMode;
-final  bool isBlackMode;
-final  bool defaultTheme;
- final bool useMaterial3;
-final  bool isDefaultScaffoldColor;
- final bool isDefaultAppBarColor;
- final bool isDefaultBottomNavBarBgColor;
- final bool isDefaultBottomNavBarPosition;
- final bool isDefaultBottomNavBarRotation;
- final bool isDefaultBottomNavBarIconRotation;
+  // ── Dark / light / black mode ──────────────────────────────────────────────
+  final bool isDarkMode;
+  final bool isBlackMode;
 
- final double contrastLevel;
- final VisualDensity visualDensity;
- final int? customScaffoldColor;
- final int? customAppBarColor;
- final int? customBottomNavBarBgColor;
- final int primaryColorListIndex;
- final int primaryColor;
- final double bottomNavBarPositionFromLeft;
- final double bottomNavBarPositionFromBottom;
+  // ── Theme customisation ───────────────────────────────────────────────────
+  final bool defaultTheme;
+  final bool useMaterial3;
+  final double contrastLevel;
+  final VisualDensity visualDensity;
+  final int primaryColorListIndex;
+  final int primaryColor;
+
+  // ── Scaffold / AppBar colours ─────────────────────────────────────────────
+  final bool isDefaultScaffoldColor;
+  final bool isDefaultAppBarColor;
+  final int? customScaffoldColor;
+  final int? customAppBarColor;
+
+  // ── Bottom nav bar — legacy position/size/rotation fields ────────────────
+  // These are kept so existing Hive data isn't lost.
+  // The new style system (navBarStyleIndex) replaces their visual effect.
+  final bool isDefaultBottomNavBarBgColor;
+  final bool isDefaultBottomNavBarPosition;
+  final bool isDefaultBottomNavBarRotation;
+  final bool isDefaultBottomNavBarIconRotation;
+  final int? customBottomNavBarBgColor;
+  final double bottomNavBarPositionFromLeft;
+  final double bottomNavBarPositionFromBottom;
   final double bottomNavBarWidth;
   final double bottomNavBarHeight;
- final  double bottomNavBarRotation;
- final double bottomNavBarIconRotation;
+  final double bottomNavBarRotation;
+  final double bottomNavBarIconRotation;
+  final bool isHoldBottomNavBarCirclePositionButton;
+  // /// 0 = Compact, 1 = Regular (default), 2 = Large
+  final int navBarSizeIndex;
+// /// Background opacity for glass-style nav bars (0.4 – 1.0, default 0.9)
+  final double navBarOpacity;
 
- final bool isHoldBottomNavBarCirclePositionButton;
+  // ── NEW: Nav bar preset style ─────────────────────────────────────────────
+  // Controls which of the 4 visual presets is shown:
+  //   0 → Floating Pill (default)
+  //   1 → Full-Width Bar
+  //   2 → Side Rail
+  //   3 → Minimal Dot
+  final int navBarStyleIndex;
 
   const ThemeState({
     required this.isBlackMode,
@@ -56,12 +75,16 @@ final  bool isDefaultScaffoldColor;
     required this.bottomNavBarHeight,
     required this.bottomNavBarWidth,
     required this.isHoldBottomNavBarCirclePositionButton,
+    required this.navBarStyleIndex,
+    required this.navBarSizeIndex,
+    required this.navBarOpacity,
   });
 
   static get themeBox => MyHiveBoxes.theme;
+
   factory ThemeState.initial() => ThemeState(
         defaultTheme: themeBox.get(MyHiveKeys.defaultTheme) ?? true,
-        primaryColor: themeBox.get(MyHiveKeys.primaryColor) ?? 0xFFF43F5E, // Rose,
+        primaryColor: themeBox.get(MyHiveKeys.primaryColor) ?? 0xFFF43F5E,
         useMaterial3: themeBox.get(MyHiveKeys.useMaterial3) ?? true,
         isBlackMode: themeBox.get(MyHiveKeys.isBlackMode) ?? false,
         isDarkMode: themeBox.get(MyHiveKeys.isDarkMode) ?? false,
@@ -98,6 +121,10 @@ final  bool isDefaultScaffoldColor;
             themeBox.get(MyHiveKeys.isDefaultBottomNavBarRotation) ?? true,
         isDefaultBottomNavBarIconRotation:
             themeBox.get(MyHiveKeys.isDefaultBottomNavBarIconRotation) ?? true,
+        // ── NEW: read saved style, default to 0 (Floating Pill)
+        navBarStyleIndex: themeBox.get(MyHiveKeys.navBarStyleIndex) ?? 0,
+        navBarSizeIndex: themeBox.get(MyHiveKeys.navBarSizeIndex) ?? 1,
+        navBarOpacity: themeBox.get(MyHiveKeys.navBarOpacity) ?? 0.9,
       );
 
   ThemeState copyWith({
@@ -125,6 +152,9 @@ final  bool isDefaultScaffoldColor;
     int? primaryColor,
     double? bottomNavBarRotation,
     double? bottomNavBarIconRotation,
+    int? navBarStyleIndex, // ← NEW
+    int? navBarSizeIndex,
+    double? navBarOpacity,
   }) {
     return ThemeState(
       primaryColor: primaryColor ?? this.primaryColor,
@@ -163,6 +193,9 @@ final  bool isDefaultScaffoldColor;
       isHoldBottomNavBarCirclePositionButton:
           isHoldBottomNavBarCirclePositionButton ??
               this.isHoldBottomNavBarCirclePositionButton,
+      navBarStyleIndex: navBarStyleIndex ?? this.navBarStyleIndex, // ← NEW
+      navBarSizeIndex: navBarSizeIndex ?? this.navBarSizeIndex,
+      navBarOpacity: navBarOpacity ?? this.navBarOpacity,
     );
   }
 
@@ -192,5 +225,8 @@ final  bool isDefaultScaffoldColor;
         isHoldBottomNavBarCirclePositionButton,
         bottomNavBarRotation,
         bottomNavBarIconRotation,
+        navBarStyleIndex,
+        navBarSizeIndex,
+        navBarOpacity,
       ];
 }
