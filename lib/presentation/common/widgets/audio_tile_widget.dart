@@ -55,8 +55,7 @@ class AudioTileWidget extends StatelessWidget {
                 showDragHandle: false,
                 isScrollControlled: true,
                 context: context,
-                constraints: const BoxConstraints(
-                    maxWidth: double.infinity), // 👈 force full width
+                constraints: const BoxConstraints( minWidth: double.infinity), // 👈 force full width
                 builder: (context) => const AudioPlayerPage(),
               );
             },

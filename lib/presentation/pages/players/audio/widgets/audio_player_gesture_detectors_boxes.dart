@@ -4,67 +4,60 @@ import 'package:open_player/logic/audio_player_bloc/audio_player_bloc.dart';
 import 'package:open_player/logic/volume_cubit/volume_cubit.dart';
 
 class AudioPlayerGestureDetectorsBoxes extends StatelessWidget {
-  const AudioPlayerGestureDetectorsBoxes({
-    super.key,
-  });
+  const AudioPlayerGestureDetectorsBoxes({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final Size mq = MediaQuery.sizeOf(context);
     return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ///------------------------ Left Box
-        GestureDetector(
-          //---[Backward Music]
-          onDoubleTap: () {
-            context.read<AudioPlayerBloc>().add(AudioPlayerBackwardEvent());
-          },
-          // [For Volume] ,
-          onVerticalDragUpdate: (details) {
-            context
-                .read<VolumeCubit>()
-                .changeAudioPlayerVolume(details: details);
-            context.read<VolumeCubit>().volumeBoxVisibilityToggle();
-          },
-
-          child: Container(
-            width: mq.width / 2 / 2,
-            decoration: const BoxDecoration(color: Colors.transparent),
+        // Left box (1 part)
+        Expanded(
+          flex: 1,
+          child: GestureDetector(
+            onDoubleTap: () {
+              context.read<AudioPlayerBloc>().add(AudioPlayerBackwardEvent());
+            },
+            onVerticalDragUpdate: (details) {
+              context
+                  .read<VolumeCubit>()
+                  .changeAudioPlayerVolume(details: details);
+              context.read<VolumeCubit>().volumeBoxVisibilityToggle();
+            },
+            child: Container(
+              color: Colors.transparent,
+            ),
           ),
         ),
-
-        //--------------------------------    Center  Box
-        GestureDetector(
-          //----- [Play, Pause Audio]
-          onDoubleTap: () {
-            context
-                .read<AudioPlayerBloc>()
-                .add(AudioPlayerPlayPauseToggleEvent());
-          },
-          child: Container(
-            width: mq.width / 2,
-            decoration: const BoxDecoration(color: Colors.transparent),
+        // Center box (2 parts)
+        Expanded(
+          flex: 2,
+          child: GestureDetector(
+            onDoubleTap: () {
+              context
+                  .read<AudioPlayerBloc>()
+                  .add(AudioPlayerPlayPauseToggleEvent());
+            },
+            child: Container(
+              color: Colors.transparent,
+            ),
           ),
         ),
-
-        // ----------------- Right Side ,
-        GestureDetector(
-          //--------[Forward Music]
-          onDoubleTap: () {
-            context.read<AudioPlayerBloc>().add(AudioPlayerForwardEvent());
-          },
-
-          //------- [Volume Changing]
-          onVerticalDragUpdate: (details) {
-            context
-                .read<VolumeCubit>()
-                .changeAudioPlayerVolume(details: details);
-            context.read<VolumeCubit>().volumeBoxVisibilityToggle();
-          },
-          child: Container(
-            width: mq.width / 2 / 2,
-            decoration: const BoxDecoration(color: Colors.transparent),
+        // Right box (1 part)
+        Expanded(
+          flex: 1,
+          child: GestureDetector(
+            onDoubleTap: () {
+              context.read<AudioPlayerBloc>().add(AudioPlayerForwardEvent());
+            },
+            onVerticalDragUpdate: (details) {
+              context
+                  .read<VolumeCubit>()
+                  .changeAudioPlayerVolume(details: details);
+              context.read<VolumeCubit>().volumeBoxVisibilityToggle();
+            },
+            child: Container(
+              color: Colors.transparent,
+            ),
           ),
         ),
       ],
