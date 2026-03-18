@@ -8,44 +8,35 @@ import 'package:open_player/presentation/pages/settings/setting/widgets/setting_
 import 'package:open_player/presentation/pages/settings/setting/widgets/setting_toggle_default_theme_switch_list_tile_widget.dart';
 import 'package:open_player/presentation/pages/settings/setting/widgets/setting_visual_customization_widget.dart';
 import 'package:open_player/utils/extensions.dart';
-import 'package:velocity_x/velocity_x.dart';
 
+//
+// NOTE: With the new SettingPage this widget is no longer needed as a
+// separate ExpansionTile. All appearance controls are inlined into the
+// _SectionCard in SettingPage for better visual hierarchy.
+//
+// If you  want the old ExpansionTile approach (e.g. embedded in another
+// screen), the code below is the cleaned-up version.
 class SettingAppearanceSectionWidget extends StatelessWidget {
-  const SettingAppearanceSectionWidget({
-    super.key,
-  });
+  const SettingAppearanceSectionWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    //-- Language Code
     final String lc = context.languageCubit.state.languageCode;
     return ExpansionTile(
       initiallyExpanded: true,
-      title: [
-        AppStrings.appearance[lc]!.text.size(20).make(),
-        Icon(
-          CupertinoIcons.color_filter,
-          color: Theme.of(context).primaryColor,
-        )
-      ].row(),
+      title: Row(children: [
+        Text(AppStrings.appearance[lc]!, style: const TextStyle(fontSize: 20)),
+        const SizedBox(width: 8),
+        Icon(CupertinoIcons.color_filter,
+            color: Theme.of(context).primaryColor),
+      ]),
       children: const [
-        //!-------------------- Restore To Default Setting----------------///
         SettingRestoreToDefaultSettingWidget(),
-
-        //!-------------------Theme Mode Switch Tile-----------------------------///
         SettingThemeModeSwitchButtonWidget(),
-
-        ///!-------------------Default/Custom Theme Switch Tile-----------------------------///
         SettingToggleDefaultThemeSwitchListTileWidget(),
-
-        //!-------------------Change Theme Switch Tile-----------------------------///
         SettingChangeThemeSwitchListTileWidget(),
-
-        //!-------------------Black Mode Switch Tile-----------------------------///
         SettingBlackModeSwitchListTileWidget(),
-
-        //!-------------------Visual Customization-----------------------------///
-        SettingCustomizationWidget()
+        SettingCustomizationWidget(),
       ],
     );
   }

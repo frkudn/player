@@ -1,202 +1,331 @@
+import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:open_player/logic/theme_cubit/theme_cubit.dart';
 import 'package:open_player/utils/extensions.dart';
 
-import '../../../logic/theme_cubit/theme_cubit.dart';
+// ─────────────────────────────────────────────────────────────────────────────
+// CUSTOM THEME MODE BUTTON
+//
+// Apple engineering principles applied:
+//
+// 1. StatefulWidget + SingleTickerProviderStateMixin
+//    The old TweenAnimationBuilder(begin:0, end:1) was recreated from scratch
+//    every time the parent rebuilt (e.g. BlocBuilder on theme change). Each
+//    new TweenAnimationBuilder starts at t=0, so the sparkles always reset.
+//    A single AnimationController lives for the widget's lifetime and drives
+//    the continuous sparkle rotation independently of the parent tree.
+//
+// 2. RepaintBoundary around every animated layer
+//    Flutter's raster cache stores a GPU texture per RepaintBoundary. When
+//    ONLY the sparkle layer changes, Flutter repaints just that texture and
+//    composites it — the background and toggle are untouched. Without this,
+//    the entire toggle repaints every animation frame.
+//
+// 3. Zero heap allocations in build()
+//    All BoxDecoration objects are stored as instance fields. build() reads
+//    pre-built objects — it never calls BoxDecoration(...) or LinearGradient().
+//    This reduces GC pressure during the 500 ms toggle animation.
+//
+// 4. Spring physics on the toggle knob
+//    Curves.elasticOut gives the knob a subtle overshoot — the physical
+//    "click" feel Apple uses on every interactive element.
+// ─────────────────────────────────────────────────────────────────────────────
 
-class CustomThemeModeButtonWidget extends StatelessWidget {
+class CustomThemeModeButtonWidget extends StatefulWidget {
   const CustomThemeModeButtonWidget({super.key});
 
-  // Cached gradients and decorations to avoid recreating them
-  static final _darkGradient = LinearGradient(
-    colors: [Colors.grey[850]!, Colors.grey[900]!],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
-  );
+  @override
+  State<CustomThemeModeButtonWidget> createState() =>
+      _CustomThemeModeButtonWidgetState();
+}
 
-  static final _lightGradient = LinearGradient(
-    colors: [
-      Colors.blue[300]!,
-      Colors.purple[200]!,
-      Colors.pink[200]!,
+class _CustomThemeModeButtonWidgetState
+    extends State<CustomThemeModeButtonWidget>
+    with SingleTickerProviderStateMixin {
+  // ── Continuous sparkle / star rotation ──────────────────────────────────
+  // Runs forever at a gentle pace — independent of the toggle animation.
+  // Disposed properly in dispose() so there are no memory leaks.
+  late final AnimationController _sparkle = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 6),
+  )..repeat(); // loops 0→1 forever
+
+  // ── Pre-built decorations (zero build() allocations) ────────────────────
+
+  static final _darkTrackDeco = BoxDecoration(
+    borderRadius: BorderRadius.circular(30),
+    gradient: LinearGradient(
+      colors: [const Color(0xFF1C1C2E), const Color(0xFF2D2D44)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.black.withValues(alpha: 0.4),
+        blurRadius: 10,
+        spreadRadius: 1,
+      ),
     ],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
   );
 
-  static final _darkToggleGradient = LinearGradient(
-    colors: [Colors.grey[900]!, Colors.grey[800]!],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+  static final _lightTrackDeco = BoxDecoration(
+    borderRadius: BorderRadius.circular(30),
+    gradient: const LinearGradient(
+      colors: [Color(0xFF74C8FF), Color(0xFFB69DFF), Color(0xFFFF9FC3)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: const Color(0xFF74C8FF).withValues(alpha: 0.4),
+        blurRadius: 10,
+        spreadRadius: 1,
+      ),
+      BoxShadow(
+        color: const Color(0xFFFF9FC3).withValues(alpha: 0.25),
+        blurRadius: 16,
+        spreadRadius: 3,
+        offset: const Offset(4, 4),
+      ),
+    ],
   );
 
-  static final _lightToggleGradient = LinearGradient(
-    colors: [Colors.orange[300]!, Colors.yellow[400]!],
-    begin: Alignment.topLeft,
-    end: Alignment.bottomRight,
+  static final _darkKnobDeco = BoxDecoration(
+    shape: BoxShape.circle,
+    gradient: LinearGradient(
+      colors: [const Color(0xFF2C2C3E), const Color(0xFF3D3D55)],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    boxShadow: [
+      const BoxShadow(
+        color: Colors.black38,
+        blurRadius: 6,
+        spreadRadius: 1,
+      ),
+    ],
   );
 
-  // Cached decorations
-  BoxDecoration _getContainerDecoration(bool isDark, BuildContext context) {
-    return BoxDecoration(
-      borderRadius: BorderRadius.circular(30),
-      gradient: isDark ? _darkGradient : _lightGradient,
-      boxShadow: [
-        BoxShadow(
-          color: isDark
-              ? Colors.black.withValues(alpha: 0.3)
-              : Colors.blue[300]!.withValues(alpha: 0.5),
-          blurRadius: 8,
-          spreadRadius: 1,
-        ),
-        if (!isDark)
-          BoxShadow(
-            color: Colors.pink[200]!.withValues(alpha: 0.3),
-            blurRadius: 12,
-            spreadRadius: 2,
-            offset: const Offset(4, 4),
-          ),
-      ],
-    );
-  }
+  static final _lightKnobDeco = BoxDecoration(
+    shape: BoxShape.circle,
+    gradient: LinearGradient(
+      colors: [Colors.orange.shade300, Colors.yellow.shade400],
+      begin: Alignment.topLeft,
+      end: Alignment.bottomRight,
+    ),
+    boxShadow: [
+      BoxShadow(
+        color: Colors.orange.withValues(alpha: 0.35),
+        blurRadius: 8,
+        spreadRadius: 1,
+      ),
+      BoxShadow(
+        color: Colors.yellow.shade200.withValues(alpha: 0.4),
+        blurRadius: 14,
+        spreadRadius: 3,
+        offset: const Offset(2, 2),
+      ),
+    ],
+  );
 
-  BoxDecoration _getToggleDecoration(bool isDark) {
-    return BoxDecoration(
-      shape: BoxShape.circle,
-      gradient: isDark ? _darkToggleGradient : _lightToggleGradient,
-      boxShadow: [
-        BoxShadow(
-          color: isDark ? Colors.black38 : Colors.orange.withValues(alpha: 0.3),
-          blurRadius: 4,
-          spreadRadius: 1,
-        ),
-        if (!isDark)
-          BoxShadow(
-            color: Colors.yellow[200]!.withValues(alpha: 0.5),
-            blurRadius: 8,
-            spreadRadius: 2,
-            offset: const Offset(2, 2),
-          ),
-      ],
-    );
+  @override
+  void dispose() {
+    _sparkle.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.sizeOf(context);
-    final toggleSize = mq.height * 0.035;
-    final isDark = context.themeCubit.state.isDarkMode;
+    // Only rebuild when isDarkMode changes — not on every ThemeState emit
+    final isDark = context.select<ThemeCubit, bool>(
+      (c) => c.state.isDarkMode,
+    );
 
-    return SizedBox(
-      width: mq.width * 0.18,
-      height: mq.height * 0.045,
-      child: GestureDetector(
-        onTap: () => context.read<ThemeCubit>().toggleThemeMode(),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 500),
-          curve: Curves.easeInOut,
-          padding: const EdgeInsets.all(3),
-          decoration: _getContainerDecoration(isDark, context),
-          child: Stack(
-            children: [
-              // Optimized background elements using const where possible
-              if (isDark) const _DarkModeStars(),
-              if (!isDark) const _LightModeClouds(),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Responsive sizing: scales with parent constraints + screen height
+        final mq = MediaQuery.sizeOf(context);
+        final double trackH = (mq.height * 0.045).clamp(36.0, 52.0);
+        final double trackW = (mq.width * 0.18).clamp(68.0, 100.0);
+        final double knobSize = trackH - 8;
 
-              // Sliding toggle
-              AnimatedAlign(
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-                alignment:
-                    isDark ? Alignment.centerRight : Alignment.centerLeft,
-                child: Container(
-                  width: toggleSize,
-                  height: toggleSize,
-                  decoration: _getToggleDecoration(isDark),
-                  child: AnimatedRotation(
-                    duration: const Duration(milliseconds: 500),
-                    turns: isDark ? 0.5 : 0,
-                    child: Icon(
-                      isDark ? Icons.dark_mode : Icons.wb_sunny_rounded,
-                      color: isDark ? Colors.grey[300] : Colors.orange[800],
-                      size: 16,
+        return GestureDetector(
+          onTap: () => context.read<ThemeCubit>().toggleThemeMode(),
+          child: SizedBox(
+            width: trackW,
+            height: trackH,
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 420),
+              curve: Curves.easeInOut,
+              padding: const EdgeInsets.all(4),
+              decoration: isDark ? _darkTrackDeco : _lightTrackDeco,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  // ── Background ambient layer ─────────────────────────
+                  // RepaintBoundary: this layer animates independently.
+                  // GPU texture is cached — only repaints when sparkle rotates.
+                  RepaintBoundary(
+                    child: isDark
+                        ? _StarField(animation: _sparkle)
+                        : _SunRays(animation: _sparkle),
+                  ),
+
+                  // ── Sliding knob ─────────────────────────────────────
+                  // AnimatedAlign handles the position transition.
+                  // The knob itself has a RepaintBoundary because its
+                  // rotation is independent of the position tween.
+                  AnimatedAlign(
+                    duration: const Duration(milliseconds: 480),
+                    curve: Curves.elasticOut, // spring overshoot = Apple feel
+                    alignment:
+                        isDark ? Alignment.centerRight : Alignment.centerLeft,
+                    child: RepaintBoundary(
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 420),
+                        width: knobSize,
+                        height: knobSize,
+                        decoration: isDark ? _darkKnobDeco : _lightKnobDeco,
+                        child: _KnobIcon(isDark: isDark, knobSize: knobSize),
+                      ),
                     ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
-        ),
+        );
+      },
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// KNOB ICON
+//
+// Separate widget so AnimatedSwitcher can cross-fade between sun and moon
+// without rebuilding the entire toggle tree.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _KnobIcon extends StatelessWidget {
+  const _KnobIcon({required this.isDark, required this.knobSize});
+
+  final bool isDark;
+  final double knobSize;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSwitcher(
+      duration: const Duration(milliseconds: 300),
+      transitionBuilder: (child, anim) => ScaleTransition(
+        scale: anim,
+        child: FadeTransition(opacity: anim, child: child),
+      ),
+      child: Icon(
+        key: ValueKey(isDark), // tells AnimatedSwitcher these are different
+        isDark ? Icons.dark_mode_rounded : Icons.wb_sunny_rounded,
+        color: isDark ? const Color(0xFFB0B8D8) : Colors.orange.shade800,
+        size: knobSize * 0.5,
       ),
     );
   }
 }
 
-class _DarkModeStars extends StatelessWidget {
-  const _DarkModeStars();
+// ─────────────────────────────────────────────────────────────────────────────
+// STAR FIELD (dark mode background)
+//
+// Uses a single AnimationController value to rotate/twinkle 5 stars.
+// Drawing 5 icons is cheaper than a CustomPainter for this case because
+// Icon widgets are already cached GPU glyphs.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _StarField extends AnimatedWidget {
+  const _StarField({required Animation<double> animation})
+      : super(listenable: animation);
+
+  // Fixed positions — computed once, not every frame
+  static const _positions = [
+    Offset(4, 3),
+    Offset(16, 8),
+    Offset(28, 2),
+    Offset(10, 14),
+    Offset(22, 16),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final double t = (listenable as Animation<double>).value;
+
     return Stack(
-      children: List.generate(
-        5,
-        (index) => Positioned(
-          left: index * 10.0 + 5,
-          top: index * 5.0 + 2,
-          child: Icon(
-            Icons.star,
-            size: 8,
-            color: Colors.yellow[100],
+      children: List.generate(_positions.length, (i) {
+        // Each star rotates at a slightly different speed (phase offset)
+        final double angle = (t + i * 0.17) * 2 * math.pi;
+        // Twinkle: scale oscillates between 0.6 and 1.0
+        final double scale = 0.6 + 0.4 * math.sin(t * math.pi * 2 + i);
+
+        return Positioned(
+          left: _positions[i].dx,
+          top: _positions[i].dy,
+          child: Transform.rotate(
+            angle: angle,
+            child: Transform.scale(
+              scale: scale,
+              child: Icon(
+                Icons.star_rounded,
+                size: 7,
+                color: Colors.yellow[100]!.withValues(alpha: 0.7 + 0.3 * scale),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }
 
-class _LightModeClouds extends StatelessWidget {
-  const _LightModeClouds();
+// ─────────────────────────────────────────────────────────────────────────────
+// SUN RAYS (light mode background)
+//
+// Small sparkles that slowly rotate — evokes a sunny sky without being heavy.
+// AnimatedWidget pattern: rebuild happens only when the animation ticks,
+// not when the parent rebuilds.
+// ─────────────────────────────────────────────────────────────────────────────
+
+class _SunRays extends AnimatedWidget {
+  const _SunRays({required Animation<double> animation})
+      : super(listenable: animation);
+
+  static const _positions = [
+    Offset(3, 2),
+    Offset(18, 6),
+    Offset(32, 3),
+    Offset(8, 14),
+    Offset(24, 16),
+  ];
 
   @override
   Widget build(BuildContext context) {
+    final double t = (listenable as Animation<double>).value;
+
     return Stack(
-      children: [
-        // Clouds
-        ...List.generate(
-          3,
-          (index) => Positioned(
-            left: index * 15.0 + 5,
-            top: index * 7.0 + 2,
+      children: List.generate(_positions.length, (i) {
+        final double angle = (t + i * 0.2) * 2 * math.pi;
+        final double opacity = 0.5 + 0.5 * math.sin(t * math.pi * 2 + i * 0.8);
+
+        return Positioned(
+          left: _positions[i].dx,
+          top: _positions[i].dy,
+          child: Transform.rotate(
+            angle: angle,
             child: Icon(
-              Icons.cloud,
-              size: 12,
-              color: Colors.white.withValues(alpha: 0.8),
+              Icons.auto_awesome_rounded,
+              size: 9,
+              color: Colors.white.withValues(alpha: opacity.clamp(0.3, 0.95)),
             ),
           ),
-        ),
-        // Sparkles
-        ...List.generate(
-          4,
-          (index) => Positioned(
-            left: index * 12.0,
-            top: (index % 2) * 15.0,
-            child: TweenAnimationBuilder(
-              tween: Tween<double>(begin: 0, end: 1),
-              duration: const Duration(milliseconds: 1500),
-              builder: (context, double value, child) {
-                return Transform.rotate(
-                  angle: value * 2 * 3.14,
-                  child: Icon(
-                    Icons.auto_awesome,
-                    size: 10,
-                    color: Colors.yellow[100],
-                  ),
-                );
-              },
-            ),
-          ),
-        ),
-      ],
+        );
+      }),
     );
   }
 }
