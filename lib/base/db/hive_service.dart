@@ -76,7 +76,7 @@ class MyHiveDatabase {
           MyHiveBoxes.favoriteVideos = value[5];
           MyHiveBoxes.recentlyPlayedVideos = value[6];
           MyHiveBoxes.audioPlaylist = value[7];
-          MyHiveBoxes.lyricsPrefs = value[8]; 
+          MyHiveBoxes.lyricsPrefs = value[8];
         },
       );
 
@@ -132,7 +132,9 @@ class MyHiveKeys {
   static const String bottomNavBarHeight = "bnbh";
   static const String isHoldBottomNavBarCirclePositionButton = "hbnbcpb";
   static const String lastPlayedVideo = "lpv";
-
+  static const String navBarStyleIndex = 'nav_style_idx'; 
+  static const String navBarSizeIndex  = 'nav_size_idx';    
+static const String navBarOpacity    = 'nav_opacity';    
   // ── Audio Player Lyrics ──────────────────────────────────────
   static const String lyricsThemeIndex = 'lyr_theme';
   static const String lyricsFontSize = 'lyr_font';
