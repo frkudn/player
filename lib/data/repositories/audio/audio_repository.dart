@@ -7,17 +7,11 @@ import '../../../base/services/permissions/app_permission_service.dart';
 // ignore: depend_on_referenced_packages
 import 'package:path/path.dart' as path;
 import '../../models/audio_model.dart';
-import '../../providers/audio/audio_provider.dart';
+import '../../sources/audio/audio_source.dart';
 import 'dart:typed_data';
 import 'package:murmurhash/murmurhash.dart';
 
-/// Abstract base class defining core functionality for audio file operations.
-abstract class AudioRepositoryBase {
-  Future<List<AudioModel>> getAllAudioFiles();
-  Future<List<AudioModel>> getAudioFilesFromSingleDirectory(
-      Directory directory);
-  Future<AudioModel> getAudioInfo(String audioPath);
-}
+import 'audio_repository_base.dart';
 
 /// Implementation of [AudioRepositoryBase] that handles audio file discovery
 /// and metadata extraction.
@@ -30,7 +24,7 @@ abstract class AudioRepositoryBase {
 /// - Handling all error cases with safe fallback values
 class AudioRepository implements AudioRepositoryBase {
   /// Provider that handles low-level audio file operations
-  final AudioProvider audioProvider;
+  final AudioSource audioProvider;
 
   AudioRepository(this.audioProvider);
 

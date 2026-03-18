@@ -6,11 +6,11 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:open_player/base/db/hive_service.dart';
 import 'package:open_player/base/services/system/system_service.dart';
 import 'package:open_player/base/theme/themes_data.dart';
-import 'package:open_player/base/di/injection.dart';
+import 'package:open_player/base/di/dependency_injection.dart';
 import 'package:open_player/base/router/router.dart';
 import 'package:open_player/bloc_providers.dart';
-import 'package:open_player/logic/theme_cubit/theme_cubit.dart';
-import 'package:open_player/logic/theme_cubit/theme_state.dart';
+import 'package:open_player/presentation/shared/cubit/theme_cubit/theme_cubit.dart';
+import 'package:open_player/presentation/shared/cubit/theme_cubit/theme_state.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'base/services/notification/notification_services.dart';
 
@@ -58,7 +58,7 @@ class MyApp extends StatelessWidget {
             themeAnimationCurve: Easing.standardAccelerate,
             themeAnimationDuration: const Duration(milliseconds: 1000),
             debugShowCheckedModeBanner: false,
-            theme: locator<AppThemes>().themes(themeState),
+            theme: getIt<AppThemes>().themes(themeState),
             title: "Player",
           );
         },

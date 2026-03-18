@@ -5,7 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:open_player/data/models/custom_audio_source_model.dart';
 import 'package:rxdart/rxdart.dart';
 
-import '../../../logic/audio_player_bloc/audio_player_bloc.dart';
+import '../../../presentation/features/local_audio_player/bloc/audio_player_bloc.dart';
 import '../../models/audioplayercombinedstream_model.dart';
 
 abstract class AudioPlayerServiceBase {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:open_player/base/assets/fonts/styles.dart';
 
-import '../../logic/theme_cubit/theme_state.dart';
+import '../../presentation/shared/cubit/theme_cubit/theme_state.dart';
 
 class AppThemes {
   //------ Select/Choose Theme -------------//

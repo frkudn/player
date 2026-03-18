@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_player/data/models/audio_playlist_model.dart';
-import 'package:open_player/presentation/pages/audio/sub/albums/view/album_preview_page.dart';
-import 'package:open_player/presentation/pages/audio/sub/artists/view/artist_preview_page.dart';
-import 'package:open_player/presentation/pages/audio/sub/playlists/view/audio_playlist_preview_page.dart';
-import 'package:open_player/presentation/pages/online_music/view/online_music_main_page.dart';
-import 'package:open_player/presentation/pages/players/audio/view/audio_player.dart';
-import 'package:open_player/presentation/pages/settings/about/view/about_page.dart';
-import 'package:open_player/presentation/pages/settings/change_accent_color/view/change_accent_color_page.dart';
-import 'package:open_player/presentation/pages/settings/equalizer/view/equalizer_page.dart';
-import 'package:open_player/presentation/pages/settings/language/view/language_page.dart';
-import 'package:open_player/presentation/pages/settings/privacy_policy/view/privacy_policy_page.dart';
-import 'package:open_player/presentation/pages/settings/user_profile/view/user_profile_page.dart';
-import 'package:open_player/presentation/pages/splash/view/splash_page.dart';
-import 'package:open_player/presentation/pages/view_directory/view/view_directory_page.dart';
-import '../../presentation/pages/main/view/main_page.dart';
-import '../../presentation/pages/search/audio/view/search_audio_page.dart';
-import '../../presentation/pages/settings/setting/view/setting_page.dart';
+import 'package:open_player/presentation/features/audio_section/views/sub/albums/view/album_preview_page.dart';
+import 'package:open_player/presentation/features/audio_section/views/sub/artists/view/artist_preview_page.dart';
+import 'package:open_player/presentation/features/audio_section/views/sub/playlists/view/audio_playlist_preview_page.dart';
+import 'package:open_player/presentation/features/online_music/view/online_music_main_page.dart';
+import 'package:open_player/presentation/features/local_audio_player/view/audio_player.dart';
+import 'package:open_player/presentation/features/settings/about/view/about_page.dart';
+import 'package:open_player/presentation/features/settings/change_accent_color/view/change_accent_color_page.dart';
+import 'package:open_player/presentation/features/settings/equalizer/view/equalizer_page.dart';
+import 'package:open_player/presentation/features/settings/language/view/language_page.dart';
+import 'package:open_player/presentation/features/settings/privacy_policy/view/privacy_policy_page.dart';
+import 'package:open_player/presentation/features/settings/user_profile/view/user_profile_page.dart';
+import 'package:open_player/presentation/features/splash/view/splash_page.dart';
+import '../../presentation/features/main/view/main_page.dart';
+import '../../presentation/features/audio_section/views/sub/audio_search/view/search_audio_page.dart';
+import '../../presentation/features/settings/setting/view/setting_page.dart';
 
 final GoRouter router = GoRouter(
   routes: [
@@ -74,15 +73,7 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const SearchAudioPage(),
     ),
 
-    GoRoute(
-      name: AppRoutes.viewDirectoryRoute,
-      path: AppRoutes.viewDirectoryRoute,
-      builder: (context, state) => const ViewDirectoryPage(
-        title: '',
-        path: '',
-        items: [],
-      ),
-    ),
+
     GoRoute(
       name: AppRoutes.equalizerRoute,
       path: AppRoutes.equalizerRoute,
