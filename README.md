@@ -1,3 +1,7 @@
+Thank you for the detailed clarification! Now I understand the structure perfectly. Here's the revised README that accurately reflects your app's current state:
+
+---
+
 <div align="center">
 
 <br/>
@@ -8,9 +12,9 @@
 
 # Player
 
-### *Elegant Multimedia. Zero Compromise.*
+### _Local Music. Future Streaming. Zero Compromise._
 
-<p>A beautifully crafted, offline-first media player for Android — built with Flutter.<br/>No ads. No subscriptions. No data collection. Just your media, perfectly played.</p>
+<p>A beautifully crafted, privacy-first media app for Android — built with Flutter.<br/>Play your local music with elegance, and preview our upcoming streaming service.</p>
 
 <br/>
 
@@ -33,36 +37,67 @@
 
 ## ✦ Why Player?
 
-> *Most media apps trade your attention for revenue — through ads, paywalls, and data harvesting. Player takes a different path.*
+> _Most media apps trade your attention for revenue — through ads, paywalls, and data harvesting. Player takes a different path._
 
-Player was built on a simple philosophy: **your media belongs to you**, and the experience of enjoying it should be seamless, private, and delightful. No network calls behind the scenes. No tracking. No interruptions. Just a refined, high-performance player that gets out of the way and lets your content shine.
+Player was built on a simple philosophy: **your music belongs to you**. Whether it's the files stored on your device or the streams you'll soon discover through our service, the experience should be seamless, private, and delightful. No tracking. No interruptions. Just a refined player that gets out of the way and lets the music shine.
 
 <br/>
 
 ## ⚡ Core Highlights
 
-|  | Feature | What it means for you |
-|--|---------|----------------------|
-| 🎵 | **Audio & Video Playback** | Crystal-clear playback for virtually any format |
-| 🚫 | **Completely Ad-Free** | No banners, no pop-ups, no interruptions — ever |
-| 🔒 | **Full Privacy** | Zero data collection, zero network access, zero compromise |
-| 🎨 | **Thoughtful UI** | Clean, modern design that feels native and fast |
-| ⚙️ | **Flutter-Powered** | Smooth 60fps rendering with high-performance architecture |
+|     | Feature                            | What it means for you                                                          |
+| --- | ---------------------------------- | ------------------------------------------------------------------------------ |
+| 🎵  | **Local Audio Player**             | Crystal-clear playback for all your offline music files                        |
+| 🌐  | **Online Streaming (Preview)**     | Temporary WebView access to third‑party services while we build ours           |
+| 🚫  | **Completely Ad-Free**             | No banners, no pop-ups, no interruptions — ever                                |
+| 🔒  | **Full Privacy**                   | Zero data collection, zero tracking — your listening stays yours               |
+| 🎨  | **Thoughtful UI**                  | Clean, modern design that feels native and fast                                |
+| 🚀  | **Native Streaming (Coming Soon)** | Our own music service with downloads, playlists, and more — built from scratch |
 
 <br/>
 
 ## 🎛️ Feature Breakdown
 
 <details open>
-<summary><strong>🎬 Media Playback</strong></summary>
+<summary><strong>🎵 Local Audio Player</strong></summary>
 <br/>
 
-- Full-featured **video playback** with hardware acceleration
-- Rich **audio playback** with background play support
-- **Local media library** with smart organization
-- Broad **codec support** for all common formats
-- **Subtitles & lyrics** display with sync support
-- **Multi-audio track** switching mid-playback
+- **Play local music files** stored on your device
+- **Background playback support** — keep listening while using other apps
+- **Smart media library** with automatic organization
+- **Broad format support** for all common audio files (MP3, FLAC, AAC, etc.)
+- **Album art & metadata rendering** with style
+- **Playlist creation & management** for your offline collection
+- **Powerful search** — find any track instantly
+- **Playback history** — never lose your place
+- **Advanced Equalizer** — tune audio to your exact taste
+
+</details>
+
+<details open>
+<summary><strong>🌐 Online Streaming (Current - Temporary)</strong></summary>
+<br/>
+
+- **In-App WebView integration** — preview online music streaming today
+- **Third-party service access** — interact with popular streaming platforms (temporary solution)
+- **Seamless browsing experience** — search, discover, and play music directly in the WebView
+- **No account required** — use the WebView independently
+
+> ⚠️ **Note:** This is a temporary implementation while we build our own native streaming service. The WebView is not our own service — just a bridge to let you explore online music until our solution is ready.
+
+</details>
+
+<details open>
+<summary><strong>🚀 Upcoming Native Streaming Service</strong></summary>
+<br/>
+
+- **Our own music streaming platform** — built from the ground up
+- **Play, download, and manage** your favorite tracks
+- **Personalized libraries & playlists** — sync across devices
+- **Offline mode** — save music for when you're away
+- **High-quality audio** with advanced codec support
+- **Lyrics display** — sing along with synced lyrics
+- **Zero ads, zero tracking** — just like the rest of Player
 
 </details>
 
@@ -77,29 +112,14 @@ Player was built on a simple philosophy: **your media belongs to you**, and the 
 
 </details>
 
-<details open>
-<summary><strong>🧠 Advanced Capabilities</strong></summary>
-<br/>
-
-- **Playlist creation & management** — build your perfect queue
-- **Powerful media search** — find anything instantly
-- **Lyrics display** synced to audio playback
-- **Picture-in-Picture (PiP)** — float the player over any app
-- **Playback history** — never lose your place
-- **Advanced Equalizer** — tune audio to your exact taste
-- **Smart media caching** for snappy load times
-- **Album art & metadata** rendering with style
-
-</details>
-
 <br/>
 
 ## 📸 Screenshots
 
 <div align="center">
 
-| | | |
-|--|--|--|
+|                                         |                                         |                                         |
+| --------------------------------------- | --------------------------------------- | --------------------------------------- |
 | ![Screenshot 1](assets/screenshot1.jpg) | ![Screenshot 2](assets/screenshot2.jpg) | ![Screenshot 3](assets/screenshot3.jpg) |
 
 </div>
@@ -111,7 +131,8 @@ Player was built on a simple philosophy: **your media belongs to you**, and the 
 ### Requirements
 
 - Android **7.0 (Nougat)** or higher
-- No special permissions required beyond media access
+- Storage permission for local audio playback
+- Internet connection for WebView streaming (temporary)
 
 ### Get Player
 
@@ -132,11 +153,13 @@ Option 2 — Build from Source
 
 Player is actively growing. Here's a glimpse at what's on the horizon:
 
-- [ ] 🚀 **Performance Optimizations** — even faster, even smoother
-- [ ] 🎞️ **Additional Codec Support** — for the most obscure formats
+- [ ] 🎵 **Native Online Music Streaming** — our own custom-built service
+- [ ] 📥 **Integrated Music Downloader** — save tracks directly within the app
+- [ ] ☁️ **Cloud Sync** — access your library across devices
+- [ ] 🎚️ **Advanced Equalizer & Audio Effects** — even more control
+- [ ] 🌍 **Multi-Language Support** — reach listeners everywhere
 - [ ] 🖥️ **Desktop Version** — bring Player to Windows & macOS
-- [ ] 🌐 **Online Music Streaming** — your local library meets the world
-- [ ] 📥 **Integrated Music Downloader** — save what you love
+- [ ] ~~🎬 Video Player~~ _(permanently removed)_
 
 <br/>
 
@@ -206,13 +229,13 @@ Player is open source and community-driven. We welcome contributions of all kind
 
 ### How to Get Started
 
-| Step | Action | Details |
-|------|--------|---------|
-| 1 | **Fork** the repository | Start your own branch of Player |
-| 2 | **Create** a feature branch | `git checkout -b feature/your-idea` |
-| 3 | **Build** something meaningful | Write clean, well-documented code |
-| 4 | **Open** a Pull Request | Describe your changes clearly |
-| 5 | **Collaborate** | Engage with feedback and iterate |
+| Step | Action                         | Details                             |
+| ---- | ------------------------------ | ----------------------------------- |
+| 1    | **Fork** the repository        | Start your own branch of Player     |
+| 2    | **Create** a feature branch    | `git checkout -b feature/your-idea` |
+| 3    | **Build** something meaningful | Write clean, well-documented code   |
+| 4    | **Open** a Pull Request        | Describe your changes clearly       |
+| 5    | **Collaborate**                | Engage with feedback and iterate    |
 
 ### Ways to Contribute
 
@@ -223,7 +246,7 @@ Player is open source and community-driven. We welcome contributions of all kind
 - 🎨 **Enhance UI/UX** design
 - ⚙️ **Optimize performance**
 
-> *Every great open-source project is built one contribution at a time. Yours matters.*
+> _Every great open-source project is built one contribution at a time. Yours matters._
 
 <br/>
 
@@ -250,9 +273,9 @@ See [`LICENSE`](LICENSE) for the full terms.
 
 <br/>
 
-**Pure Media. Pure Experience.**
+**Pure Music. Pure Experience.**
 
-*Player — Your Media, Your Rules.*
+_Player — Your Music, Your Rules._
 
 <br/>
 
