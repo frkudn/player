@@ -114,7 +114,6 @@ class AudioPlayerLyricsBoxWidget extends StatelessWidget {
                 final hasLrc = lrcLines != null;
 
                 return Container(
-                  margin: EdgeInsets.symmetric(horizontal: mq.width * 0.05),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(28),
                     color: theme.bg,
