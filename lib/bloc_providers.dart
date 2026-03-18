@@ -3,8 +3,6 @@ import 'package:just_audio/just_audio.dart';
 import 'package:open_player/base/di/injection.dart';
 import 'package:open_player/data/services/audio_playlist_service/audio_playlist_service.dart';
 import 'package:open_player/data/services/user/user_services.dart';
-import 'package:open_player/data/repositories/videos/video_repository.dart';
-import 'package:open_player/data/services/video_playback_hive_service/video_playback_service.dart';
 import 'package:open_player/logic/audio_player_bloc/audio_player_bloc.dart';
 import 'package:open_player/logic/audio_playlist_bloc/audio_playlist_bloc.dart';
 import 'package:open_player/logic/bottom_nav_bar_cubit/bottom_nav_bar_cubit.dart';
@@ -13,12 +11,10 @@ import 'package:open_player/logic/greeting/greeting_cubit.dart';
 import 'package:open_player/logic/language_cubit/language_cubit.dart';
 import 'package:open_player/logic/theme_cubit/theme_cubit.dart';
 import 'package:open_player/logic/user_data/user_data_cubit.dart';
-import 'package:open_player/logic/video_playback/video_playback_bloc.dart';
-import 'package:open_player/logic/video_player_bloc/video_player_bloc.dart';
-import 'package:open_player/logic/videos_bloc/videos_bloc.dart';
 import 'base/services/storage/storage_services.dart';
 import 'logic/Control_visibility/controls_visibility_cubit.dart';
 import 'logic/audio_bloc/audios_bloc.dart';
+import 'logic/lyrics_cubit/lyrics_cubit.dart';
 import 'logic/volume_cubit/volume_cubit.dart';
 import 'data/repositories/audio/audio_repository.dart';
 
@@ -44,19 +40,12 @@ blocProviders() {
           AudiosBloc(audioRepository: locator<AudioRepository>()),
     ),
     BlocProvider(
-      create: (context) =>
-          VideosBloc(videoRepository: locator<VideoRepository>()),
-    ),
-    BlocProvider(
       create: (context) => UserDataCubit(
           userRepository: locator<UserService>(),
           storageService: StorageService()),
     ),
     BlocProvider(
       create: (context) => AudioPlayerBloc(),
-    ),
-    BlocProvider(
-      create: (context) => VideoPlayerBloc(),
     ),
     BlocProvider(
       create: (context) => VolumeCubit(
@@ -70,12 +59,10 @@ blocProviders() {
       create: (context) => ControlsVisibilityCubit(),
     ),
     BlocProvider(
-      create: (context) => VideoPlaybackHiveBloc(
-          videoPlaybackHiveService: locator<VideoPlaybackHiveService>()),
-    ),
-
-    BlocProvider(
       create: (context) => AudioPlaylistBloc(AudioPlaylistService()),
+    ),
+    BlocProvider(
+      create: (context) => LyricsCubit(),
     ),
   ];
 }

@@ -4,8 +4,8 @@ import 'package:open_player/data/models/audio_playlist_model.dart';
 import 'package:open_player/presentation/pages/audio/sub/albums/view/album_preview_page.dart';
 import 'package:open_player/presentation/pages/audio/sub/artists/view/artist_preview_page.dart';
 import 'package:open_player/presentation/pages/audio/sub/playlists/view/audio_playlist_preview_page.dart';
+import 'package:open_player/presentation/pages/online_music/view/online_music_main_page.dart';
 import 'package:open_player/presentation/pages/players/audio/view/audio_player.dart';
-import 'package:open_player/presentation/pages/players/video/view/video_player.dart';
 import 'package:open_player/presentation/pages/settings/about/view/about_page.dart';
 import 'package:open_player/presentation/pages/settings/change_accent_color/view/change_accent_color_page.dart';
 import 'package:open_player/presentation/pages/settings/equalizer/view/equalizer_page.dart';
@@ -16,7 +16,6 @@ import 'package:open_player/presentation/pages/splash/view/splash_page.dart';
 import 'package:open_player/presentation/pages/view_directory/view/view_directory_page.dart';
 import '../../presentation/pages/main/view/main_page.dart';
 import '../../presentation/pages/search/audio/view/search_audio_page.dart';
-import '../../presentation/pages/search/videos/view/search_videos_page.dart';
 import '../../presentation/pages/settings/setting/view/setting_page.dart';
 
 final GoRouter router = GoRouter(
@@ -64,25 +63,25 @@ final GoRouter router = GoRouter(
           return const AudioPlayerPage();
         }),
     GoRoute(
-        name: AppRoutes.videoPlayerRoute,
-        path: AppRoutes.videoPlayerRoute,
+        name: AppRoutes.onlineMusicRoute,
+        path: AppRoutes.onlineMusicRoute,
         builder: (context, state) {
-          return VideoPlayerPage();
+          return OnlineMusicMainPage();
         }),
     GoRoute(
       name: AppRoutes.searchAudiosRoute,
       path: AppRoutes.searchAudiosRoute,
       builder: (context, state) => const SearchAudioPage(),
     ),
-    GoRoute(
-      name: AppRoutes.searchVideosRoute,
-      path: AppRoutes.searchVideosRoute,
-      builder: (context, state) => const SearchVideosPage(),
-    ),
+
     GoRoute(
       name: AppRoutes.viewDirectoryRoute,
       path: AppRoutes.viewDirectoryRoute,
-      builder: (context, state) => const ViewDirectoryPage(title: '', path: '', items: [],),
+      builder: (context, state) => const ViewDirectoryPage(
+        title: '',
+        path: '',
+        items: [],
+      ),
     ),
     GoRoute(
       name: AppRoutes.equalizerRoute,
@@ -93,9 +92,8 @@ final GoRouter router = GoRouter(
         name: AppRoutes.playlistPreviewRoute,
         path: AppRoutes.playlistPreviewRoute,
         builder: (context, state) {
-
-           AudioPlaylistModel extra = state.extra as AudioPlaylistModel;
-         return AudioPlaylistPreviewPage(playlist: extra);
+          AudioPlaylistModel extra = state.extra as AudioPlaylistModel;
+          return AudioPlaylistPreviewPage(playlist: extra);
         }),
     GoRoute(
         name: AppRoutes.artistPreviewRoute,
@@ -138,8 +136,7 @@ class AppRoutes {
   static const changeThemeRoute = "/change_theme";
   static const languageRoute = "/language";
   static const audioPlayerRoute = "/audio_player";
-  static const videoPlayerRoute = "/video_player";
-  static const searchVideosRoute = "/search_video";
+  static const onlineMusicRoute = "/online_music";
   static const searchAudiosRoute = "/search_audio";
   static const viewDirectoryRoute = "/view_directory";
   static const artistPreviewRoute = "/artist_preview";

@@ -61,6 +61,11 @@ class MyHiveDatabase {
 
         //! Audio Playlist
         Hive.openBox<AudioPlaylistModel>("audio_playlist"),
+
+        // Add to the Future.wait list:
+        Hive.openBox('lyrics_prefs'),
+
+// adjust index
       ]).then(
         (value) {
           MyHiveBoxes.theme = value[0];
@@ -71,6 +76,7 @@ class MyHiveDatabase {
           MyHiveBoxes.favoriteVideos = value[5];
           MyHiveBoxes.recentlyPlayedVideos = value[6];
           MyHiveBoxes.audioPlaylist = value[7];
+          MyHiveBoxes.lyricsPrefs = value[8]; 
         },
       );
 
@@ -93,6 +99,7 @@ class MyHiveBoxes {
   static late Box favoriteVideos;
   static late Box recentlyPlayedVideos;
   static late Box audioPlaylist;
+  static late Box lyricsPrefs;
 }
 
 ///!---------------      MyHive Keys
@@ -125,4 +132,14 @@ class MyHiveKeys {
   static const String bottomNavBarHeight = "bnbh";
   static const String isHoldBottomNavBarCirclePositionButton = "hbnbcpb";
   static const String lastPlayedVideo = "lpv";
+
+  // ── Audio Player Lyrics ──────────────────────────────────────
+  static const String lyricsThemeIndex = 'lyr_theme';
+  static const String lyricsFontSize = 'lyr_font';
+  static const String lyricsStyleIndex = 'lyr_style';
+  static const String lyricsIsSynced = 'lyr_synced';
+
+  // ── Online Music ─────────────────────────────────────────────
+  // Stored in MyHiveBoxes.user — persists once across the app lifetime
+  static const String onlineMusicDialogShown = 'online_music_dialog_shown';
 }
