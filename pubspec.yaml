@@ -62,9 +62,9 @@ dependencies:
   flutter_hooks: ^0.20.3+1
   just_audio_background: ^0.0.1-beta.17
   flutter_local_notifications: ^21.0.0
-  flutter_vlc_player: ^7.4.4
+  # flutter_vlc_player: ^7.4.4
   flutter_animate: ^4.5.2
-  amlv: ^1.0.2
+  # amlv: ^1.0.2
   # external_path: ^2.0.1
   animated_text_kit: ^4.3.0
   velocity_x: ^4.3.1
@@ -72,14 +72,15 @@ dependencies:
   audio_metadata_reader: ^1.4.2
   flutter_native_splash: ^2.4.3
   icons_launcher: ^3.0.0
-  video_compress: ^3.1.4
+  # video_compress: ^3.1.4
   flutter_email_sender: ^6.0.3
   marquee: ^2.3.0
   wakelock_plus: ^1.5.1
   crypto: ^3.0.7
   murmurhash: ^1.0.1
   device_preview: ^1.2.0
-
+  connectivity_plus: ^7.0.0
+  flutter_inappwebview: ^6.1.5
 
 dev_dependencies:
   flutter_test:
