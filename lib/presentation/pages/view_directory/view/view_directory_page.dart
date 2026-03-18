@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:open_player/base/assets/fonts/styles.dart';
-import 'package:open_player/utils/formater.dart';
 
 class ViewDirectoryPage extends StatelessWidget {
   const ViewDirectoryPage({

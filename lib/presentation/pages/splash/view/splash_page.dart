@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:open_player/base/db/hive_service.dart';
 import 'package:open_player/logic/audio_bloc/audios_bloc.dart';
 import 'package:open_player/logic/audio_playlist_bloc/audio_playlist_bloc.dart';
-import 'package:open_player/logic/videos_bloc/videos_bloc.dart';
 import 'package:open_player/base/router/router.dart';
 import 'package:open_player/presentation/pages/splash/widgets/on_boarding_view_widget.dart';
 import 'package:open_player/presentation/pages/splash/widgets/splash_view_widget.dart';
@@ -74,7 +73,6 @@ class _SplashPageState extends State<SplashPage> with TickerProviderStateMixin {
   void fetchMedia(bool isLoggedIn) {
     if (isLoggedIn) {
       context.read<AudiosBloc>().add(AudiosLoadAllEvent());
-      context.read<VideosBloc>().add(VideosLoadEvent());
       context.read<AudioPlaylistBloc>().add(LoadPlaylistsEvent());
     }
   }

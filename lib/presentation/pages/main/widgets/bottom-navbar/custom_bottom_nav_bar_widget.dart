@@ -37,9 +37,9 @@ class CustomBottomNavBarWidget extends StatelessWidget {
             pageIndex: 0,
           ),
 
-          //--- Video Button ---//
+          //--- Online Music Button ---//
           BottomNavBarButtonWidget(
-            icon: HugeIcons.strokeRoundedVideo02,
+            icon: HugeIcons.strokeRoundedAppleMusic,
             isSelected: currentIndex == 1,
             pageIndex: 1,
           ),

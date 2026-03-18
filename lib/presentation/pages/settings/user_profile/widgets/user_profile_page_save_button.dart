@@ -8,7 +8,6 @@ import 'package:open_player/base/db/hive_service.dart';
 import 'package:open_player/logic/user_data/user_data_cubit.dart';
 import '../../../../../base/router/router.dart';
 import '../../../../../logic/audio_bloc/audios_bloc.dart';
-import '../../../../../logic/videos_bloc/videos_bloc.dart';
 
 class UserProfilePageSaveButton extends StatelessWidget {
   const UserProfilePageSaveButton({
@@ -80,6 +79,5 @@ class UserProfilePageSaveButton extends StatelessWidget {
 
   loadMedia(BuildContext context) {
     context.read<AudiosBloc>().add(AudiosLoadAllEvent());
-    context.read<VideosBloc>().add(VideosLoadEvent());
   }
 }

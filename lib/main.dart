@@ -2,6 +2,7 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:open_player/base/db/hive_service.dart';
 import 'package:open_player/base/services/system/system_service.dart';
 import 'package:open_player/base/theme/themes_data.dart';
@@ -16,10 +17,15 @@ import 'base/services/notification/notification_services.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  //--- Initialize Get It Dependencies
+  // Enable WebView debugging in debug mode
+  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
+    await InAppWebViewController.setWebContentsDebuggingEnabled(!kReleaseMode);
+  }
+
+  // Initialize Get It Dependencies
   await initializeLocator();
 
-  // Initialize Hive database and register custom adapters
+  // Initialize Hive database
   await MyHiveDatabase.initializeHive();
 
   // Set up notification services
@@ -31,10 +37,11 @@ void main() async {
   // Set UIMode To EdgeToEdge
   await SystemService.setUIModeEdgeToEdge();
 
-  // The following line will enable the Android and iOS wakelock.
+  // Enable wakelock
   WakelockPlus.enable();
 
-  runApp(DevicePreview(enabled: !kReleaseMode, builder: (context) => MyApp()));
+  runApp(DevicePreview(
+      enabled: !kReleaseMode, builder: (context) => const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
