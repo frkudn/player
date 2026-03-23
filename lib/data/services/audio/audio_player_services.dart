@@ -37,12 +37,12 @@ final class AudioPlayerService implements AudioPlayerServiceBase {
     try {
       emit(AudioPlayerLoadingState());
 
-      final audiosource = CustomAudioSource.createPlaylist(event.audioList);
+      final audioSource = CustomAudioSource.createPlaylist(event.audioList);
 
       // Add error handling for setAudioSource
       audioPlayer
           .setAudioSource(
-        audiosource,
+        audioSource,
         initialIndex: event.initialMediaIndex,
         initialPosition: Duration.zero,
       )
@@ -85,7 +85,7 @@ final class AudioPlayerService implements AudioPlayerServiceBase {
 
       emit(AudioPlayerSuccessState(
         audioPlayer: audioPlayer,
-        audiosource: audiosource,
+        audioSource: audioSource,
         audios: event.audioList,
         audioPlayerCombinedStream: combinedStream,
         isSeeking: false,
@@ -155,9 +155,10 @@ final class AudioPlayerService implements AudioPlayerServiceBase {
       clog.error('Error audio player speed change: $e');
     }
   }
-  
+
   @override
-  Future<void> changePitch(Emitter<AudioPlayerState> emit, AudioPlayerChangePitchEvent event) async{
+  Future<void> changePitch(
+      Emitter<AudioPlayerState> emit, AudioPlayerChangePitchEvent event) async {
     try {
       await audioPlayer.setPitch(event.value);
       clog.debug("Pitch : ${event.value}");

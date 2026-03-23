@@ -91,7 +91,6 @@ class AudioPlayerLyricsBoxWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final mq = MediaQuery.sizeOf(context);
 
     return BlocBuilder<LyricsCubit, LyricsState>(
       builder: (context, lyricsState) {
@@ -150,7 +149,7 @@ class AudioPlayerLyricsBoxWidget extends StatelessWidget {
                             key: ValueKey('lyrics_$ci'),
                             child: (hasLrc && lyricsState.isSynced)
                                 ? _SyncedView(
-                                    lines: lrcLines!,
+                                    lines: lrcLines,
                                     fontSize: lyricsState.fontSize,
                                     theme: theme,
                                     styleIdx: lyricsState.styleIndex,
@@ -583,9 +582,10 @@ class _LineWidget extends StatelessWidget {
         letterSpacing: 0.3,
       ),
     );
-    if (blur > 0)
+    if (blur > 0) {
       w = ImageFiltered(
           imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur), child: w);
+    }
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),
       padding: const EdgeInsets.symmetric(vertical: 6, horizontal: 8),
@@ -665,9 +665,10 @@ class _LineWidget extends StatelessWidget {
         height: h,
       ),
     );
-    if (blur > 0)
+    if (blur > 0) {
       tw = ImageFiltered(
           imageFilter: ImageFilter.blur(sigmaX: blur, sigmaY: blur), child: tw);
+    }
     return AnimatedContainer(
       duration: const Duration(milliseconds: 240),
       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 8),
@@ -841,7 +842,7 @@ class _FullscreenPage extends StatelessWidget {
 
 // Palette toggle button with local state for showing/hiding pickers
 class _FullscreenPaletteBtn extends HookWidget {
-  const _FullscreenPaletteBtn({required this.theme});
+  const _FullscreenPaletteBtn({required this.theme,});
   final _Theme theme;
 
   @override

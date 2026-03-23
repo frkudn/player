@@ -20,13 +20,13 @@ class AudioPlayerSuccessState extends AudioPlayerState {
     required this.isSeeking,
     required this.seekingPosition,
     required this.audioPlayerCombinedStream,
-    required this.audiosource,
+    required this.audioSource,
     required this.audios,
   });
 
   final AudioPlayer audioPlayer;
   final List<AudioModel> audios;
-  final ConcatenatingAudioSource audiosource;
+  final ConcatenatingAudioSource audioSource;
   final bool isSeeking;
   final double seekingPosition;
   final Stream<AudioPlayerStreamCombiner> audioPlayerCombinedStream;
@@ -34,7 +34,7 @@ class AudioPlayerSuccessState extends AudioPlayerState {
   @override
   List<Object?> get props => [
         audioPlayer,
-        audiosource,
+        audioSource,
         audioPlayerCombinedStream,
         isSeeking,
         seekingPosition,
@@ -51,7 +51,7 @@ class AudioPlayerSuccessState extends AudioPlayerState {
   }) {
     return AudioPlayerSuccessState(
       audioPlayer: audioPlayer ?? this.audioPlayer,
-      audiosource: playlist ?? audiosource,
+      audioSource: playlist ?? audioSource,
       isSeeking: isSeeking ?? this.isSeeking,
       seekingPosition: seekingPosition ?? this.seekingPosition,
       audioPlayerCombinedStream:

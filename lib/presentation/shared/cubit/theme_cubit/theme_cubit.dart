@@ -1,115 +1,130 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:open_player/base/db/hive_service.dart';
 import 'package:open_player/presentation/shared/cubit/theme_cubit/theme_state.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// THEME CUBIT
+//
+// Every method follows the same pattern:
+//   1. Compute the new value
+//   2. emit() the updated ThemeState (Equatable ensures no spurious rebuilds)
+//   3. Persist to Hive immediately — no async dance needed, Hive put() is sync
+//
+// Hive keys used here are defined in MyHiveKeys (hive_service.dart).
+// Make sure these keys are added to MyHiveKeys before running:
+//   static const String hideStatusBar        = 'hide_status_bar';
+//   static const String miniPlayerStyleIndex = 'mini_player_style_idx';
+// ─────────────────────────────────────────────────────────────────────────────
 
 class ThemeCubit extends Cubit<ThemeState> {
   ThemeCubit() : super(ThemeState.initial());
 
   // ── Theme mode ─────────────────────────────────────────────────────────────
 
-  /// Toggles between dark and light mode. Also turns off black mode.
   void toggleThemeMode() {
-    final bool themeMode = !state.isDarkMode;
-    emit(state.copyWith(isDarkMode: themeMode, isBlackMode: false));
-    MyHiveBoxes.theme.put(MyHiveKeys.isDarkMode, themeMode);
+    final bool next = !state.isDarkMode;
+    emit(state.copyWith(isDarkMode: next, isBlackMode: false));
+    MyHiveBoxes.theme.put(MyHiveKeys.isDarkMode, next);
     MyHiveBoxes.theme.put(MyHiveKeys.isBlackMode, false);
   }
 
-  // ── Primary colour ─────────────────────────────────────────────────────────
+  // ── Primary color ──────────────────────────────────────────────────────────
 
-  void changeprimaryColor(int color) {
+  changeprimaryColor(int color) {
     emit(state.copyWith(primaryColor: color));
     MyHiveBoxes.theme.put(MyHiveKeys.primaryColor, color);
   }
 
-  void changeprimaryColorListIndex(int index) {
+  changeprimaryColorListIndex(int index) {
     emit(state.copyWith(primaryColorListIndex: index));
     MyHiveBoxes.theme.put(MyHiveKeys.primaryColorListIndex, index);
   }
 
   // ── Default / custom theme ─────────────────────────────────────────────────
 
-  void toggleDefaultTheme() {
-    final bool isDefault = !state.defaultTheme;
-    emit(state.copyWith(defaultTheme: isDefault));
-    MyHiveBoxes.theme.put(MyHiveKeys.defaultTheme, isDefault);
+  toggleDefaultTheme() {
+    final bool next = !state.defaultTheme;
+    emit(state.copyWith(defaultTheme: next));
+    MyHiveBoxes.theme.put(MyHiveKeys.defaultTheme, next);
   }
 
-  void disableDefaultTheme() {
+  disableDefaultTheme() {
     emit(state.copyWith(defaultTheme: false));
     MyHiveBoxes.theme.put(MyHiveKeys.defaultTheme, false);
   }
 
   // ── Black mode ─────────────────────────────────────────────────────────────
 
-  void toggleBlackMode() {
-    final bool isBlackMode = !state.isBlackMode;
-    emit(state.copyWith(isBlackMode: isBlackMode));
-    MyHiveBoxes.theme.put(MyHiveKeys.isBlackMode, isBlackMode);
+  toggleBlackMode() {
+    final bool next = !state.isBlackMode;
+    emit(state.copyWith(isBlackMode: next));
+    MyHiveBoxes.theme.put(MyHiveKeys.isBlackMode, next);
   }
 
-  void disableBlackMode() {
+  disableBlackMode() {
     emit(state.copyWith(isBlackMode: false));
     MyHiveBoxes.theme.put(MyHiveKeys.isBlackMode, false);
   }
 
   // ── Material 3 ─────────────────────────────────────────────────────────────
 
-  void toggleMaterial3() {
-    final bool isMaterial3 = !state.useMaterial3;
-    emit(state.copyWith(useMaterial3: isMaterial3));
-    MyHiveBoxes.theme.put(MyHiveKeys.useMaterial3, isMaterial3);
+  toggleMaterial3() {
+    final bool next = !state.useMaterial3;
+    emit(state.copyWith(useMaterial3: next));
+    MyHiveBoxes.theme.put(MyHiveKeys.useMaterial3, next);
   }
 
   // ── Contrast & density ─────────────────────────────────────────────────────
 
-  void changeContrastLevel(double contrast) {
+  changeContrastLevel(double contrast) {
     emit(state.copyWith(contrastLevel: contrast));
     MyHiveBoxes.theme.put(MyHiveKeys.contrastLevel, contrast);
   }
 
-  void changeVisualDensity(VisualDensity visualDensity) {
+  changeVisualDensity(VisualDensity visualDensity) {
+    // Visual density is a runtime-only preference — not persisted to Hive
     emit(state.copyWith(visualDensity: visualDensity));
-    // VisualDensity is not persisted to Hive (runtime-only preference)
   }
 
-  // ── Scaffold / AppBar colours ──────────────────────────────────────────────
+  // ── Scaffold / AppBar colors ───────────────────────────────────────────────
 
-  Future<void> changeScaffoldBgColor(int colorCode) async {
+  changeScaffoldBgColor(int colorCode) async {
     emit(state.copyWith(
         customScaffoldColor: colorCode, isDefaultScaffoldColor: false));
     await MyHiveBoxes.theme.put(MyHiveKeys.customScaffoldColor, colorCode);
     await MyHiveBoxes.theme.put(MyHiveKeys.isDefaultScaffoldColor, false);
   }
 
-  void changeAppBarColor(int colorCode) {
+  changeAppBarColor(int colorCode) {
     emit(state.copyWith(
         customAppBarColor: colorCode, isDefaultAppBarColor: false));
     MyHiveBoxes.theme.put(MyHiveKeys.customAppBarColor, colorCode);
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultAppBarColor, false);
   }
 
-  void resetToDefaultScaffoldColor() {
+  resetToDefaultScaffoldColor() {
     emit(state.copyWith(isDefaultScaffoldColor: true));
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultScaffoldColor, true);
   }
 
-  void resetToDefaultAppBarColor() {
+  resetToDefaultAppBarColor() {
     emit(state.copyWith(isDefaultAppBarColor: true));
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultAppBarColor, true);
   }
 
-  void resetToDefaultBottomNavBarBgColor() {
+  resetToDefaultBottomNavBarBgColor() {
     emit(state.copyWith(isDefaultBottomNavBarBgColor: true));
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultBottomNavBarBgColor, true);
   }
 
   // ── Legacy nav bar position / size / rotation ──────────────────────────────
-  // These methods still work for any code that calls them, but the new
-  // navBarStyleIndex approach is the recommended path going forward.
+  // These methods remain for backward compatibility.
+  // New UI uses navBarStyleIndex + the free-position sliders
+  // which write to bottomNavBarPositionFromLeft / FromBottom.
 
-  void resetToDefaultBottomNavBarPosition() {
+  resetToDefaultBottomNavBarPosition() {
     emit(state.copyWith(
       isDefaultBottomNavBarPosition: true,
       bottomNavBarPositionFromBottom: 0.05,
@@ -120,13 +135,18 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarPositionFromLeft, 0.1);
   }
 
-  void resetToDefaultBottomNavBarHeightAndWidth() {
-    emit(state.copyWith(bottomNavBarHeight: 0.045, bottomNavBarWidth: 0.08));
+  resetToDefaultBottomNavBarHeightAndWidth() {
+    // bottomNavBarWidth is now 0.3–1.0 (fraction of screen width).
+    // 0.8 (80 %) gives a comfortable centered pill on phones.
+    // The old value 0.08 was from a deprecated icon-size system —
+    // never write it again or the position sliders will produce a
+    // tiny 8 % wide bar that looks broken.
+    emit(state.copyWith(bottomNavBarHeight: 0.045, bottomNavBarWidth: 0.8));
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarHeight, 0.045);
-    MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarWidth, 0.08);
+    MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarWidth, 0.8);
   }
 
-  void resetToDefaultBottomNavBarRotation() {
+  resetToDefaultBottomNavBarRotation() {
     emit(state.copyWith(
       bottomNavBarRotation: 0,
       bottomNavBarIconRotation: 0,
@@ -139,7 +159,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultBottomNavBarIconRotation, true);
   }
 
-  void changeBottomNavBarPositionTop() {
+  changeBottomNavBarPositionTop() {
     final double next = state.bottomNavBarPositionFromBottom <= 0.95
         ? state.bottomNavBarPositionFromBottom + 0.01
         : 0;
@@ -150,7 +170,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarPositionFromBottom, next);
   }
 
-  void changeBottomNavBarPositionLeft() {
+  changeBottomNavBarPositionLeft() {
     final double next = state.bottomNavBarPositionFromLeft - 0.01;
     emit(state.copyWith(
         isDefaultBottomNavBarPosition: false,
@@ -159,7 +179,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarPositionFromLeft, next);
   }
 
-  void changeBottomNavBarPositionRight() {
+  changeBottomNavBarPositionRight() {
     final double next = state.bottomNavBarPositionFromLeft + 0.01;
     emit(state.copyWith(
         isDefaultBottomNavBarPosition: false,
@@ -168,7 +188,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarPositionFromLeft, next);
   }
 
-  void changeBottomNavBarPositionBottom() {
+  changeBottomNavBarPositionBottom() {
     final double next = state.bottomNavBarPositionFromBottom >= 0.01
         ? state.bottomNavBarPositionFromBottom - 0.01
         : 0;
@@ -179,7 +199,26 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarPositionFromBottom, next);
   }
 
-  void increaseBottomNavBarWidth() {
+  /// Directly set horizontal position (0.0–0.9) from a slider in Settings.
+  void setNavBarPositionX(double value) {
+    final double v = value.clamp(0.0, 0.9);
+    emit(state.copyWith(
+        isDefaultBottomNavBarPosition: false, bottomNavBarPositionFromLeft: v));
+    MyHiveBoxes.theme.put(MyHiveKeys.isDefaultBottomNavBarPosition, false);
+    MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarPositionFromLeft, v);
+  }
+
+  /// Directly set vertical position (0.0–0.9) from a slider in Settings.
+  void setNavBarPositionY(double value) {
+    final double v = value.clamp(0.0, 0.9);
+    emit(state.copyWith(
+        isDefaultBottomNavBarPosition: false,
+        bottomNavBarPositionFromBottom: v));
+    MyHiveBoxes.theme.put(MyHiveKeys.isDefaultBottomNavBarPosition, false);
+    MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarPositionFromBottom, v);
+  }
+
+  increaseBottomNavBarWidth() {
     final double updated = state.bottomNavBarWidth < 2.0
         ? state.bottomNavBarWidth + 0.03
         : state.bottomNavBarWidth;
@@ -187,7 +226,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarWidth, updated);
   }
 
-  void decreaseBottomNavBarWidth() {
+  decreaseBottomNavBarWidth() {
     final double updated = state.bottomNavBarWidth >= 0.1
         ? state.bottomNavBarWidth - 0.03
         : state.bottomNavBarWidth;
@@ -195,7 +234,14 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarWidth, updated);
   }
 
-  void increaseBottomNavBarHeight() {
+  /// Directly set nav bar width (0.3–1.0) from a slider in Settings.
+  void setNavBarWidth(double value) {
+    final double v = value.clamp(0.3, 1.0);
+    emit(state.copyWith(bottomNavBarWidth: v));
+    MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarWidth, v);
+  }
+
+  increaseBottomNavBarHeight() {
     final double updated = state.bottomNavBarHeight <= 0.2
         ? state.bottomNavBarHeight + 0.03
         : state.bottomNavBarHeight;
@@ -203,7 +249,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarHeight, updated);
   }
 
-  void decreaseBottomNavBarHeight() {
+  decreaseBottomNavBarHeight() {
     final double updated = state.bottomNavBarHeight > 0.04
         ? state.bottomNavBarHeight - 0.03
         : state.bottomNavBarHeight;
@@ -211,7 +257,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarHeight, updated);
   }
 
-  void updateBottomNavigationBarRotationToRight() {
+  updateBottomNavigationBarRotationToRight() {
     final double nav = state.bottomNavBarRotation + 0.01;
     final double icon = state.bottomNavBarIconRotation - 0.01;
     emit(state.copyWith(
@@ -225,7 +271,7 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultBottomNavBarIconRotation, false);
   }
 
-  void updateBottomNavigationBarRotationToLeft() {
+  updateBottomNavigationBarRotationToLeft() {
     final double nav = state.bottomNavBarRotation - 0.01;
     final double icon = state.bottomNavBarIconRotation + 0.01;
     emit(state.copyWith(
@@ -239,41 +285,87 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultBottomNavBarIconRotation, false);
   }
 
-  void enableHoldBottomNavBarCirclePositionButton() {
+  enableHoldBottomNavBarCirclePositionButton() {
     if (!state.isHoldBottomNavBarCirclePositionButton) {
       emit(state.copyWith(isHoldBottomNavBarCirclePositionButton: true));
     }
   }
 
-  void disableHoldBottomNavBarCirclePositionButton() {
+  disableHoldBottomNavBarCirclePositionButton() {
     if (state.isHoldBottomNavBarCirclePositionButton) {
       emit(state.copyWith(isHoldBottomNavBarCirclePositionButton: false));
     }
   }
 
-  // ── NEW: Nav bar preset style ──────────────────────────────────────────────
+  // ── Nav bar style (0–5) ────────────────────────────────────────────────────
 
-  /// Switches the bottom nav bar to one of the 4 visual presets.
-  ///
-  ///   0 → Floating Pill  (default, glassmorphic centred pill)
-  ///   1 → Full-Width Bar (standard bottom bar with labels)
-  ///   2 → Side Rail      (vertical left rail, great for tablets)
-  ///   3 → Minimal Dot    (bare icons + animated dot underline)
-  ///   4 → Labeled Island  (active tab expands to show label)
-  ///   5 → Segmented       (sliding fill indicator)
-  ///
-  /// The change is instant — [CustomBottomNavBarWidget] listens via
-  /// BlocBuilder<ThemeCubit> and rebuilds automatically.
   void setNavBarStyle(int index) {
-    // Guard: ignore out-of-range values
-    if (index < 0 || index > 5) return; // 6 styles: 0–5
+    if (index < 0 || index > 5) return;
     emit(state.copyWith(navBarStyleIndex: index));
     MyHiveBoxes.theme.put(MyHiveKeys.navBarStyleIndex, index);
   }
 
+  // ── Nav bar size token (0=Compact  1=Regular  2=Large) ────────────────────
+
+  void setNavBarSize(int index) {
+    if (index < 0 || index > 2) return;
+    emit(state.copyWith(navBarSizeIndex: index));
+    MyHiveBoxes.theme.put(MyHiveKeys.navBarSizeIndex, index);
+  }
+
+  // ── Nav bar background opacity (0.4–1.0, glass styles only) ──────────────
+
+  void setNavBarOpacity(double value) {
+    final double v = value.clamp(0.4, 1.0);
+    emit(state.copyWith(navBarOpacity: v));
+    MyHiveBoxes.theme.put(MyHiveKeys.navBarOpacity, v);
+  }
+
+  // ── Audio player dynamic background ───────────────────────────────────────
+  // When ON: blurred album art slowly drifts + breathes for a cinematic look.
+  // Default: true — looks great out of the box, user can disable in Settings.
+
+  void togglePlayerDynamicLight() {
+    final bool next = !state.playerDynamicLightEnabled;
+    emit(state.copyWith(playerDynamicLightEnabled: next));
+    MyHiveBoxes.theme.put(MyHiveKeys.playerDynamicLightEnabled, next);
+  }
+
+  // ── Audio player screen layout (0=Classic  1=Minimal  2=Immersive) ─────────
+
+  void setPlayerStyle(int index) {
+    if (index < 0 || index > 2) return;
+    emit(state.copyWith(playerStyleIndex: index));
+    MyHiveBoxes.theme.put(MyHiveKeys.playerStyleIndex, index);
+  }
+
+  // ── Status bar visibility ──────────────────────────────────────────────────
+  // Hides the Android status bar for a full-screen experience.
+  // SystemUiMode.immersiveSticky shows the bar on swipe then hides it again.
+
+  void toggleHideStatusBar() {
+    final bool next = !state.hideStatusBar;
+    emit(state.copyWith(hideStatusBar: next));
+    MyHiveBoxes.theme.put(MyHiveKeys.hideStatusBar, next);
+    if (next) {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    } else {
+      SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    }
+  }
+
+  // ── Mini player style (0=Classic  1=Compact  2=Artwork) ──────────────────
+  // Controls which mini player layout renders above the main tab bar.
+
+  void setMiniPlayerStyle(int index) {
+    if (index < 0 || index > 2) return;
+    emit(state.copyWith(miniPlayerStyleIndex: index));
+    MyHiveBoxes.theme.put(MyHiveKeys.miniPlayerStyleIndex, index);
+  }
+
   // ── Restore all settings to factory defaults ───────────────────────────────
 
-  void restoreDefaultSetting() {
+  restoreDefaultSetting() {
     emit(state.copyWith(
       isDefaultAppBarColor: true,
       isDefaultScaffoldColor: true,
@@ -286,7 +378,13 @@ class ThemeCubit extends Cubit<ThemeState> {
       bottomNavBarWidth: 0.8,
       bottomNavBarIconRotation: 0,
       bottomNavBarRotation: 0,
-      navBarStyleIndex: 0, // ← reset to Floating Pill
+      navBarStyleIndex: 0,
+      navBarSizeIndex: 1,
+      navBarOpacity: 0.9,
+      playerDynamicLightEnabled: true,
+      playerStyleIndex: 0,
+      hideStatusBar: false,
+      miniPlayerStyleIndex: 0,
     ));
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultAppBarColor, true);
     MyHiveBoxes.theme.put(MyHiveKeys.isDefaultBottomNavBarBgColor, true);
@@ -299,5 +397,13 @@ class ThemeCubit extends Cubit<ThemeState> {
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarHeight, 0.045);
     MyHiveBoxes.theme.put(MyHiveKeys.bottomNavBarWidth, 0.8);
     MyHiveBoxes.theme.put(MyHiveKeys.navBarStyleIndex, 0);
+    MyHiveBoxes.theme.put(MyHiveKeys.navBarSizeIndex, 1);
+    MyHiveBoxes.theme.put(MyHiveKeys.navBarOpacity, 0.9);
+    MyHiveBoxes.theme.put(MyHiveKeys.playerDynamicLightEnabled, true);
+    MyHiveBoxes.theme.put(MyHiveKeys.playerStyleIndex, 0);
+    MyHiveBoxes.theme.put(MyHiveKeys.hideStatusBar, false);
+    MyHiveBoxes.theme.put(MyHiveKeys.miniPlayerStyleIndex, 0);
+    // Restore status bar visibility
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 }

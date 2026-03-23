@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_player/presentation/features/local_audio_player/bloc/audio_player_bloc.dart';
 import 'package:open_player/presentation/shared/widgets/nothing_widget.dart';
 
-class AudioPlayerSuffleButtonWidget extends StatelessWidget {
-  const AudioPlayerSuffleButtonWidget({
+class AudioPlayerShuffleButtonWidget extends StatelessWidget {
+  const AudioPlayerShuffleButtonWidget({
     super.key,
   });
 

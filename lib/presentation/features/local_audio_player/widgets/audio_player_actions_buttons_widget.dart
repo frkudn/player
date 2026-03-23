@@ -19,7 +19,7 @@ class AudioPlayerActionsButtonsWidget extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const AudioPlayerSuffleButtonWidget(),
+          const AudioPlayerShuffleButtonWidget(),
           const AudioPlayerPreviousButtonWidget(),
           AudioPlayerPlayPauseButtonWidget(),
           const AudioPlayerNextButtonWidget(),

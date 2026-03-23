@@ -13,6 +13,7 @@ import 'package:open_player/presentation/features/settings/user_profile/cubit/us
 import 'base/services/storage/storage_services.dart';
 import 'presentation/features/audio_section/bloc/audio_bloc/audios_bloc.dart';
 import 'presentation/features/local_audio_player/cubit/lyrics/lyrics_cubit.dart';
+import 'presentation/features/local_audio_player/cubit/sleep_timer/sleep_timer_cubit.dart';
 import 'presentation/features/local_audio_player/cubit/volume/volume_cubit.dart';
 import 'data/repositories/audio/audio_repository.dart';
 
@@ -55,5 +56,6 @@ blocProviders() {
     BlocProvider(
       create: (context) => LyricsCubit(),
     ),
+     BlocProvider(create: (_) => SleepTimerCubit()),
   ];
 }

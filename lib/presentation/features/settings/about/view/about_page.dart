@@ -614,7 +614,7 @@ class _PhilosophyBlock extends StatelessWidget {
                 ),
                 const Gap(6),
                 Text(
-                  'A powerful media player built with conviction — '
+                  'A powerful music player built with conviction — '
                   'free from ads, subscriptions, and surveillance. '
                   'Your files stay on your device. Always.',
                   style: TextStyle(
@@ -720,7 +720,7 @@ class _DevCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Furqan Uddin',
+                        'Furkan Uddin',
                         style: TextStyle(
                           color: onBg,
                           fontSize: 16,
@@ -938,7 +938,7 @@ class _RepoSection extends StatelessWidget {
                 child: _RepoCard(
                   icon: HugeIcons.strokeRoundedGithub,
                   label: 'GitHub',
-                  sublabel: 'frkudn/player',
+                  subLabel: 'frkudn/player',
                   url: 'https://github.com/frkudn/player',
                   primary: primary,
                   onBg: onBg,
@@ -953,7 +953,7 @@ class _RepoSection extends StatelessWidget {
                 child: _RepoCard(
                   icon: HugeIcons.strokeRoundedGitlab,
                   label: 'GitLab',
-                  sublabel: 'Mirror',
+                  subLabel: 'Mirror',
                   url: 'https://gitlab.com/frkudn/player',
                   primary: primary,
                   onBg: onBg,
@@ -973,7 +973,7 @@ class _RepoCard extends StatelessWidget {
   const _RepoCard({
     required this.icon,
     required this.label,
-    required this.sublabel,
+    required this.subLabel,
     required this.url,
     required this.primary,
     required this.onBg,
@@ -983,7 +983,7 @@ class _RepoCard extends StatelessWidget {
 
   final IconData icon;
   final String label;
-  final String sublabel;
+  final String subLabel;
   final String url;
   final Color primary;
   final Color onBg;
@@ -1059,7 +1059,7 @@ class _RepoCard extends StatelessWidget {
               ),
               const Gap(2),
               Text(
-                sublabel,
+                subLabel,
                 style: TextStyle(
                   color: onBg.withValues(alpha: 0.35),
                   fontSize: 10,
@@ -1117,7 +1117,7 @@ class _Footer extends StatelessWidget {
                 ),
               ),
               Text(
-                'Furqan',
+                'Furkan',
                 style: TextStyle(
                   color: primary,
                   fontSize: 12,

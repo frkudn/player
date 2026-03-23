@@ -1,14 +1,30 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-
 import '../../../../base/db/hive_service.dart';
+
+// ─────────────────────────────────────────────────────────────────────────────
+// THEME STATE
+//
+// Single source of truth for every visual preference in the app.
+// Every field is persisted to Hive immediately when changed so preferences
+// survive cold restarts without any async init work.
+//
+// Field groups:
+//   • Dark / black mode
+//   • Theme customization (colors, Material 3, contrast)
+//   • Scaffold / AppBar colors
+//   • Bottom nav bar — legacy position / size / rotation (kept for Hive compat)
+//   • Bottom nav bar — new preset style system (navBarStyleIndex)
+//   • Audio player — dynamic light + layout style
+//   • Display — status bar, mini player style
+// ─────────────────────────────────────────────────────────────────────────────
 
 class ThemeState extends Equatable {
   // ── Dark / light / black mode ──────────────────────────────────────────────
   final bool isDarkMode;
   final bool isBlackMode;
 
-  // ── Theme customisation ───────────────────────────────────────────────────
+  // ── Theme customization ────────────────────────────────────────────────────
   final bool defaultTheme;
   final bool useMaterial3;
   final double contrastLevel;
@@ -16,15 +32,15 @@ class ThemeState extends Equatable {
   final int primaryColorListIndex;
   final int primaryColor;
 
-  // ── Scaffold / AppBar colours ─────────────────────────────────────────────
+  // ── Scaffold / AppBar colors ───────────────────────────────────────────────
   final bool isDefaultScaffoldColor;
   final bool isDefaultAppBarColor;
   final int? customScaffoldColor;
   final int? customAppBarColor;
 
-  // ── Bottom nav bar — legacy position/size/rotation fields ────────────────
-  // These are kept so existing Hive data isn't lost.
-  // The new style system (navBarStyleIndex) replaces their visual effect.
+  // ── Bottom nav bar — legacy position / size / rotation ────────────────────
+  // Kept so existing Hive data is never lost.
+  // Visual rendering now controlled by navBarStyleIndex.
   final bool isDefaultBottomNavBarBgColor;
   final bool isDefaultBottomNavBarPosition;
   final bool isDefaultBottomNavBarRotation;
@@ -37,18 +53,36 @@ class ThemeState extends Equatable {
   final double bottomNavBarRotation;
   final double bottomNavBarIconRotation;
   final bool isHoldBottomNavBarCirclePositionButton;
-  // /// 0 = Compact, 1 = Regular (default), 2 = Large
+
+  // ── Bottom nav bar — new preset style system ───────────────────────────────
+  // 0 = Floating Pill   1 = Full Bar      2 = Side Rail
+  // 3 = Minimal Dot     4 = Labeled Island  5 = Segmented
+  final int navBarStyleIndex;
+
+  // 0 = Compact   1 = Regular (default)   2 = Large
   final int navBarSizeIndex;
-// /// Background opacity for glass-style nav bars (0.4 – 1.0, default 0.9)
+
+  // Background opacity for glass-style nav bars (0.4–1.0)
   final double navBarOpacity;
 
-  // ── NEW: Nav bar preset style ─────────────────────────────────────────────
-  // Controls which of the 4 visual presets is shown:
-  //   0 → Floating Pill (default)
-  //   1 → Full-Width Bar
-  //   2 → Side Rail
-  //   3 → Minimal Dot
-  final int navBarStyleIndex;
+  // ── Audio player ───────────────────────────────────────────────────────────
+  // true  → animated flowing background (blurred album art drifts + breathes)
+  // false → static blurred background (original behavior)
+  final bool playerDynamicLightEnabled;
+
+  // 0 = Classic     1 = Minimal     2 = Immersive
+  final int playerStyleIndex;
+
+  // ── Display preferences ────────────────────────────────────────────────────
+  // Hides the Android status bar for a true full-screen experience.
+  // Uses SystemUiMode.immersiveSticky when true.
+  final bool hideStatusBar;
+
+  // Controls which mini player layout is rendered above the tab bar.
+  // 0 = Classic (current glassmorphic card)
+  // 1 = Compact (slim bar — just thumbnail + title + play)
+  // 2 = Artwork  (large artwork card with controls below)
+  final int miniPlayerStyleIndex;
 
   const ThemeState({
     required this.isBlackMode,
@@ -78,6 +112,10 @@ class ThemeState extends Equatable {
     required this.navBarStyleIndex,
     required this.navBarSizeIndex,
     required this.navBarOpacity,
+    required this.playerDynamicLightEnabled,
+    required this.playerStyleIndex,
+    required this.hideStatusBar,
+    required this.miniPlayerStyleIndex,
   });
 
   static get themeBox => MyHiveBoxes.theme;
@@ -121,10 +159,15 @@ class ThemeState extends Equatable {
             themeBox.get(MyHiveKeys.isDefaultBottomNavBarRotation) ?? true,
         isDefaultBottomNavBarIconRotation:
             themeBox.get(MyHiveKeys.isDefaultBottomNavBarIconRotation) ?? true,
-        // ── NEW: read saved style, default to 0 (Floating Pill)
         navBarStyleIndex: themeBox.get(MyHiveKeys.navBarStyleIndex) ?? 0,
         navBarSizeIndex: themeBox.get(MyHiveKeys.navBarSizeIndex) ?? 1,
         navBarOpacity: themeBox.get(MyHiveKeys.navBarOpacity) ?? 0.9,
+        playerDynamicLightEnabled:
+            themeBox.get(MyHiveKeys.playerDynamicLightEnabled) ?? true,
+        playerStyleIndex: themeBox.get(MyHiveKeys.playerStyleIndex) ?? 0,
+        hideStatusBar: themeBox.get(MyHiveKeys.hideStatusBar) ?? false,
+        miniPlayerStyleIndex:
+            themeBox.get(MyHiveKeys.miniPlayerStyleIndex) ?? 0,
       );
 
   ThemeState copyWith({
@@ -152,9 +195,13 @@ class ThemeState extends Equatable {
     int? primaryColor,
     double? bottomNavBarRotation,
     double? bottomNavBarIconRotation,
-    int? navBarStyleIndex, // ← NEW
+    int? navBarStyleIndex,
     int? navBarSizeIndex,
     double? navBarOpacity,
+    bool? playerDynamicLightEnabled,
+    int? playerStyleIndex,
+    bool? hideStatusBar,
+    int? miniPlayerStyleIndex,
   }) {
     return ThemeState(
       primaryColor: primaryColor ?? this.primaryColor,
@@ -193,9 +240,14 @@ class ThemeState extends Equatable {
       isHoldBottomNavBarCirclePositionButton:
           isHoldBottomNavBarCirclePositionButton ??
               this.isHoldBottomNavBarCirclePositionButton,
-      navBarStyleIndex: navBarStyleIndex ?? this.navBarStyleIndex, // ← NEW
+      navBarStyleIndex: navBarStyleIndex ?? this.navBarStyleIndex,
       navBarSizeIndex: navBarSizeIndex ?? this.navBarSizeIndex,
       navBarOpacity: navBarOpacity ?? this.navBarOpacity,
+      playerDynamicLightEnabled:
+          playerDynamicLightEnabled ?? this.playerDynamicLightEnabled,
+      playerStyleIndex: playerStyleIndex ?? this.playerStyleIndex,
+      hideStatusBar: hideStatusBar ?? this.hideStatusBar,
+      miniPlayerStyleIndex: miniPlayerStyleIndex ?? this.miniPlayerStyleIndex,
     );
   }
 
@@ -228,5 +280,9 @@ class ThemeState extends Equatable {
         navBarStyleIndex,
         navBarSizeIndex,
         navBarOpacity,
+        playerDynamicLightEnabled,
+        playerStyleIndex,
+        hideStatusBar,
+        miniPlayerStyleIndex,
       ];
 }
