@@ -4,7 +4,7 @@ import 'package:open_player/data/models/audio_playlist_model.dart';
 import 'package:open_player/presentation/features/audio_section/views/sub/albums/view/album_preview_page.dart';
 import 'package:open_player/presentation/features/audio_section/views/sub/artists/view/artist_preview_page.dart';
 import 'package:open_player/presentation/features/audio_section/views/sub/playlists/view/audio_playlist_preview_page.dart';
-import 'package:open_player/presentation/features/online_music/view/online_music_main_page.dart';
+import 'package:open_player/presentation/features/online_section/view/online_section_page.dart';
 import 'package:open_player/presentation/features/local_audio_player/view/audio_player.dart';
 import 'package:open_player/presentation/features/settings/about/view/about_page.dart';
 import 'package:open_player/presentation/features/settings/change_accent_color/view/change_accent_color_page.dart';
@@ -65,15 +65,13 @@ final GoRouter router = GoRouter(
         name: AppRoutes.onlineMusicRoute,
         path: AppRoutes.onlineMusicRoute,
         builder: (context, state) {
-          return OnlineMusicMainPage();
+          return OnlineSectionPage();
         }),
     GoRoute(
       name: AppRoutes.searchAudiosRoute,
       path: AppRoutes.searchAudiosRoute,
       builder: (context, state) => const SearchAudioPage(),
     ),
-
-
     GoRoute(
       name: AppRoutes.equalizerRoute,
       path: AppRoutes.equalizerRoute,

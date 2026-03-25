@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:open_player/presentation/features/main/cubit/bottom_nav_bar_cubit.dart';
+import 'package:open_player/presentation/features/online_section/cubit/online_section_cubit.dart';
 import 'package:open_player/presentation/shared/cubit/theme_cubit/theme_cubit.dart';
 import 'package:open_player/presentation/shared/cubit/theme_cubit/theme_state.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -21,7 +22,7 @@ class _NavItem {
 
 const List<_NavItem> _kItems = [
   _NavItem(HugeIcons.strokeRoundedMusicNote02, 'Audio'),
-  _NavItem(HugeIcons.strokeRoundedAppleMusic, 'Online'),
+  _NavItem(HugeIcons.strokeRoundedInternet, 'Online'),
   _NavItem(HugeIcons.strokeRoundedSettings05, 'Settings'),
 ];
 
@@ -39,8 +40,8 @@ const List<_NavItem> _kItems = [
 
 class _SZ {
   final double pillH, pillIcon, barH, barIcon, railW, railIcon, railBtn;
-  const _SZ(this.pillH, this.pillIcon, this.barH, this.barIcon,
-      this.railW, this.railIcon, this.railBtn);
+  const _SZ(this.pillH, this.pillIcon, this.barH, this.barIcon, this.railW,
+      this.railIcon, this.railBtn);
 }
 
 const List<_SZ> _kSZ = [
@@ -78,24 +79,40 @@ class CustomBottomNavBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
-      builder: (ctx, th) => BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
-        builder: (ctx2, nav) {
-          final int i   = nav.index;
-          final _SZ sz  = _kSZ[th.navBarSizeIndex.clamp(0, 2)];
-          final Color p = Color(th.primaryColor);
-          final double op = th.navBarOpacity.clamp(0.4, 1.0);
+    // Hides the nav bar when the user taps "Hide nav bar" in the online section.
+    // OnlineSectionCubit.showNavBar() is called in dispose() of OnlineMusicMainPage
+    // so the bar always comes back when the user leaves the online tab.
+    return BlocSelector<OnlineSectionCubit, OnlineSectionState, bool>(
+      selector: (s) => s.navBarHidden,
+      builder: (_, hidden) {
+        if (hidden) return const SizedBox.shrink();
+        return BlocBuilder<ThemeCubit, ThemeState>(
+          builder: (ctx, th) =>
+              BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
+            builder: (ctx2, nav) {
+              final int i = nav.index;
+              final _SZ sz = _kSZ[th.navBarSizeIndex.clamp(0, 2)];
+              final Color p = Color(th.primaryColor);
+              final double op = th.navBarOpacity.clamp(0.4, 1.0);
 
-          switch (th.navBarStyleIndex) {
-            case 1:  return _Bar(i: i, th: th, sz: sz, p: p, op: op);
-            case 2:  return _Rail(i: i, th: th, sz: sz, p: p, op: op);
-            case 3:  return _Dot(i: i, th: th, sz: sz, p: p);
-            case 4:  return _Island(i: i, th: th, sz: sz, p: p, op: op);
-            case 5:  return _Segment(i: i, th: th, sz: sz, p: p, op: op);
-            default: return _Pill(i: i, th: th, sz: sz, p: p, op: op);
-          }
-        },
-      ),
+              switch (th.navBarStyleIndex) {
+                case 1:
+                  return _Bar(i: i, th: th, sz: sz, p: p, op: op);
+                case 2:
+                  return _Rail(i: i, th: th, sz: sz, p: p, op: op);
+                case 3:
+                  return _Dot(i: i, th: th, sz: sz, p: p);
+                case 4:
+                  return _Island(i: i, th: th, sz: sz, p: p, op: op);
+                case 5:
+                  return _Segment(i: i, th: th, sz: sz, p: p, op: op);
+                default:
+                  return _Pill(i: i, th: th, sz: sz, p: p, op: op);
+              }
+            },
+          ),
+        );
+      },
     );
   }
 }
@@ -119,14 +136,15 @@ class _Pos {
   const _Pos({required this.left, required this.bottom, required this.width});
 }
 
-_Pos _resolvePos(ThemeState th, Size mq, {double minW = 120, double maxW = 9999}) {
+_Pos _resolvePos(ThemeState th, Size mq,
+    {double minW = 120, double maxW = 9999}) {
   // Convert fractions to pixels and clamp to safe ranges
   final double w = (mq.width * th.bottomNavBarWidth.clamp(0.3, 1.0))
       .clamp(minW, maxW.clamp(minW, mq.width));
 
   // Left: keep bar fully on screen
-  final double left = (mq.width * th.bottomNavBarPositionFromLeft)
-      .clamp(0.0, mq.width - w);
+  final double left =
+      (mq.width * th.bottomNavBarPositionFromLeft).clamp(0.0, mq.width - w);
 
   final double bottom = (mq.height * th.bottomNavBarPositionFromBottom)
       .clamp(0.0, mq.height * 0.9);
@@ -143,8 +161,17 @@ _Pos _resolvePos(ThemeState th, Size mq, {double minW = 120, double maxW = 9999}
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class _Pill extends StatelessWidget {
-  const _Pill({required this.i, required this.th, required this.sz, required this.p, required this.op});
-  final int i; final ThemeState th; final _SZ sz; final Color p; final double op;
+  const _Pill(
+      {required this.i,
+      required this.th,
+      required this.sz,
+      required this.p,
+      required this.op});
+  final int i;
+  final ThemeState th;
+  final _SZ sz;
+  final Color p;
+  final double op;
 
   @override
   Widget build(BuildContext context) {
@@ -166,8 +193,11 @@ class _Pill extends StatelessWidget {
             children: List.generate(
               _kItems.length,
               (j) => _PBtn(
-                it: _kItems[j], sel: i == j, p: p,
-                dark: th.isDarkMode, sz: sz.pillIcon,
+                it: _kItems[j],
+                sel: i == j,
+                p: p,
+                dark: th.isDarkMode,
+                sz: sz.pillIcon,
                 onTap: () => _tap(context, j),
               ),
             ),
@@ -185,10 +215,18 @@ class _Pill extends StatelessWidget {
 }
 
 class _PBtn extends StatelessWidget {
-  const _PBtn({required this.it, required this.sel, required this.p,
-      required this.dark, required this.sz, required this.onTap});
-  final _NavItem it; final bool sel, dark;
-  final Color p; final double sz; final VoidCallback onTap;
+  const _PBtn(
+      {required this.it,
+      required this.sel,
+      required this.p,
+      required this.dark,
+      required this.sz,
+      required this.onTap});
+  final _NavItem it;
+  final bool sel, dark;
+  final Color p;
+  final double sz;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext ctx) => GestureDetector(
@@ -202,7 +240,8 @@ class _PBtn extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
             color: sel ? p.withValues(alpha: .18) : Colors.transparent,
           ),
-          child: Icon(it.icon, size: sz,
+          child: Icon(it.icon,
+              size: sz,
               color: sel ? p : (dark ? Colors.white54 : Colors.black45)),
         ),
       );
@@ -217,12 +256,24 @@ class _PBtn extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class _Bar extends StatelessWidget {
-  const _Bar({required this.i, required this.th, required this.sz, required this.p, required this.op});
-  final int i; final ThemeState th; final _SZ sz; final Color p; final double op;
+  const _Bar(
+      {required this.i,
+      required this.th,
+      required this.sz,
+      required this.p,
+      required this.op});
+  final int i;
+  final ThemeState th;
+  final _SZ sz;
+  final Color p;
+  final double op;
 
   @override
   Widget build(BuildContext ctx) => Positioned(
-        bottom: 0, left: 0, right: 0, height: sz.barH,
+        bottom: 0,
+        left: 0,
+        right: 0,
+        height: sz.barH,
         child: Opacity(
           opacity: op,
           child: Container(
@@ -242,8 +293,11 @@ class _Bar extends StatelessWidget {
                 _kItems.length,
                 (j) => Expanded(
                   child: _BBtn(
-                    it: _kItems[j], sel: i == j, p: p,
-                    dark: th.isDarkMode, sz: sz.barIcon,
+                    it: _kItems[j],
+                    sel: i == j,
+                    p: p,
+                    dark: th.isDarkMode,
+                    sz: sz.barIcon,
                     onTap: () => _tap(ctx, j),
                   ),
                 ),
@@ -255,10 +309,18 @@ class _Bar extends StatelessWidget {
 }
 
 class _BBtn extends StatelessWidget {
-  const _BBtn({required this.it, required this.sel, required this.p,
-      required this.dark, required this.sz, required this.onTap});
-  final _NavItem it; final bool sel, dark;
-  final Color p; final double sz; final VoidCallback onTap;
+  const _BBtn(
+      {required this.it,
+      required this.sel,
+      required this.p,
+      required this.dark,
+      required this.sz,
+      required this.onTap});
+  final _NavItem it;
+  final bool sel, dark;
+  final Color p;
+  final double sz;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext ctx) {
@@ -304,14 +366,25 @@ class _BBtn extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class _Rail extends StatelessWidget {
-  const _Rail({required this.i, required this.th, required this.sz, required this.p, required this.op});
-  final int i; final ThemeState th; final _SZ sz; final Color p; final double op;
+  const _Rail(
+      {required this.i,
+      required this.th,
+      required this.sz,
+      required this.p,
+      required this.op});
+  final int i;
+  final ThemeState th;
+  final _SZ sz;
+  final Color p;
+  final double op;
 
   @override
   Widget build(BuildContext ctx) {
     final mq = MediaQuery.sizeOf(ctx);
     return Positioned(
-      top: mq.height * .28, left: 10, width: sz.railW,
+      top: mq.height * .28,
+      left: 10,
+      width: sz.railW,
       child: Opacity(
         opacity: op,
         child: Container(
@@ -324,9 +397,13 @@ class _Rail extends StatelessWidget {
               (j) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: _RBtn(
-                  it: _kItems[j], sel: i == j, p: p,
-                  dark: th.isDarkMode, ico: sz.railIcon,
-                  btn: sz.railBtn, onTap: () => _tap(ctx, j),
+                  it: _kItems[j],
+                  sel: i == j,
+                  p: p,
+                  dark: th.isDarkMode,
+                  ico: sz.railIcon,
+                  btn: sz.railBtn,
+                  onTap: () => _tap(ctx, j),
                 ),
               ),
             ),
@@ -344,10 +421,19 @@ class _Rail extends StatelessWidget {
 }
 
 class _RBtn extends StatelessWidget {
-  const _RBtn({required this.it, required this.sel, required this.p,
-      required this.dark, required this.ico, required this.btn, required this.onTap});
-  final _NavItem it; final bool sel, dark;
-  final Color p; final double ico, btn; final VoidCallback onTap;
+  const _RBtn(
+      {required this.it,
+      required this.sel,
+      required this.p,
+      required this.dark,
+      required this.ico,
+      required this.btn,
+      required this.onTap});
+  final _NavItem it;
+  final bool sel, dark;
+  final Color p;
+  final double ico, btn;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext ctx) => GestureDetector(
@@ -356,7 +442,8 @@ class _RBtn extends StatelessWidget {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           curve: Curves.easeOutCubic,
-          width: btn, height: btn,
+          width: btn,
+          height: btn,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
             color: sel ? p.withValues(alpha: .18) : Colors.transparent,
@@ -364,7 +451,8 @@ class _RBtn extends StatelessWidget {
                 ? Border.all(color: p.withValues(alpha: .3), width: 1)
                 : null,
           ),
-          child: Icon(it.icon, size: ico,
+          child: Icon(it.icon,
+              size: ico,
               color: sel ? p : (dark ? Colors.white54 : Colors.black45)),
         ),
       );
@@ -378,8 +466,12 @@ class _RBtn extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class _Dot extends StatelessWidget {
-  const _Dot({required this.i, required this.th, required this.sz, required this.p});
-  final int i; final ThemeState th; final _SZ sz; final Color p;
+  const _Dot(
+      {required this.i, required this.th, required this.sz, required this.p});
+  final int i;
+  final ThemeState th;
+  final _SZ sz;
+  final Color p;
 
   @override
   Widget build(BuildContext ctx) {
@@ -396,8 +488,11 @@ class _Dot extends StatelessWidget {
         children: List.generate(
           _kItems.length,
           (j) => _DBtn(
-            it: _kItems[j], sel: i == j, p: p,
-            dark: th.isDarkMode, sz: sz.pillIcon,
+            it: _kItems[j],
+            sel: i == j,
+            p: p,
+            dark: th.isDarkMode,
+            sz: sz.pillIcon,
             onTap: () => _tap(ctx, j),
           ),
         ),
@@ -407,10 +502,18 @@ class _Dot extends StatelessWidget {
 }
 
 class _DBtn extends StatelessWidget {
-  const _DBtn({required this.it, required this.sel, required this.p,
-      required this.dark, required this.sz, required this.onTap});
-  final _NavItem it; final bool sel, dark;
-  final Color p; final double sz; final VoidCallback onTap;
+  const _DBtn(
+      {required this.it,
+      required this.sel,
+      required this.p,
+      required this.dark,
+      required this.sz,
+      required this.onTap});
+  final _NavItem it;
+  final bool sel, dark;
+  final Color p;
+  final double sz;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext ctx) => GestureDetector(
@@ -421,14 +524,16 @@ class _DBtn extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(it.icon, size: sz,
+              Icon(it.icon,
+                  size: sz,
                   color: sel ? p : (dark ? Colors.white54 : Colors.black38)),
               const SizedBox(height: 5),
               // Active dot — grows from 0 to 16 dp when selected
               AnimatedContainer(
                 duration: const Duration(milliseconds: 260),
                 curve: Curves.easeOutBack,
-                width: sel ? 16 : 0, height: 3,
+                width: sel ? 16 : 0,
+                height: 3,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(2),
                   color: p,
@@ -448,8 +553,17 @@ class _DBtn extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class _Island extends StatelessWidget {
-  const _Island({required this.i, required this.th, required this.sz, required this.p, required this.op});
-  final int i; final ThemeState th; final _SZ sz; final Color p; final double op;
+  const _Island(
+      {required this.i,
+      required this.th,
+      required this.sz,
+      required this.p,
+      required this.op});
+  final int i;
+  final ThemeState th;
+  final _SZ sz;
+  final Color p;
+  final double op;
 
   @override
   Widget build(BuildContext ctx) {
@@ -470,8 +584,11 @@ class _Island extends StatelessWidget {
             children: List.generate(
               _kItems.length,
               (j) => _IBtn(
-                it: _kItems[j], sel: i == j, p: p,
-                dark: th.isDarkMode, sz: sz.pillIcon,
+                it: _kItems[j],
+                sel: i == j,
+                p: p,
+                dark: th.isDarkMode,
+                sz: sz.pillIcon,
                 onTap: () => _tap(ctx, j),
               ),
             ),
@@ -489,10 +606,18 @@ class _Island extends StatelessWidget {
 }
 
 class _IBtn extends StatelessWidget {
-  const _IBtn({required this.it, required this.sel, required this.p,
-      required this.dark, required this.sz, required this.onTap});
-  final _NavItem it; final bool sel, dark;
-  final Color p; final double sz; final VoidCallback onTap;
+  const _IBtn(
+      {required this.it,
+      required this.sel,
+      required this.p,
+      required this.dark,
+      required this.sz,
+      required this.onTap});
+  final _NavItem it;
+  final bool sel, dark;
+  final Color p;
+  final double sz;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext ctx) => GestureDetector(
@@ -509,7 +634,8 @@ class _IBtn extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(it.icon, size: sz,
+              Icon(it.icon,
+                  size: sz,
                   color: sel ? p : (dark ? Colors.white54 : Colors.black45)),
               // Label slides in from 0 width when tab is active
               AnimatedSize(
@@ -521,8 +647,10 @@ class _IBtn extends StatelessWidget {
                         child: Text(
                           it.label,
                           style: TextStyle(
-                            color: p, fontSize: 12,
-                            fontWeight: FontWeight.w700, letterSpacing: .2,
+                            color: p,
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            letterSpacing: .2,
                           ),
                         ),
                       )
@@ -542,8 +670,17 @@ class _IBtn extends StatelessWidget {
 // ═══════════════════════════════════════════════════════════════════════════════
 
 class _Segment extends StatelessWidget {
-  const _Segment({required this.i, required this.th, required this.sz, required this.p, required this.op});
-  final int i; final ThemeState th; final _SZ sz; final Color p; final double op;
+  const _Segment(
+      {required this.i,
+      required this.th,
+      required this.sz,
+      required this.p,
+      required this.op});
+  final int i;
+  final ThemeState th;
+  final _SZ sz;
+  final Color p;
+  final double op;
 
   @override
   Widget build(BuildContext ctx) {
@@ -576,17 +713,21 @@ class _Segment extends StatelessWidget {
               AnimatedPositioned(
                 duration: const Duration(milliseconds: 300),
                 curve: Curves.easeOutCubic,
-                left: i * segW + 4, top: 4,
-                width: segW - 8, bottom: 4,
+                left: i * segW + 4,
+                top: 4,
+                width: segW - 8,
+                bottom: 4,
                 child: Container(
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(13),
                     color: p.withValues(alpha: .18),
-                    border: Border.all(color: p.withValues(alpha: .3), width: 1),
+                    border:
+                        Border.all(color: p.withValues(alpha: .3), width: 1),
                     boxShadow: [
                       BoxShadow(
                         color: p.withValues(alpha: .12),
-                        blurRadius: 8, spreadRadius: -2,
+                        blurRadius: 8,
+                        spreadRadius: -2,
                       ),
                     ],
                   ),
@@ -598,8 +739,11 @@ class _Segment extends StatelessWidget {
                   _kItems.length,
                   (j) => Expanded(
                     child: _SBtn(
-                      it: _kItems[j], sel: i == j, p: p,
-                      dark: th.isDarkMode, sz: sz.barIcon * .9,
+                      it: _kItems[j],
+                      sel: i == j,
+                      p: p,
+                      dark: th.isDarkMode,
+                      sz: sz.barIcon * .9,
                       onTap: () => _tap(ctx, j),
                     ),
                   ),
@@ -614,10 +758,18 @@ class _Segment extends StatelessWidget {
 }
 
 class _SBtn extends StatelessWidget {
-  const _SBtn({required this.it, required this.sel, required this.p,
-      required this.dark, required this.sz, required this.onTap});
-  final _NavItem it; final bool sel, dark;
-  final Color p; final double sz; final VoidCallback onTap;
+  const _SBtn(
+      {required this.it,
+      required this.sel,
+      required this.p,
+      required this.dark,
+      required this.sz,
+      required this.onTap});
+  final _NavItem it;
+  final bool sel, dark;
+  final Color p;
+  final double sz;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext ctx) {

@@ -319,4 +319,9 @@ class MyHiveKeys {
   /// bool — whether the online music one-time info dialog has been shown.
   ///        Stored in MyHiveBoxes.user so it's tied to the user, not the theme.
   static const String onlineMusicDialogShown = 'online_music_dialog_shown';
+
+  /// String (JSON array) — user-added custom online instances.
+  /// Each entry is an OnlineInstance serialized to JSON.
+  /// Stored in MyHiveBoxes.user so it survives theme resets.
+  static const String onlineCustomInstances = 'online_custom_instances';
 }

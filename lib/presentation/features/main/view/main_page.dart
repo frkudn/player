@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_player/presentation/features/main/widgets/bottom-navbar/custom_bottom_nav_bar_widget.dart';
-import 'package:open_player/presentation/features/online_music/view/online_music_main_page.dart';
+import 'package:open_player/presentation/features/online_section/view/online_section_page.dart';
 import '../../audio_section/views/main/view/audio_page.dart';
 import '../../settings/setting/view/setting_page.dart';
 import '../cubit/bottom_nav_bar_cubit.dart';
@@ -14,7 +14,7 @@ class MainPage extends StatelessWidget {
   // reloads every time the user switches tabs.
   static final List<Widget> _pages = [
     AudioPage(),
-    const OnlineMusicMainPage(),
+    const OnlineSectionPage(),
     const SettingPage(),
   ];
 

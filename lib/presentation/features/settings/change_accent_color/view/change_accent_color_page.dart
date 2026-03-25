@@ -5,7 +5,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:go_router/go_router.dart';
 import 'package:open_player/presentation/features/audio_section/views/main/view/audio_page.dart';
 import 'package:open_player/presentation/shared/widgets/custom_theme_mode_button_widget.dart';
-import 'package:open_player/presentation/features/online_music/view/online_music_main_page.dart';
+import 'package:open_player/presentation/features/online_section/view/online_section_page.dart';
 import 'package:open_player/presentation/features/settings/change_accent_color/widgets/change_primary_page_color_selector_widget.dart';
 import 'package:open_player/presentation/features/settings/setting/view/setting_page.dart';
 import '../../../../shared/cubit/theme_cubit/theme_cubit.dart';
@@ -17,7 +17,7 @@ class ChangeAccentColorPage extends HookWidget {
   // List of pages to be displayed in the PageView
   final _pages = [
     AudioPage(),
-    const OnlineMusicMainPage(),
+    const OnlineSectionPage(),
     const SettingPage(),
   ];
 
