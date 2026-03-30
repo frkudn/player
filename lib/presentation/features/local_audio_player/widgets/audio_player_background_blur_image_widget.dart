@@ -122,7 +122,7 @@ class AudioPlayerBackgroundBlurImageWidget extends HookWidget {
           : const DecoratedBox(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(AppImages.defaultProfile),
+                  image: AssetImage(AppImages.defaultThumbnail),
                   fit: BoxFit.cover,
                 ),
               ),
