@@ -165,7 +165,7 @@ class ThemeState extends Equatable {
         playerDynamicLightEnabled:
             themeBox.get(MyHiveKeys.playerDynamicLightEnabled) ?? true,
         playerStyleIndex: themeBox.get(MyHiveKeys.playerStyleIndex) ?? 0,
-        hideStatusBar: themeBox.get(MyHiveKeys.hideStatusBar) ?? true,
+        hideStatusBar: themeBox.get(MyHiveKeys.hideStatusBar) ?? false,
         miniPlayerStyleIndex:
             themeBox.get(MyHiveKeys.miniPlayerStyleIndex) ?? 2,
       );
