@@ -367,7 +367,7 @@ class _ArtworkMiniPlayer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final mq = MediaQuery.sizeOf(context);
-    final double h = mq.width >= 600 ? mq.height * 0.14 : mq.height * 0.18;
+    final double h = mq.width >= 600 ? mq.height * 0.142 : mq.height * 0.182;
     final double artSize =
         h - 12; // artwork fills the full height minus padding
 
@@ -384,7 +384,7 @@ class _ArtworkMiniPlayer extends StatelessWidget {
             final String title =
                 ci != null ? playerState.audios[ci].title : '...';
             final String artist =
-                ci != null ? (playerState.audios[ci].artists ?? '') : '';
+                ci != null ? (playerState.audios[ci].artists) : '';
 
             return Container(
               color: color ?? Theme.of(context).colorScheme.primary,

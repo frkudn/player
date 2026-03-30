@@ -17,6 +17,7 @@ class AudioPage extends StatelessWidget {
     return Scaffold(
       body: Column(
         children: [
+          //-------- Mini Player Widget -----//
           const MiniAudioPlayerWidget(),
           Expanded(
             child: DefaultTabController(
