@@ -1,47 +1,61 @@
 // ignore_for_file: constant_identifier_names
 
-/// Calculates a perceptual quality tier from audio metadata.
+/// Perceptual audio quality tier calculator.
 ///
 /// Tier order (best → worst): DSD → MQ → HR → HQ → SQ → LQ
 ///
-/// ## Key design decisions
-/// - Lossless codecs store **compressed** bitrate in tags; raw PCM is never
-///   stored. Inferring bit depth from compressed bitrate produces wrong results
-///   (~50–60 % of PCM size). A separate lossless inference path applies a
-///   compression expansion factor.
-/// - When `bitDepth` metadata IS present it always takes priority — both
-///   inference paths are only fallbacks.
-/// - DSD is identified by codec name OR by its well-known sample rates before
-///   any other tier check.
+/// ## Android-specific design notes
+/// On Android, MediaStore / MediaMetadataRetriever supply metadata with
+/// varying reliability:
+///   - Codec/MIME  → reliable (from file extension or container header)
+///   - Sample rate → available via MediaMetadataRetriever on API 28+
+///   - Bitrate     → present in MediaStore, but for lossless it is the
+///                   *compressed* output bitrate, NOT raw PCM bitrate
+///   - Bit depth   → NOT in MediaStore at all; requires parsing the file's
+///                   own format header (e.g. via just_audio_media_kit or a
+///                   native plugin like flutter_media_metadata)
+///
+/// Because bit depth is the most important signal and the least reliably
+/// available, this calculator uses a multi-path inference strategy that
+/// avoids the #1 historical bug: applying the PCM formula to compressed
+/// lossless bitrate, which would infer 8–13 bits for a real 24-bit file.
 class AudioQualityCalculator {
   // ── DSD sample rates ───────────────────────────────────────────────────────
-  static const int _dsd64SampleRate = 2822400;
-  static const int _dsd128SampleRate = 5644800;
-  static const int _dsd256SampleRate = 11289600;
+  static const int _dsd64 = 2822400;
+  static const int _dsd128 = 5644800;
+  static const int _dsd256 = 11289600;
+  static const int _dsd512 = 22579200;
 
-  // Lossless codecs — bit depth metadata is reliable; bitrate is compressed
-  static const List<String> _losslessCodecs = [
+  // Uncompressed lossless — bitrate is raw PCM; formula is mathematically exact
+  static const List<String> _pcmCodecs = ['wav', 'aiff', 'aif', 'pcm'];
+
+  // Compressed lossless — bitrate is post-compression; PCM formula does NOT apply
+  static const List<String> _compressedLosslessCodecs = [
     'flac',
     'alac',
-    'wav',
-    'aiff',
     'ape',
     'wv',
     'wavpack',
     'tta',
   ];
 
-  // Lossy codecs — quality is purely bitrate-dependent
+  // Lossy — quality is purely bitrate-dependent, bit depth is irrelevant
   static const List<String> _lossyCodecs = [
     'mp3',
     'aac',
+    'aac-lc',
+    'he-aac',
     'ogg',
     'vorbis',
     'opus',
     'wma',
     'ac3',
     'eac3',
+    'ac-3',
+    'e-ac-3',
   ];
+
+  // ── Public API ─────────────────────────────────────────────────────────────
 
   static String calculateQuality({
     required int? bitrate,
@@ -49,145 +63,181 @@ class AudioQualityCalculator {
     String? codec,
     int? bitDepth,
   }) {
-    if (sampleRate == null) return 'LQ';
-
-    final khz = _normalizeKhz(sampleRate);
-    final kbps = bitrate != null ? _normalizeKbps(bitrate) : 0;
-    final codecLow = codec?.toLowerCase();
-    final isLossless = _isLosslessCodec(codecLow);
+    final codecLow = codec?.toLowerCase().trim();
+    final isPCM = _isPCMCodec(codecLow);
+    final isCompressedLossless = _isCompressedLosslessCodec(codecLow);
+    final isLossless = isPCM || isCompressedLossless;
     final isLossy = _isLossyCodec(codecLow);
 
-    // FIX: use codec-aware depth inference.
-    // Lossless tags report compressed bitrate, not raw PCM — infer separately.
-    final depth = bitDepth ??
-        (isLossless
-            ? _inferBitDepthLossless(kbps, khz)
-            : _inferBitDepth(kbps, khz));
+    // ── DSD — evaluated before everything else ───────────────────────────────
+    if (_isDSD(codecLow, sampleRate ?? 0)) return 'DSD';
 
-    // ── DSD ──────────────────────────────────────────────────────────────────
-    if (_isDSDQuality(codecLow, sampleRate)) return 'DSD';
+    // ── Normalise numeric inputs ─────────────────────────────────────────────
+    final double khz = sampleRate != null ? _normalizeKhz(sampleRate) : 0;
+    final int kbps = bitrate != null ? _normalizeKbps(bitrate) : 0;
 
-    // ── Master Quality (MQ) ───────────────────────────────────────────────────
-    // Lossless 24-bit at high sample rates (88.2 kHz and above)
-    if (isLossless && depth >= 24 && khz >= 88.2) return 'MQ';
-
-    // Lossy at extreme sample rate + very high bitrate (rare but valid)
-    if (isLossy && khz >= 176.4 && kbps >= 5600) return 'MQ';
-    if (isLossy && khz >= 192.0 && kbps >= 6000) return 'MQ';
-    if (isLossy && khz >= 96.0 && kbps >= 3000) return 'MQ';
-    if (isLossy && khz >= 88.2 && kbps >= 2800) return 'MQ';
-
-    // ── Hi-Res (HR) ───────────────────────────────────────────────────────────
-    // JEITA definition: better-than-CD quality.
-    // 24-bit at any standard sample rate ≥ 44.1 kHz qualifies.
-    if (isLossless && depth >= 24 && khz >= 44.1) return 'HR';
-
-    // FIX: 16-bit at high sample rates (88.2+ kHz) is also Hi-Res by JEITA —
-    // wider frequency response than CD even at standard bit depth.
-    // Previously this had no explicit lossless path and fell through to
-    // the lossy bitrate check below, which could miss files with no bitrate tag.
-    if (isLossless && depth >= 16 && khz >= 88.2) return 'HR';
-
-    // Lossy at high sample rate with substantial bitrate
-    if (isLossy && khz >= 88.2 && kbps >= 500) return 'HR';
-    if (isLossy && khz >= 96.0 && kbps >= 400) return 'HR';
-
-    // ── High Quality (HQ) ─────────────────────────────────────────────────────
-    if (isLossless) {
-      if (depth >= 16 && khz >= 44.1) return 'HQ';
-      if (khz >= 44.1 && kbps >= 700) return 'HQ';
+    // ── Resolve bit depth ────────────────────────────────────────────────────
+    // Priority:
+    //   1. Explicit metadata — always trust it if present and valid
+    //   2. PCM exact formula — mathematically precise for WAV/AIFF
+    //   3. Compressed-lossless heuristic — sample-rate-aware threshold
+    //   4. null for lossy — bit depth is irrelevant for lossy formats
+    final int? depth;
+    if (bitDepth != null && bitDepth > 0) {
+      depth = bitDepth;
+    } else if (isPCM && khz > 0 && kbps > 0) {
+      depth = _inferDepthPCM(kbps, khz);
+    } else if (isCompressedLossless && khz > 0) {
+      depth = _inferDepthCompressedLossless(kbps, khz);
+    } else {
+      depth = null;
     }
 
-    // CD lossless bitrate territory (uncompressed PCM reference)
-    if (kbps >= 1411 && khz >= 44.1) return 'HQ';
-    if (kbps >= 1536 && khz >= 48.0) return 'HQ';
+    // ── Graceful degradation when sample rate is unavailable ─────────────────
+    // We still have meaningful information from codec + bitrate alone.
+    if (khz == 0) {
+      if (isLossless) {
+        if ((depth ?? 0) >= 24) return 'HR';
+        return 'HQ'; // any lossless beats any standard lossy
+      }
+      if (kbps >= 256) return 'HQ';
+      if (kbps >= 128) return 'SQ';
+      return 'LQ';
+    }
 
-    // Transparent lossy (256 kbps+ AAC/MP3 widely accepted as transparent)
-    if (kbps >= 256 && khz >= 44.1 && (isLossy || kbps < 1000)) return 'HQ';
+    // ── MQ — studio master quality ───────────────────────────────────────────
+    // 24-bit lossless at high sample rates (88.2 kHz+).
+    // Covers: Tidal HiFi Plus, Qobuz Studio, HDtracks, Bandcamp FLAC hi-res.
+    if (isLossless && (depth ?? 0) >= 24 && khz >= 88.2) return 'MQ';
+
+    // Uncompressed 24-bit at 48 kHz+ covers professional studio/broadcast spec:
+    // Blu-ray Disc audio, HDCD source masters, professional DAW exports.
+    // PCM only — a 24/48 FLAC could just be an upsampled 16-bit recording,
+    // but a true WAV/AIFF at 24/48 comes from a professional chain.
+    if (isPCM && (depth ?? 0) >= 24 && khz >= 48.0) return 'MQ';
+
+    // ── HR — hi-res audio ────────────────────────────────────────────────────
+    // JEITA / CEA definition: "exceeds CD quality" = 24-bit at ≥ 44.1 kHz.
+    // Applies to both compressed (FLAC/ALAC) and uncompressed (WAV/AIFF).
+    if (isLossless && (depth ?? 0) >= 24 && khz >= 44.1) return 'HR';
+
+    // 16-bit at high sample rates (88.2+ kHz) also qualifies as hi-res:
+    // wider frequency response than 44.1 kHz CD even at the same bit depth.
+    // Common in some remaster editions and archival Blu-ray rips.
+    if (isLossless && (depth ?? 16) >= 16 && khz >= 88.2) return 'HR';
+
+    // ── HQ — high quality ────────────────────────────────────────────────────
+    // CD-quality lossless (16-bit / 44.1 or 48 kHz) and transparent-ish lossy.
+    if (isLossless && khz >= 44.1)
+      return 'HQ'; // covers all 16-bit CD-rate lossless
+    if (isLossless && khz >= 32.0) return 'HQ'; // lossless at any reasonable SR
+
+    // PCM exact reference: uncompressed CD and Blu-ray audio tracks
+    if (isPCM && kbps >= 1411 && khz >= 44.1) return 'HQ';
+    if (isPCM && kbps >= 1536 && khz >= 48.0) return 'HQ';
+
+    // Transparent lossy: 256 kbps+ AAC/MP3/Opus at CD sample rate.
+    // Perceptually indistinguishable from lossless for most listeners.
+    if (isLossy && kbps >= 256 && khz >= 44.1) return 'HQ';
+    // 320 kbps MP3 is the accepted gold standard for lossy HQ
     if (kbps >= 320 && khz >= 44.1) return 'HQ';
 
-    // ── Standard Quality (SQ) ─────────────────────────────────────────────────
+    // ── SQ — standard quality ────────────────────────────────────────────────
+    // Typical streaming mid-tier (128–256 kbps lossy). Audible compression
+    // artifacts possible on critical listening but acceptable for casual use.
     if (kbps >= 128 && khz >= 44.1) return 'SQ';
     if (kbps >= 192 && khz >= 32.0) return 'SQ';
-    if (kbps >= 128 && khz >= 32.0) return 'SQ';
+    if (kbps >= 128 && khz >= 22.05) return 'SQ';
 
-    // ── Low Quality (LQ) ──────────────────────────────────────────────────────
+    // ── LQ — low quality ─────────────────────────────────────────────────────
     return 'LQ';
   }
 
-  // ── Codec helpers ──────────────────────────────────────────────────────────
+  // ── Codec detection ────────────────────────────────────────────────────────
 
-  static bool _isLosslessCodec(String? codec) {
-    if (codec == null) return false;
-    return _losslessCodecs.any((c) => codec.contains(c));
+  static bool _isPCMCodec(String? c) {
+    if (c == null) return false;
+    return _pcmCodecs.any(c.contains);
   }
 
-  static bool _isLossyCodec(String? codec) {
-    if (codec == null) return false;
-    return _lossyCodecs.any((c) => codec.contains(c));
+  static bool _isCompressedLosslessCodec(String? c) {
+    if (c == null) return false;
+    return _compressedLosslessCodecs.any(c.contains);
   }
 
-  static bool _isDSDQuality(String? codec, int sampleRate) {
-    return codec?.contains('dsd') == true ||
-        sampleRate == _dsd64SampleRate ||
-        sampleRate == _dsd128SampleRate ||
-        sampleRate == _dsd256SampleRate;
+  static bool _isLossyCodec(String? c) {
+    if (c == null) return false;
+    return _lossyCodecs.any(c.contains);
   }
 
-  // ── Bit depth inference ───────────────────────────────────────────────────
+  static bool _isDSD(String? codec, int sampleRate) {
+    if (codec != null &&
+        (codec.contains('dsd') ||
+            codec.contains('dsf') ||
+            codec.contains('dff') ||
+            codec.contains('sacd'))) return true;
+    return sampleRate == _dsd64 ||
+        sampleRate == _dsd128 ||
+        sampleRate == _dsd256 ||
+        sampleRate == _dsd512;
+  }
 
-  /// Infers bit depth for **lossy** codecs from tagged bitrate.
-  /// Formula: bitrate ≈ sampleRate × bitDepth × channels (PCM assumption).
-  /// Valid for lossy because the tagger stores the actual encoded bitrate.
-  static int _inferBitDepth(int kbps, double khz) {
+  // ── Bit depth inference ────────────────────────────────────────────────────
+
+  /// Exact formula for **uncompressed PCM** (WAV / AIFF only).
+  /// bitrate = sampleRate × bitDepth × channels
+  /// → bitDepth = bitrate / (sampleRate × channels)
+  /// Assumes stereo (2 ch). A mono file will over-estimate by 2×, but mono
+  /// lossless is rare in music libraries and will still clamp to 24.
+  static int _inferDepthPCM(int kbps, double khz) {
     if (kbps <= 0 || khz <= 0) return 16;
-    final bps = kbps * 1000;
-    final inferredDepth = bps / (khz * 1000 * 2); // stereo assumed
-    if (inferredDepth >= 23) return 24;
-    if (inferredDepth >= 15) return 16;
-    return 8;
+    final raw = (kbps * 1000) / (khz * 1000 * 2);
+    if (raw >= 23) return 24; // allow small rounding (e.g. 23.9 at 48 kHz)
+    if (raw >= 15) return 16;
+    if (raw >= 7) return 8;
+    return 16;
   }
 
-  /// Infers bit depth for **lossless** codecs.
+  /// Heuristic for **compressed lossless** (FLAC, ALAC, APE, WavPack, TTA).
   ///
-  /// Lossless taggers report the *compressed* output bitrate, not raw PCM.
-  /// FLAC/ALAC typically achieve 40–60 % compression, so a 24-bit/96 kHz
-  /// file that should read ~4608 kbps is tagged at ~2200–2800 kbps — low
-  /// enough that the PCM formula wrongly infers 8–13 bits.
+  /// These codecs report the *compressed* bitrate in ID3/Vorbis tags,
+  /// which is NOT the raw PCM bitrate. Applying the PCM formula directly
+  /// produces a wrong result (infers 8–13 bits for a real 24-bit file).
   ///
-  /// Strategy:
-  /// - Very high sample rates (≥ 88.2 kHz) are virtually always 24-bit in
-  ///   real-world releases; treat them as 24-bit when metadata is absent.
-  /// - For CD-range sample rates, back-calculate with a ~1.8× expansion
-  ///   factor (inverse of typical lossless compression ratio).
-  static int _inferBitDepthLossless(int kbps, double khz) {
-    // High sample rates essentially never carry 8-bit audio commercially.
-    // Almost all 88.2 / 96 / 176.4 / 192 kHz releases are 24-bit masters.
+  /// Real-world compressed bitrate ranges (stereo music, typical FLAC):
+  ///   16-bit / 44.1 kHz → 600–1100 kbps
+  ///   24-bit / 44.1 kHz → 1100–1900 kbps
+  ///   16-bit / 48.0 kHz → 700–1200 kbps
+  ///   24-bit / 48.0 kHz → 1200–2100 kbps
+  ///   24-bit / 88.2 kHz → 2200–3800 kbps   ← we short-circuit here
+  ///   24-bit / 96.0 kHz → 2400–4200 kbps   ← and here
+  ///   24-bit / 192.0 kHz→ 4800–8500 kbps   ← and here
+  ///
+  /// Threshold formula: `khz × 25 kbps`
+  ///   44.1 kHz → 1102 kbps  (just above typical 16-bit upper bound)
+  ///   48.0 kHz → 1200 kbps  (same rationale)
+  /// Files above the threshold are classified as 24-bit; below as 16-bit.
+  static int _inferDepthCompressedLossless(int kbps, double khz) {
+    // At these sample rates, virtually all commercially available recordings
+    // are 24-bit. No major label or audiophile source ships 16-bit 88.2+ kHz.
     if (khz >= 88.2) return 24;
 
-    if (kbps <= 0 || khz <= 0) return 16;
+    if (kbps <= 0) return 16; // no bitrate → conservative fallback
 
-    // Approximate raw PCM bitrate by inverting typical ~55 % compression.
-    // 1 / 0.55 ≈ 1.82; we use 1.8 as a conservative midpoint.
-    const compressionExpansion = 1.8;
-    final estimatedRawKbps = kbps * compressionExpansion;
-    final inferredDepth = (estimatedRawKbps * 1000) / (khz * 1000 * 2);
-
-    if (inferredDepth >= 20) return 24; // allow rounding slack
-    return 16; // conservative default for lossless
+    // Sample-rate-proportional threshold between 16-bit and 24-bit FLAC ranges
+    final threshold = khz * 25.0; // kbps
+    return kbps >= threshold ? 24 : 16;
   }
 
-  // ── Normalization ──────────────────────────────────────────────────────────
+  // ── Normalisation ──────────────────────────────────────────────────────────
 
-  static int _normalizeKbps(int bitrate) {
-    // Some tags store bitrate in bps instead of kbps
-    return bitrate > 10000 ? bitrate ~/ 1000 : bitrate;
-  }
+  /// Some taggers write bitrate in bps instead of kbps (e.g. 1411200 vs 1411).
+  static int _normalizeKbps(int bitrate) =>
+      bitrate > 10000 ? bitrate ~/ 1000 : bitrate;
 
-  static double _normalizeKhz(int sampleRate) {
-    // Some tags store sample rate pre-divided (e.g. 44 instead of 44100)
-    return sampleRate >= 1000 ? sampleRate / 1000.0 : sampleRate.toDouble();
-  }
+  /// Some taggers write sample rate pre-divided (e.g. 44 instead of 44100).
+  static double _normalizeKhz(int sampleRate) =>
+      sampleRate >= 1000 ? sampleRate / 1000.0 : sampleRate.toDouble();
 
   // ── Technical specs string ─────────────────────────────────────────────────
 
@@ -197,13 +247,14 @@ class AudioQualityCalculator {
     String? codec,
     int? bitDepth,
   }) {
-    if (bitrate == null || sampleRate == null) return 'Unknown Format';
-
-    final kbps = _normalizeKbps(bitrate);
-    final khz = _normalizeKhz(sampleRate).toStringAsFixed(1);
-    final bitDepthStr = bitDepth != null ? ' / $bitDepth-bit' : '';
-    final codecStr = codec != null ? ' / $codec' : '';
-
-    return '$khz kHz$bitDepthStr / $kbps kbps$codecStr';
+    if (sampleRate == null && bitrate == null) return 'Unknown Format';
+    final parts = <String>[];
+    if (sampleRate != null) {
+      parts.add('${_normalizeKhz(sampleRate).toStringAsFixed(1)} kHz');
+    }
+    if (bitDepth != null) parts.add('$bitDepth-bit');
+    if (bitrate != null) parts.add('${_normalizeKbps(bitrate)} kbps');
+    if (codec != null && codec.isNotEmpty) parts.add(codec.toUpperCase());
+    return parts.join(' · ');
   }
 }

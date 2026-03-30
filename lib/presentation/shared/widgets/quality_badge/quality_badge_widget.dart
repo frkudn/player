@@ -1,450 +1,317 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 
-// ── Tier configuration ────────────────────────────────────────────────────────
+// ── Tier visual config ────────────────────────────────────────────────────────
 
-/// Immutable visual config for a quality tier badge.
-class _TierConfig {
-  final List<Color> gradient; // 3-stop gradient, top-left → bottom-right
-  final Color glow; // box-shadow / pulse ring colour
-  final Color shimmer; // shimmer sweep highlight colour
+/// All visual properties for a single quality tier, held as const instances.
+/// Zero allocation per build — configs are resolved once at compile time.
+@immutable
+class _TierStyle {
+  final List<Color> gradient; // 3-stop, dark anchor → vivid mid → bright tip
+  final Color glowColor;
   final String label;
   final IconData? icon;
-  final bool hasPulse; // animated ring (DSD only)
-  final bool hasShimmer; // moving shimmer sweep (DSD + MQ)
 
-  const _TierConfig({
+  const _TierStyle({
     required this.gradient,
-    required this.glow,
-    required this.shimmer,
+    required this.glowColor,
     required this.label,
     this.icon,
-    this.hasPulse = false,
-    this.hasShimmer = false,
   });
 
-  static _TierConfig of(String quality) {
+  // ── Static tier map ───────────────────────────────────────────────────────
+  //
+  // DSD  : Deep black/charcoal with molten gold — ultra-premium, one-of-a-kind
+  // MQ   : Deep crimson → vivid red → rose       — "super quality", powerful
+  // HR   : Deep amber → pure gold → pale gilt     — "high resolution", precious
+  // HQ   : Deep navy → cobalt → sky blue          — solid, trustworthy, clear
+  // SQ   : Deep forest → emerald → sage           — decent, natural
+  // LQ   : Charcoal → slate → silver              — muted, understated
+
+  static const _TierStyle dsd = _TierStyle(
+    gradient: [Color(0xFF1A1100), Color(0xFF7A5200), Color(0xFFF0C040)],
+    glowColor: Color(0xFFD4A017),
+    label: 'DSD',
+    icon: Icons.graphic_eq_rounded,
+  );
+
+  static const _TierStyle mq = _TierStyle(
+    gradient: [Color(0xFF2D0000), Color(0xFFB71C1C), Color(0xFFEF5350)],
+    glowColor: Color(0xFFB71C1C),
+    label: 'MQ',
+    icon: Icons.workspace_premium_rounded,
+  );
+
+  static const _TierStyle hr = _TierStyle(
+    gradient: [Color(0xFF2B1900), Color(0xFF9A6500), Color(0xFFFFBF00)],
+    glowColor: Color(0xFFC88A00),
+    label: 'Hi-Res',
+    icon: Icons.diamond_rounded,
+  );
+
+  static const _TierStyle hq = _TierStyle(
+    gradient: [Color(0xFF091630), Color(0xFF1255B5), Color(0xFF4B8AE8)],
+    glowColor: Color(0xFF1565C0),
+    label: 'HQ',
+  );
+
+  static const _TierStyle sq = _TierStyle(
+    gradient: [Color(0xFF0A2015), Color(0xFF1A7A3A), Color(0xFF48BB7A)],
+    glowColor: Color(0xFF2E7D32),
+    label: 'SQ',
+  );
+
+  static const _TierStyle lq = _TierStyle(
+    gradient: [Color(0xFF1C1C1C), Color(0xFF5A5A5A), Color(0xFFA0A0A0)],
+    glowColor: Color(0xFF607D8B),
+    label: 'LQ',
+  );
+
+  static _TierStyle of(String quality) {
     switch (quality) {
-      // ── DSD ── fiery amber-orange, analog warmth
       case 'DSD':
-        return const _TierConfig(
-          gradient: [Color(0xFFFF6B00), Color(0xFFE53000), Color(0xFFFF9500)],
-          glow: Color(0xFFFF5500),
-          shimmer: Color(0xFFFFCC80),
-          label: 'DSD',
-          icon: Icons.graphic_eq_rounded,
-          hasPulse: true,
-          hasShimmer: true,
-        );
-
-      // ── MQ ── deep amethyst, studio luxury
+        return dsd;
       case 'MQ':
-        return const _TierConfig(
-          gradient: [Color(0xFF6A0DAD), Color(0xFF9C27B0), Color(0xFFCE93D8)],
-          glow: Color(0xFF9C27B0),
-          shimmer: Color(0xFFEDD8F5),
-          label: 'MQ',
-          icon: Icons.auto_awesome_rounded,
-          hasPulse: false,
-          hasShimmer: true,
-        );
-
-      // ── HR ── sapphire teal, JEITA Hi-Res standard colour family
+        return mq;
       case 'HR':
-        return const _TierConfig(
-          gradient: [Color(0xFF006064), Color(0xFF00897B), Color(0xFF4DB6AC)],
-          glow: Color(0xFF00897B),
-          shimmer: Color(0xFFB2EBF2),
-          label: 'Hi-Res',
-          icon: Icons.diamond_rounded,
-          hasPulse: false,
-          hasShimmer: false,
-        );
-
-      // ── HQ ── cobalt blue, clear and confident
+        return hr;
       case 'HQ':
-        return const _TierConfig(
-          gradient: [Color(0xFF0D47A1), Color(0xFF1976D2), Color(0xFF64B5F6)],
-          glow: Color(0xFF1976D2),
-          shimmer: Colors.transparent,
-          label: 'HQ',
-          hasPulse: false,
-          hasShimmer: false,
-        );
-
-      // ── SQ ── jade green, solid and dependable
+        return hq;
       case 'SQ':
-        return const _TierConfig(
-          gradient: [Color(0xFF1B5E20), Color(0xFF388E3C), Color(0xFF81C784)],
-          glow: Color(0xFF388E3C),
-          shimmer: Colors.transparent,
-          label: 'SQ',
-          hasPulse: false,
-          hasShimmer: false,
-        );
-
-      // ── LQ ── cool slate, understated
+        return sq;
       default:
-        return const _TierConfig(
-          gradient: [Color(0xFF455A64), Color(0xFF607D8B), Color(0xFF90A4AE)],
-          glow: Color(0xFF607D8B),
-          shimmer: Colors.transparent,
-          label: 'LQ',
-          hasPulse: false,
-          hasShimmer: false,
-        );
+        return lq;
     }
   }
 }
 
 // ── QualityBadge ─────────────────────────────────────────────────────────────
 
-class QualityBadge extends HookWidget {
+/// Compact, mobile-optimised quality tier badge.
+///
+/// Design principles:
+///   • No hover logic — this is a touch-first Android widget
+///   • Single [AnimationController] used only when [onTap] is provided;
+///     otherwise the widget is entirely static (zero animation overhead)
+///   • [_TierStyle] instances are compile-time const — zero per-build allocation
+///   • [CustomPainter] avoided — decoration is pure [BoxDecoration]
+///   • All sizing derived from the single [size] parameter
+///
+/// Usage:
+///   QualityBadge(quality: 'HR', size: 11)
+///   QualityBadge(quality: 'DSD', size: 13, onTap: () { ... })
+class QualityBadge extends StatefulWidget {
+  /// Quality tier string: 'DSD' | 'MQ' | 'HR' | 'HQ' | 'SQ' | 'LQ'
   final String quality;
 
-  /// Scales the entire badge. `size` ≈ the font size of the label;
-  /// all internal proportions are derived from it.
+  /// Controls all proportions. Roughly equal to the label font size.
+  /// Recommended: 10–14 for list items, 14–18 for now-playing screen.
   final double size;
 
-  final bool showAnimation;
+  /// Optional tap callback. If null, no AnimationController is created.
   final VoidCallback? onTap;
 
-  // `isDark` retained for API compatibility but gradient badges look great
-  // on both light and dark surfaces without adjustment.
+  // Retained for API compatibility with existing call sites
   final bool isDark;
+  final bool showAnimation;
 
   const QualityBadge({
     super.key,
     this.quality = 'LQ',
-    this.isDark = false,
     this.size = 12,
-    this.showAnimation = true,
     this.onTap,
+    this.isDark = false,
+    this.showAnimation = true,
   });
 
   @override
+  State<QualityBadge> createState() => _QualityBadgeState();
+}
+
+class _QualityBadgeState extends State<QualityBadge>
+    with SingleTickerProviderStateMixin {
+  // Controller is created only when onTap is provided — saves resources
+  // for the common case of a non-interactive badge in a track list.
+  AnimationController? _ctrl;
+  Animation<double>? _scale;
+
+  @override
+  void initState() {
+    super.initState();
+    _setupAnimation();
+  }
+
+  @override
+  void didUpdateWidget(QualityBadge old) {
+    super.didUpdateWidget(old);
+    // If onTap toggled, create or destroy the controller accordingly
+    if ((widget.onTap != null) != (old.onTap != null)) {
+      _ctrl?.dispose();
+      _ctrl = null;
+      _scale = null;
+      _setupAnimation();
+    }
+  }
+
+  void _setupAnimation() {
+    if (widget.onTap == null || !widget.showAnimation) return;
+    _ctrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 110),
+      reverseDuration: const Duration(milliseconds: 160),
+    );
+    _scale = Tween<double>(begin: 1.0, end: 0.92).animate(
+      CurvedAnimation(parent: _ctrl!, curve: Curves.easeIn),
+    );
+  }
+
+  @override
+  void dispose() {
+    _ctrl?.dispose();
+    super.dispose();
+  }
+
+  void _onTapDown(TapDownDetails _) => _ctrl?.forward();
+  void _onTapUp(TapUpDetails _) => _ctrl?.reverse();
+  void _onTapCancel() => _ctrl?.reverse();
+
+  @override
   Widget build(BuildContext context) {
-    final config = _TierConfig.of(quality);
-    final isHovered = useState(false);
+    final style = _TierStyle.of(widget.quality);
+    final badge = _BadgeBody(style: style, size: widget.size);
 
-    // ── Controllers ─────────────────────────────────────────────────────────
-    // Hover: quick ease-out scale pop
-    final hoverCtrl = useAnimationController(
-      duration: const Duration(milliseconds: 180),
-    );
+    if (widget.onTap == null || _ctrl == null) return badge;
 
-    // Shimmer: looping sweep across the badge face (DSD + MQ)
-    final shimmerCtrl = useAnimationController(
-      duration: const Duration(milliseconds: 2600),
-    );
-
-    // Pulse: expanding ring glow (DSD only)
-    final pulseCtrl = useAnimationController(
-      duration: const Duration(milliseconds: 1700),
-    );
-
-    // ── Animation lifecycle ──────────────────────────────────────────────────
-    useEffect(() {
-      if (!showAnimation) return null;
-      if (config.hasShimmer) shimmerCtrl.repeat();
-      if (config.hasPulse) pulseCtrl.repeat(); // one-shot direction, no reverse
-      return () {
-        shimmerCtrl.stop();
-        pulseCtrl.stop();
-      };
-    }, [showAnimation, quality]);
-
-    useEffect(() {
-      if (isHovered.value) {
-        hoverCtrl.forward();
-      } else {
-        hoverCtrl.reverse();
-      }
-      return null;
-    }, [isHovered.value]);
-
-    // ── Build ────────────────────────────────────────────────────────────────
-    return MouseRegion(
-      cursor: onTap != null ? SystemMouseCursors.click : MouseCursor.defer,
-      onEnter: (_) => isHovered.value = true,
-      onExit: (_) => isHovered.value = false,
-      child: GestureDetector(
-        onTap: onTap,
-        child: AnimatedBuilder(
-          animation: Listenable.merge([hoverCtrl, shimmerCtrl, pulseCtrl]),
-          builder: (context, _) {
-            final scale = showAnimation
-                ? Tween<double>(begin: 1.0, end: 1.09)
-                    .animate(CurvedAnimation(
-                      parent: hoverCtrl,
-                      curve: Curves.easeOutBack,
-                    ))
-                    .value
-                : 1.0;
-
-            final glowAlpha = Tween<double>(begin: 0.32, end: 0.70)
-                .animate(CurvedAnimation(
-                  parent: hoverCtrl,
-                  curve: Curves.easeOut,
-                ))
-                .value;
-
-            return Transform.scale(
-              scale: scale,
-              child: Stack(
-                alignment: Alignment.center,
-                clipBehavior: Clip.none,
-                children: [
-                  // ── Expanding pulse ring (DSD) ───────────────────────────
-                  if (config.hasPulse && showAnimation)
-                    _PulseRing(
-                      controller: pulseCtrl,
-                      color: config.glow,
-                      baseHeight: size * 1.9,
-                      borderRadius: size * 0.42,
-                    ),
-
-                  // ── Main badge ───────────────────────────────────────────
-                  _BadgeFace(
-                    config: config,
-                    size: size,
-                    glowAlpha: glowAlpha,
-                    shimmerProgress: config.hasShimmer && showAnimation
-                        ? shimmerCtrl.value
-                        : -1,
-                  ),
-                ],
-              ),
-            );
-          },
+    return GestureDetector(
+      onTap: widget.onTap,
+      onTapDown: _onTapDown,
+      onTapUp: _onTapUp,
+      onTapCancel: _onTapCancel,
+      child: AnimatedBuilder(
+        animation: _scale!,
+        builder: (_, __) => Transform.scale(
+          scale: _scale!.value,
+          child: badge,
         ),
       ),
     );
   }
 }
 
-// ── Badge face ────────────────────────────────────────────────────────────────
+// ── Badge body (stateless, const-constructible) ───────────────────────────────
 
-class _BadgeFace extends StatelessWidget {
-  final _TierConfig config;
+class _BadgeBody extends StatelessWidget {
+  final _TierStyle style;
   final double size;
-  final double glowAlpha;
 
-  /// Normalised 0–1 shimmer position; -1 = disabled.
-  final double shimmerProgress;
-
-  const _BadgeFace({
-    required this.config,
-    required this.size,
-    required this.glowAlpha,
-    required this.shimmerProgress,
-  });
+  const _BadgeBody({required this.style, required this.size});
 
   @override
   Widget build(BuildContext context) {
-    final radius = BorderRadius.circular(size * 0.42);
+    final s = size;
+    final radius = BorderRadius.circular(s * 0.40);
 
     return Container(
       padding: EdgeInsets.symmetric(
-        horizontal: size * 0.58,
-        vertical: size * 0.22,
+        horizontal: s * 0.55,
+        vertical: s * 0.20,
       ),
       decoration: BoxDecoration(
         borderRadius: radius,
         gradient: LinearGradient(
-          begin: const Alignment(-0.8, -1.0),
-          end: const Alignment(0.8, 1.0),
-          colors: config.gradient,
-          stops: const [0.0, 0.5, 1.0],
+          begin: const Alignment(-0.6, -1.0),
+          end: const Alignment(0.6, 1.0),
+          colors: style.gradient,
+          stops: const [0.0, 0.50, 1.0],
         ),
+        // Colour-matched bottom glow — gives the badge depth and presence
         boxShadow: [
-          // Outer colour glow
           BoxShadow(
-            color: config.glow.withValues(alpha: glowAlpha),
-            blurRadius: size * 0.7,
-            spreadRadius: size * 0.04,
+            color: style.glowColor.withValues(alpha: 0.50),
+            blurRadius: s * 0.75,
+            spreadRadius: 0,
+            offset: Offset(0, s * 0.15),
           ),
-          // Subtle drop shadow for depth
+          // Tight inner shadow for 3D depth
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.28),
-            blurRadius: size * 0.25,
-            offset: Offset(0, size * 0.1),
+            color: Colors.black.withValues(alpha: 0.30),
+            blurRadius: s * 0.20,
+            offset: Offset(0, s * 0.08),
           ),
         ],
+        // Subtle frosted rim — separates the badge from any background
         border: Border.all(
-          color: Colors.white.withValues(alpha: 0.22),
-          width: 0.8,
+          color: Colors.white.withValues(alpha: 0.20),
+          width: 0.7,
         ),
       ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(size * 0.35),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            // ── Shimmer sweep ──────────────────────────────────────────────
-            if (shimmerProgress >= 0)
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: _ShimmerPainter(
-                    progress: shimmerProgress,
-                    color: config.shimmer,
-                  ),
+      child: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none,
+        children: [
+          // ── Specular highlight — 1 px white line at the very top edge ───
+          // Gives the impression the badge is a physical object lit from above
+          Positioned(
+            top: 0,
+            left: s * 0.25,
+            right: s * 0.25,
+            child: Container(
+              height: 0.75,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Colors.transparent,
+                    Colors.white.withValues(alpha: 0.52),
+                    Colors.transparent,
+                  ],
                 ),
-              ),
-
-            // ── Specular top-edge highlight ────────────────────────────────
-            Positioned(
-              top: 0,
-              left: size * 0.4,
-              right: size * 0.4,
-              child: Container(
-                height: 0.9,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Colors.transparent,
-                      Colors.white.withValues(alpha: 0.55),
-                      Colors.transparent,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(1),
-                ),
+                borderRadius: BorderRadius.circular(1),
               ),
             ),
-
-            // ── Label row ─────────────────────────────────────────────────
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (config.icon != null) ...[
-                  Icon(
-                    config.icon,
-                    color: Colors.white,
-                    size: size * 0.8,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.35),
-                        blurRadius: 3,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                  SizedBox(width: size * 0.24),
-                ],
-                Text(
-                  config.label,
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: size * 0.65,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: 0.65,
-                    height: 1.0,
-                    shadows: [
-                      Shadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        blurRadius: 4,
-                        offset: const Offset(0, 1),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-// ── Pulse ring ────────────────────────────────────────────────────────────────
-
-/// Expands outward from the badge and fades out — like a sonar ping.
-class _PulseRing extends StatelessWidget {
-  final AnimationController controller;
-  final Color color;
-  final double baseHeight;
-  final double borderRadius;
-
-  const _PulseRing({
-    required this.controller,
-    required this.color,
-    required this.baseHeight,
-    required this.borderRadius,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final expandScale = Tween<double>(begin: 1.0, end: 1.55)
-        .animate(CurvedAnimation(parent: controller, curve: Curves.easeOut))
-        .value;
-
-    final fadeOut = Tween<double>(begin: 0.55, end: 0.0)
-        .animate(CurvedAnimation(parent: controller, curve: Curves.easeIn))
-        .value;
-
-    return Transform.scale(
-      scale: expandScale,
-      child: Container(
-        height: baseHeight,
-        // Width adapts with scale; ring is purely decorative
-        width: baseHeight * 2.8,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(borderRadius),
-          border: Border.all(
-            color: color.withValues(alpha: fadeOut),
-            width: 1.4,
           ),
-        ),
+
+          // ── Label row ─────────────────────────────────────────────────────
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (style.icon != null) ...[
+                Icon(
+                  style.icon,
+                  color: Colors.white,
+                  size: s * 0.80,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withValues(alpha: 0.35),
+                      blurRadius: 3,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+                SizedBox(width: s * 0.22),
+              ],
+              Text(
+                style.label,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: s * 0.65,
+                  fontWeight: FontWeight.w800,
+                  letterSpacing: 0.55,
+                  height: 1.0,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black.withValues(alpha: 0.40),
+                      blurRadius: 4,
+                      offset: const Offset(0, 1),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
-}
-
-// ── Shimmer painter ───────────────────────────────────────────────────────────
-
-/// Paints a diagonal light-streak that sweeps left → right once per cycle.
-///
-/// `progress` is the raw 0–1 animation value.
-/// The sweep overshoots on both sides so the transition is smooth even
-/// at the edges of short badges.
-class _ShimmerPainter extends CustomPainter {
-  final double progress;
-  final Color color;
-
-  const _ShimmerPainter({required this.progress, required this.color});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    // Map 0–1 progress to a centerX that travels from -40 % to 140 % width
-    final centerX = size.width * (-0.4 + progress * 1.8);
-    final beamWidth = size.width * 0.45;
-
-    final rect = Rect.fromCenter(
-      center: Offset(centerX, size.height / 2),
-      width: beamWidth,
-      height: size.height,
-    );
-
-    final paint = Paint()
-      ..shader = LinearGradient(
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight,
-        colors: [
-          color.withAlpha(0),
-          color.withAlpha(55),
-          color.withAlpha(0),
-        ],
-        stops: const [0.0, 0.5, 1.0],
-      ).createShader(rect);
-
-    // Clip to badge bounds before drawing
-    canvas.drawRect(Rect.fromLTWH(0, 0, size.width, size.height), paint);
-  }
-
-  @override
-  bool shouldRepaint(_ShimmerPainter old) => old.progress != progress;
 }
