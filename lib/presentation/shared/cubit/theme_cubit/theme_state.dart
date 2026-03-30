@@ -167,7 +167,7 @@ class ThemeState extends Equatable {
         playerStyleIndex: themeBox.get(MyHiveKeys.playerStyleIndex) ?? 0,
         hideStatusBar: themeBox.get(MyHiveKeys.hideStatusBar) ?? false,
         miniPlayerStyleIndex:
-            themeBox.get(MyHiveKeys.miniPlayerStyleIndex) ?? 0,
+            themeBox.get(MyHiveKeys.miniPlayerStyleIndex) ?? 2,
       );
 
   ThemeState copyWith({
