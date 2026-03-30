@@ -22,7 +22,7 @@ class VolumeState extends Equatable {
   }
 
   factory VolumeState.initial() =>
-      VolumeState(audioPlayerVolume: 0.5, showVolumeBar: false, systemVolume: 0.3);
+      VolumeState(audioPlayerVolume: 0.9, showVolumeBar: false, systemVolume: 0.3);
 
   @override
   List<Object> get props => [audioPlayerVolume, showVolumeBar, systemVolume];
