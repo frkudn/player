@@ -122,7 +122,7 @@ class ThemeState extends Equatable {
 
   factory ThemeState.initial() => ThemeState(
         defaultTheme: themeBox.get(MyHiveKeys.defaultTheme) ?? true,
-        primaryColor: themeBox.get(MyHiveKeys.primaryColor) ?? 0xFFF43F5E,
+        primaryColor: themeBox.get(MyHiveKeys.primaryColor) ?? 0xFF84CC16, // Lime
         useMaterial3: themeBox.get(MyHiveKeys.useMaterial3) ?? true,
         isBlackMode: themeBox.get(MyHiveKeys.isBlackMode) ?? false,
         isDarkMode: themeBox.get(MyHiveKeys.isDarkMode) ?? false,
