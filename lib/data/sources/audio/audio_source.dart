@@ -53,12 +53,12 @@ class AudioSource {
     '.ogg', // Ogg Vorbis
     '.opus', // Opus codec in Ogg container — modern, efficient
     '.wma', // Windows Media Audio
-    '.mp4', // MPEG-4 video container — often contains audio-only files
-    '.3gp', // 3GPP — common on older Android recordings
     '.alac', // Apple Lossless
     '.ape', // Monkey's Audio lossless
     '.dsf', // DSD Stream File (audiophile)
     '.mka', // Matroska Audio container
+    //  '.mp4', // MPEG-4 video container — often contains audio-only files
+    //  '.3gp', // 3GPP — common on older Android recordings
   ];
 
   // ── Directories to skip during recursive scan ─────────────────────────────
