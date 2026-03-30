@@ -10,9 +10,13 @@
 
     <!-- ✅ Fixed: was maxSdkVersion="29" which silently excluded Android 10–12 (API 29–32).
          Android 12 is API 32, so it never received this permission and couldn't read audio files.
-         maxSdkVersion="32" now correctly covers Android 10, 11, and 12. -->
+         maxSdkVersion="32" now correctly covers Android 10, 11, and 12.
+         tools:replace overrides the conflicting maxSdkVersion="29" injected by permission_handler -->
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="29" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32"
+        tools:replace="android:maxSdkVersion" />
 
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" android:minSdkVersion="30" />
     <uses-permission android:name="android.permission.INTERNET" />
