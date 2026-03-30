@@ -170,7 +170,7 @@ class _AudioTile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                         child: audio.thumbnail.isEmpty
                             ? Image.asset(
-                                AppImages.defaultProfile,
+                                AppImages.defaultThumbnail,
                               )
                             : Image.memory(
                                 width: isPlaying ? 77 : 70,
