@@ -96,7 +96,7 @@ class AudioPlayerThumbnailCardWidget extends StatelessWidget {
             filterQuality: FilterQuality.high,
             fit: BoxFit.cover,
             image: AssetImage(
-              AppImages.defaultProfile,
+              AppImages.defaultThumbnail,
             ),
           )),
     );
