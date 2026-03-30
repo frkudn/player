@@ -16,7 +16,7 @@
 <br/>
 
 [![Visit Site](https://img.shields.io/badge/🌐%20Official%20Website-000000?style=for-the-badge&logoColor=white)](https://frkudn.github.io/player/)
-[![Download APK](https://img.shields.io/badge/⬇️%20Download%20APK-1a1a2e?style=for-the-badge&logoColor=white)](https://github.com/frkudn/player/releases/download/v2.0.1/player.-v1.0.1.apk)
+[![Download APK](https://img.shields.io/badge/⬇️%20Download%20APK-1a1a2e?style=for-the-badge&logoColor=white)](https://github.com/frkudn/player/releases/download/v2.0.1/app-arm64-v8a-release.apk)
 [![GitHub Releases](https://img.shields.io/badge/📦%20All%20Releases-16213e?style=for-the-badge&logoColor=white)](https://github.com/frkudn/player/releases)
 
 <br/>
@@ -141,7 +141,7 @@ Option 2 — Build from Source
   → Clone the repo, run `flutter pub get`, then `flutter run`
 ```
 
-[![Download Latest APK](https://img.shields.io/badge/⬇️%20Download%20Latest%20APK-4f46e5?style=for-the-badge)](https://github.com/frkudn/player/releases/download/v2.0.1/player.-v1.0.1.apk)
+[![Download Latest APK](https://img.shields.io/badge/⬇️%20Download%20Latest%20APK-4f46e5?style=for-the-badge)](https://github.com/frkudn/player/releases/download/v2.0.1/app-arm64-v8a-release.apk)
 [![All Releases](https://img.shields.io/badge/📦%20Browse%20All%20Releases-374151?style=for-the-badge)](https://github.com/frkudn/player/releases)
 
 <br/>
