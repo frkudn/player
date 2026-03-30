@@ -32,7 +32,7 @@
 
 <br/>
 
-## ✦ Why Player?
+## ✦ Why Open Player?
 
 > _Most media apps trade your attention for revenue — through ads, paywalls, and data harvesting. Player takes a different path._
 
@@ -272,7 +272,7 @@ See [`LICENSE`](LICENSE) for the full terms.
 
 **Pure Music. Pure Experience.**
 
-_Player — Your Music, Your Rules._
+_Open Player — Your Music, Your Rules._
 
 <br/>
 
