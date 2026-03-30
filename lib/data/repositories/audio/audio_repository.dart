@@ -173,13 +173,66 @@ class AudioRepository implements AudioRepositoryBase {
 
   // ── Metadata extractors ────────────────────────────────────────────────────
 
-  /// Returns the filename (without extension) as the track title.
-  /// Falls back to raw basename if cleanup fails.
-  /// TODO: Prefer metadata.title when available and well-formed.
+  /// Extracts a clean title from the filename when metadata is unavailable.
+  ///
+  /// Logic:
+  /// 1. Find the last occurrence of common separators: ' - ', ' – ', '-', '—'
+  /// 2. Take everything after that separator (the title part)
+  /// 3. Remove any leading track number pattern (e.g., "01-01 " or "01 ")
+  /// 4. Return the cleaned title, or the full filename if no separator found
+  ///
+  /// Examples:
+  ///   "Alan Walker - Faded.flac" → "Faded"
+  ///   "Artist - Album - Title.flac" → "Title"
+  ///   "01 - Title.flac" → "Title"
+  ///   "Drake, Wizkid & Kyla - Views - 01-12 One Dance.flac" → "One Dance"
+  String _extractTitleFromFilename(String filePath) {
+    final String name = path.basenameWithoutExtension(filePath);
+    
+    // Common separators between metadata parts
+    const separators = [' - ', ' – ', '-', '—'];
+    
+    // Find the last occurrence of any separator
+    int lastIndex = -1;
+    String usedSeparator = '';
+    for (final sep in separators) {
+      final idx = name.lastIndexOf(sep);
+      if (idx > lastIndex) {
+        lastIndex = idx;
+        usedSeparator = sep;
+      }
+    }
+    
+    // No separator found → return full filename
+    if (lastIndex == -1) return name.trim();
+    
+    // Extract everything after the separator
+    String title = name.substring(lastIndex + usedSeparator.length).trim();
+    
+    // Remove leading track number (e.g., "01-01 " or "01 ")
+    final trackPattern = RegExp(r'^\d{1,2}(?:-\d{1,2})?\s+');
+    if (trackPattern.hasMatch(title)) {
+      title = title.replaceFirst(trackPattern, '');
+    }
+    
+    return title;
+  }
+
+  /// Returns the title from metadata, falling back to filename extraction.
+  /// Priority:
+  /// 1. metadata.title if non‑empty
+  /// 2. filename title extracted via _extractTitleFromFilename()
+  /// 3. full filename (last resort)
   String _getSafeTitle(String audioPath, dynamic metadata) {
     try {
-      final String fileName = path.basenameWithoutExtension(audioPath);
-      return _cleanupText(fileName);
+      // Prefer metadata title if present
+      final metaTitle = metadata.title?.toString().trim();
+      if (metaTitle != null && metaTitle.isNotEmpty) {
+        return _cleanupText(metaTitle);
+      }
+      
+      // Fallback to filename extraction
+      return _extractTitleFromFilename(audioPath);
     } catch (_) {
       return path.basenameWithoutExtension(audioPath);
     }
