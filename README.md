@@ -7,7 +7,7 @@
 
 <br/><br/>
 
-# Player
+# Open Player
 
 ### _Local Music. Future Streaming. Zero Compromise._
 
