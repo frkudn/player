@@ -26,16 +26,13 @@ class CustomFilterChip extends StatelessWidget {
         curve: Curves.easeInOut,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
         decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).primaryColor
-              : isDarkMode
-                  ? Colors.grey.shade800
-                  : Colors.grey.shade200,
+          color:
+              isSelected ? Theme.of(context).primaryColor : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: Colors.grey.withValues(alpha:0.5),
+                    color: Colors.grey.withValues(alpha: 0.5),
                     blurRadius: 10,
                     spreadRadius: 2,
                   )
@@ -47,15 +44,13 @@ class CustomFilterChip extends StatelessWidget {
             Text(
               label.toUpperCase(),
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.grey.shade400,
+                color: isSelected ? Colors.white : Colors.white70,
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
               ),
             ),
-            
-
-            sideWidget??nothing
+            sideWidget ?? nothing
           ],
         ),
       ),

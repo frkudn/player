@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:open_player/base/router/router.dart';
 import 'package:open_player/presentation/features/local_audio_player/bloc/audio_player_bloc.dart';
 import 'package:open_player/presentation/shared/widgets/nothing_widget.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class AudioPageAppBarSearchBarWidget extends StatelessWidget {
   const AudioPageAppBarSearchBarWidget({
@@ -28,25 +29,23 @@ class AudioPageAppBarSearchBarWidget extends StatelessWidget {
                 left: mqWidth * 0.01,
                 right: mqWidth * 0.01,
               ),
-              child: Card(
-                child: Container(
-                  height: mqHeight * 0.05,
-                  width: mqWidth,
-                  decoration: BoxDecoration(),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      children: [
-                        Icon(Icons.search),
-                        Text(
-                          "  Search songs",
-                          style: TextStyle(color: Colors.grey.shade500),
-                        ),
-                      ],
-                    ),
+              child: Container(
+                height: mqHeight * 0.05,
+                width: mqWidth,
+                decoration: BoxDecoration(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.search),
+                      Text(
+                        "  Search songs",
+                        style: TextStyle(color: Colors.grey.shade500),
+                      ),
+                    ],
                   ),
                 ),
-              ),
+              ).glassMorphic(),
             ),
           );
         } else {

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:open_player/presentation/features/main/cubit/bottom_nav_bar_cubit.dart';
-import 'package:open_player/presentation/features/online_section/cubit/online_section_cubit.dart';
 import 'package:open_player/presentation/shared/cubit/theme_cubit/theme_cubit.dart';
 import 'package:open_player/presentation/shared/cubit/theme_cubit/theme_state.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -82,10 +81,7 @@ class CustomBottomNavBarWidget extends StatelessWidget {
     // Hides the nav bar when the user taps "Hide nav bar" in the online section.
     // OnlineSectionCubit.showNavBar() is called in dispose() of OnlineMusicMainPage
     // so the bar always comes back when the user leaves the online tab.
-    return BlocSelector<OnlineSectionCubit, OnlineSectionState, bool>(
-      selector: (s) => s.navBarHidden,
-      builder: (_, hidden) {
-        if (hidden) return const SizedBox.shrink();
+   
         return BlocBuilder<ThemeCubit, ThemeState>(
           builder: (ctx, th) =>
               BlocBuilder<BottomNavBarCubit, BottomNavBarState>(
@@ -112,8 +108,7 @@ class CustomBottomNavBarWidget extends StatelessWidget {
             },
           ),
         );
-      },
-    );
+    
   }
 }
 

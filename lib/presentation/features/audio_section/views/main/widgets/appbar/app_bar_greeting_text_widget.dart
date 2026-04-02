@@ -13,7 +13,13 @@ class AppBarGreetingTextWidget extends StatelessWidget {
     return BlocSelector<GreetingCubit, GreetingState, String>(
         selector: (state) => state.greeting,
         builder: (context, state) {
-          return state.text.minFontSize(20).fontFamily(AppFonts.arizonia).make();
+          return state.text
+              .minFontSize(20)
+              .white
+              .shadowColor(Colors.black54)
+              .shadowBlur(0.4)
+              .fontFamily(AppFonts.arizonia)
+              .make();
         });
   }
 }

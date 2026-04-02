@@ -1,1093 +1,1165 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Player — Freedom in Every Note</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        :root {
-            --bg-primary: #121212;
-            --bg-secondary: #181818;
-            --bg-elevated: #242424;
-            --text-primary: #ffffff;
-            --text-secondary: #b3b3b3;
-            --text-muted: #727272;
-            --accent: #1db954;
-            --accent-hover: #1ed760;
-            --purple: #8b5cf6;
-            --blue: #3b82f6;
-            --pink: #ec4899;
-            --border: rgba(255, 255, 255, 0.1);
-        }
-
-        [data-theme="light"] {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f6f6f6;
-            --bg-elevated: #ffffff;
-            --text-primary: #000000;
-            --text-secondary: #6a6a6a;
-            --text-muted: #8e8e8e;
-            --accent: #1db954;
-            --accent-hover: #1ed760;
-            --border: rgba(0, 0, 0, 0.1);
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-            overflow-x: hidden;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Navigation */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            backdrop-filter: blur(20px);
-            background: rgba(18, 18, 18, 0.8);
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
-
-        [data-theme="light"] .nav {
-            background: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Hero Background Effect */
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(ellipse at top, rgba(29, 185, 84, 0.15), transparent 50%),
-                        radial-gradient(ellipse at bottom right, rgba(139, 92, 246, 0.15), transparent 50%),
-                        radial-gradient(ellipse at bottom left, rgba(59, 130, 246, 0.15), transparent 50%);
-            pointer-events: none;
-        }
-
-        /* Gradient Mesh */
-        .gradient-mesh {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: 
-                radial-gradient(at 27% 37%, rgba(29, 185, 84, 0.3) 0px, transparent 50%),
-                radial-gradient(at 97% 21%, rgba(139, 92, 246, 0.2) 0px, transparent 50%),
-                radial-gradient(at 52% 99%, rgba(59, 130, 246, 0.2) 0px, transparent 50%),
-                radial-gradient(at 10% 29%, rgba(236, 72, 153, 0.2) 0px, transparent 50%);
-            filter: blur(80px);
-            opacity: 0.5;
-            pointer-events: none;
-        }
-
-        /* Theme Toggle */
-        .theme-switch {
-            width: 56px;
-            height: 28px;
-            background: var(--bg-elevated);
-            border-radius: 100px;
-            position: relative;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 1px solid var(--border);
-        }
-
-        .theme-switch-thumb {
-            width: 22px;
-            height: 22px;
-            background: var(--accent);
-            border-radius: 50%;
-            position: absolute;
-            top: 2px;
-            left: 2px;
-            transition: transform 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 11px;
-        }
-
-        [data-theme="light"] .theme-switch-thumb {
-            transform: translateX(28px);
-        }
-
-        /* Buttons */
-        .btn {
-            padding: 14px 32px;
-            border-radius: 500px;
-            font-weight: 700;
-            font-size: 14px;
-            letter-spacing: 0.1em;
-            text-transform: uppercase;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #000;
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-hover);
-            transform: scale(1.04);
-        }
-
-        .btn-outline {
-            background: transparent;
-            color: var(--text-primary);
-            border: 2px solid var(--text-primary);
-        }
-
-        .btn-outline:hover {
-            background: var(--text-primary);
-            color: var(--bg-primary);
-        }
-
-        /* Cards */
-        .card {
-            background: var(--bg-elevated);
-            border-radius: 16px;
-            padding: 32px;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid var(--border);
-        }
-
-        .card:hover {
-            transform: translateY(-4px);
-            border-color: var(--accent);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-        }
-
-        /* Screenshot Gallery */
-        .screenshot-gallery {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 20px;
-        }
-
-        .screenshot-item {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            transition: all 0.4s ease;
-            cursor: pointer;
-        }
-
-        .screenshot-item.portrait {
-            grid-column: span 4;
-            aspect-ratio: 9/19.5;
-        }
-
-        .screenshot-item.landscape {
-            grid-column: span 12;
-            aspect-ratio: 16/9;
-        }
-
-        @media (max-width: 768px) {
-            .screenshot-item.portrait,
-            .screenshot-item.landscape {
-                grid-column: span 12;
-            }
-        }
-
-        .screenshot-item:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
-        }
-
-        .screenshot-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        .screenshot-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.8) 100%);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            display: flex;
-            align-items: flex-end;
-            padding: 24px;
-        }
-
-        .screenshot-item:hover .screenshot-overlay {
-            opacity: 1;
-        }
-
-        .view-full-btn {
-            background: var(--accent);
-            color: #000;
-            padding: 12px 24px;
-            border-radius: 100px;
-            font-weight: 700;
-            font-size: 13px;
-            letter-spacing: 0.05em;
-            text-transform: uppercase;
-            border: none;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .view-full-btn:hover {
-            background: var(--accent-hover);
-            transform: scale(1.05);
-        }
-
-        /* Modal/Lightbox */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 2000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            backdrop-filter: blur(10px);
-            animation: fadeIn 0.3s ease;
-        }
-
-        .modal.active {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            max-width: 90%;
-            max-height: 90vh;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-            animation: scaleIn 0.3s ease;
-        }
-
-        @keyframes scaleIn {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        .modal-close {
-            position: absolute;
-            top: 30px;
-            right: 30px;
-            width: 48px;
-            height: 48px;
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 24px;
-            color: var(--text-primary);
-            transition: all 0.3s ease;
-        }
-
-        .modal-close:hover {
-            background: var(--accent);
-            color: #000;
-            transform: rotate(90deg);
-        }
-
-        /* Feature Icon */
-        .feature-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, var(--accent), var(--purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            margin-bottom: 20px;
-        }
-
-        /* Download Cards */
-        .download-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            transition: all 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .download-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 3px;
-            background: linear-gradient(90deg, var(--accent), var(--purple), var(--blue));
-            transform: scaleX(0);
-            transition: transform 0.4s ease;
-        }
-
-        .download-card:hover::before {
-            transform: scaleX(1);
-        }
-
-        .download-card:hover {
-            border-color: var(--accent);
-            transform: translateY(-6px);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
-        }
-
-        /* Contact Grid */
-        .contact-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 16px;
-        }
-
-        .contact-item {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 20px;
-            display: flex;
-            align-items: center;
-            gap: 16px;
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: var(--text-primary);
-        }
-
-        .contact-item:hover {
-            border-color: var(--accent);
-            transform: translateY(-4px);
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
-        }
-
-        .contact-icon {
-            width: 48px;
-            height: 48px;
-            border-radius: 10px;
-            background: linear-gradient(135deg, var(--accent), var(--purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 20px;
-        }
-
-        /* Developer Card */
-        .dev-card {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 32px;
-            display: flex;
-            align-items: center;
-            gap: 24px;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-
-        .dev-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), var(--purple));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 32px;
-            font-weight: 800;
-            color: white;
-            flex-shrink: 0;
-        }
-
-        /* Roadmap Items */
-        .roadmap-item {
-            background: var(--bg-elevated);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 24px;
-            transition: all 0.3s ease;
-        }
-
-        .roadmap-item:hover {
-            border-color: var(--accent);
-            transform: translateX(8px);
-        }
-
-        .roadmap-status {
-            display: inline-block;
-            padding: 6px 12px;
-            border-radius: 100px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-
-        .status-planned {
-            background: rgba(59, 130, 246, 0.2);
-            color: var(--blue);
-        }
-
-        .status-progress {
-            background: rgba(139, 92, 246, 0.2);
-            color: var(--purple);
-        }
-
-        .status-soon {
-            background: rgba(29, 185, 84, 0.2);
-            color: var(--accent);
-        }
-
-        /* Values Grid */
-        .values-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .value-item {
-            text-align: center;
-            padding: 24px;
-        }
-
-        .value-icon {
-            font-size: 48px;
-            margin-bottom: 12px;
-        }
-
-        /* Typography */
-        .display {
-            font-size: clamp(40px, 7vw, 80px);
-            font-weight: 900;
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-        }
-
-        .headline {
-            font-size: clamp(28px, 4vw, 48px);
-            font-weight: 800;
-            line-height: 1.2;
-        }
-
-        .title {
-            font-size: clamp(20px, 3vw, 32px);
-            font-weight: 700;
-        }
-
-        /* Badge */
-        .badge {
-            display: inline-block;
-            padding: 8px 16px;
-            background: rgba(29, 185, 84, 0.15);
-            color: var(--accent);
-            border-radius: 100px;
-            font-size: 13px;
-            font-weight: 600;
-            border: 1px solid rgba(29, 185, 84, 0.3);
-        }
-
-        /* Animations */
-        @keyframes fadeUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-up {
-            animation: fadeUp 0.8s ease-out forwards;
-            opacity: 0;
-        }
-
-        .delay-1 { animation-delay: 0.1s; }
-        .delay-2 { animation-delay: 0.2s; }
-        .delay-3 { animation-delay: 0.3s; }
-        .delay-4 { animation-delay: 0.4s; }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 12px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: var(--bg-secondary);
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--accent);
-            border-radius: 6px;
-        }
-
-        /* Section */
-        .section {
-            padding: 100px 24px;
-        }
-
-        @media (max-width: 768px) {
-            .section {
-                padding: 60px 16px;
-            }
-            .dev-card {
-                flex-direction: column;
-                text-align: center;
-            }
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Player — Freedom in Every Note</title>
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #080810;
+      --bg2: #0d0d1a;
+      --surface: rgba(255,255,255,0.045);
+      --surface-hover: rgba(255,255,255,0.075);
+      --border: rgba(255,255,255,0.08);
+      --border-active: rgba(255,255,255,0.18);
+      --text: #f0f0ff;
+      --text-2: rgba(240,240,255,0.55);
+      --text-3: rgba(240,240,255,0.3);
+      --accent: #a78bfa;
+      --accent2: #818cf8;
+      --glow: rgba(167,139,250,0.25);
+      --pink: #f472b6;
+      --teal: #2dd4bf;
+      --font-display: 'Sora', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    [data-theme="light"] {
+      --bg: #f0f0f8;
+      --bg2: #e8e8f4;
+      --surface: rgba(255,255,255,0.7);
+      --surface-hover: rgba(255,255,255,0.9);
+      --border: rgba(100,80,200,0.12);
+      --border-active: rgba(100,80,200,0.3);
+      --text: #1a1a2e;
+      --text-2: rgba(26,26,46,0.6);
+      --text-3: rgba(26,26,46,0.35);
+      --glow: rgba(167,139,250,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      transition: background 0.4s, color 0.4s;
+    }
+
+    /* ── SCROLLBAR ── */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(167,139,250,0.4); border-radius: 3px; }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.025;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── MESH BLOBS ── */
+    .mesh {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: 0.18;
+      animation: drift 20s ease-in-out infinite;
+    }
+    .blob1 { width: 600px; height: 600px; background: #7c3aed; top: -10%; left: -10%; animation-delay: 0s; }
+    .blob2 { width: 500px; height: 500px; background: #db2777; top: 40%; right: -10%; animation-delay: -7s; }
+    .blob3 { width: 400px; height: 400px; background: #0891b2; bottom: -5%; left: 30%; animation-delay: -14s; }
+    [data-theme="light"] .blob { opacity: 0.1; }
+
+    @keyframes drift {
+      0%, 100% { transform: translate(0, 0) scale(1); }
+      33% { transform: translate(30px, -40px) scale(1.05); }
+      66% { transform: translate(-20px, 30px) scale(0.95); }
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 900;
+      padding: 0 2rem;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      backdrop-filter: blur(24px) saturate(180%);
+      -webkit-backdrop-filter: blur(24px) saturate(180%);
+      background: rgba(8,8,16,0.6);
+      border-bottom: 1px solid var(--border);
+      transition: background 0.4s;
+    }
+    [data-theme="light"] nav { background: rgba(240,240,248,0.7); }
+
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 700; font-size: 1.1rem;
+      text-decoration: none; color: var(--text);
+    }
+    .nav-logo img { width: 28px; height: 28px; }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 2rem;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 0.85rem; font-weight: 500;
+      color: var(--text-2); text-decoration: none;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+
+    .nav-right { display: flex; align-items: center; gap: 1rem; }
+
+    /* theme pill */
+    .theme-pill {
+      width: 52px; height: 26px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      cursor: pointer;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .theme-pill-thumb {
+      position: absolute;
+      width: 20px; height: 20px;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      border-radius: 50%;
+      top: 2px; left: 2px;
+      transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px;
+    }
+    [data-theme="light"] .theme-pill-thumb { transform: translateX(26px); }
+
+    /* ── SECTIONS ── */
+    section { position: relative; z-index: 1; }
+    .section-pad { padding: 100px 2rem; }
+    @media(max-width:768px) { .section-pad { padding: 64px 1.25rem; } }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100svh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 90px 1.5rem 60px;
+      position: relative; overflow: hidden;
+    }
+
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px;
+      background: rgba(167,139,250,0.1);
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 100px;
+      font-size: 0.75rem; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 2rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero-tag-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--accent);
+      animation: pulse 2s ease infinite;
+    }
+    @keyframes pulse {
+      0%,100% { opacity:1; transform: scale(1); }
+      50% { opacity:0.4; transform: scale(0.8); }
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(2.8rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s 0.1s ease both;
+    }
+    .hero-title .grad {
+      background: linear-gradient(135deg, #c4b5fd 0%, #818cf8 40%, #f472b6 80%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero-sub {
+      font-size: clamp(1rem, 2.5vw, 1.25rem);
+      color: var(--text-2);
+      max-width: 580px;
+      line-height: 1.65;
+      margin-bottom: 2.5rem;
+      animation: fadeUp 0.6s 0.2s ease both;
+    }
+
+    .hero-btns {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+      animation: fadeUp 0.6s 0.3s ease both;
+    }
+
+    /* ── BUTTONS ── */
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 13px 28px;
+      border-radius: 100px;
+      font-family: var(--font-display);
+      font-size: 0.875rem; font-weight: 600;
+      letter-spacing: 0.01em;
+      border: none; cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4,0,0.2,1);
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #7c3aed, #6366f1);
+      color: #fff;
+      box-shadow: 0 0 0 0 var(--glow), 0 4px 20px rgba(124,58,237,0.35);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 0 30px var(--glow), 0 8px 30px rgba(124,58,237,0.4);
+    }
+    .btn-ghost {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+    }
+    .btn-ghost:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-active);
+      transform: translateY(-2px);
+    }
+
+    /* ── HERO MOCKUP STRIP ── */
+    .hero-phones {
+      margin-top: 4rem;
+      display: flex; gap: 1.5rem; justify-content: center; align-items: flex-end;
+      animation: fadeUp 0.8s 0.5s ease both;
+    }
+    .phone-wrap {
+      position: relative;
+      transition: transform 0.4s ease;
+    }
+    .phone-wrap:hover { transform: translateY(-12px) rotate(0deg) !important; }
+    .phone-wrap:nth-child(1) { transform: rotate(-4deg) translateY(12px); }
+    .phone-wrap:nth-child(2) { transform: rotate(0deg) translateY(0); z-index:2; }
+    .phone-wrap:nth-child(3) { transform: rotate(4deg) translateY(12px); }
+
+    .phone-frame {
+      width: 160px;
+      border-radius: 28px;
+      overflow: hidden;
+      border: 2px solid var(--border-active);
+      box-shadow:
+        0 40px 80px rgba(0,0,0,0.6),
+        0 0 0 1px rgba(255,255,255,0.05) inset,
+        0 20px 40px rgba(124,58,237,0.2);
+    }
+    .phone-frame img { width: 100%; display: block; }
+    .phone-glow {
+      position: absolute; bottom: -20px; left: 50%;
+      transform: translateX(-50%);
+      width: 80%; height: 40px;
+      background: radial-gradient(ellipse, var(--glow), transparent 70%);
+      filter: blur(8px);
+    }
+
+    @media(max-width:600px) {
+      .phone-frame { width: 110px; border-radius: 20px; }
+      .hero-phones { gap: 0.75rem; }
+    }
+
+    /* ── GLASS CARD ── */
+    .glass {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .glass:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-active);
+      transform: translateY(-4px);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 0 1px rgba(255,255,255,0.06) inset;
+    }
+
+    /* ── SECTION LABEL ── */
+    .section-eyebrow {
+      display: inline-block;
+      font-size: 0.72rem; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.75rem;
+    }
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 800; line-height: 1.15;
+      letter-spacing: -0.02em;
+      margin-bottom: 1rem;
+    }
+    .section-sub {
+      color: var(--text-2);
+      font-size: 1.05rem; line-height: 1.6;
+      max-width: 500px; margin: 0 auto;
+    }
+    .text-center { text-align: center; }
+    .mb-16 { margin-bottom: 4rem; }
+
+    /* ── STATS ── */
+    .stats-row {
+      display: flex; gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      max-width: 800px; margin: 0 auto;
+    }
+    .stat {
+      flex: 1;
+      padding: 28px 16px;
+      background: var(--surface);
+      text-align: center;
+      backdrop-filter: blur(12px);
+      transition: background 0.3s;
+    }
+    .stat:hover { background: var(--surface-hover); }
+    .stat-num {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 800;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.8rem; color: var(--text-2); margin-top: 4px; }
+
+    /* ── FEATURES ── */
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media(max-width:900px) { .features-grid { grid-template-columns: repeat(2,1fr); } }
+    @media(max-width:560px) { .features-grid { grid-template-columns: 1fr; } }
+
+    .feature-card {
+      padding: 28px;
+      position: relative; overflow: hidden;
+    }
+    .feature-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--accent), transparent);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .feature-card:hover::before { opacity: 1; }
+
+    .feature-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+      position: relative;
+    }
+    .fi-purple { background: rgba(139,92,246,0.15); border: 1px solid rgba(139,92,246,0.2); }
+    .fi-pink   { background: rgba(244,114,182,0.15); border: 1px solid rgba(244,114,182,0.2); }
+    .fi-teal   { background: rgba(45,212,191,0.15); border: 1px solid rgba(45,212,191,0.2); }
+    .fi-blue   { background: rgba(99,102,241,0.15); border: 1px solid rgba(99,102,241,0.2); }
+    .fi-amber  { background: rgba(251,191,36,0.15); border: 1px solid rgba(251,191,36,0.2); }
+    .fi-rose   { background: rgba(251,113,133,0.15); border: 1px solid rgba(251,113,133,0.2); }
+
+    .feature-title {
+      font-family: var(--font-display);
+      font-size: 1rem; font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+    .feature-desc { font-size: 0.875rem; color: var(--text-2); line-height: 1.55; }
+
+    /* ── SCREENSHOTS ── */
+    .screenshots-wrap {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
+      max-width: 780px; margin: 0 auto;
+    }
+    @media(max-width:640px) { .screenshots-wrap { grid-template-columns: 1fr; max-width: 280px; } }
+
+    .ss-card {
+      border-radius: 24px;
+      overflow: hidden;
+      border: 1px solid var(--border-active);
+      box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.04) inset;
+      transition: all 0.4s ease;
+      cursor: zoom-in;
+      position: relative;
+    }
+    .ss-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 40px 80px rgba(0,0,0,0.6), 0 0 30px var(--glow); }
+    .ss-card img { width: 100%; display: block; }
+    .ss-caption {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 16px 16px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.85), transparent);
+      font-size: 0.75rem; font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      letter-spacing: 0.04em; text-transform: uppercase;
+      opacity: 0; transition: opacity 0.3s;
+    }
+    .ss-card:hover .ss-caption { opacity: 1; }
+
+    /* ── LIGHTBOX ── */
+    .lightbox {
+      position: fixed; inset: 0; z-index: 9999;
+      background: rgba(0,0,0,0.92);
+      backdrop-filter: blur(20px);
+      display: none; align-items: center; justify-content: center;
+      animation: fadeIn 0.25s ease;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox img {
+      max-width: 90vw; max-height: 90svh;
+      border-radius: 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 40px 80px rgba(0,0,0,0.8);
+      animation: scaleIn 0.25s ease;
+    }
+    .lb-close {
+      position: absolute; top: 24px; right: 24px;
+      width: 44px; height: 44px; border-radius: 50%;
+      background: var(--surface); border: 1px solid var(--border);
+      color: var(--text); font-size: 1.25rem;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .lb-close:hover { background: rgba(167,139,250,0.2); transform: rotate(90deg); }
+
+    /* ── DOWNLOAD ── */
+    .download-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+    @media(max-width:760px) { .download-grid { grid-template-columns: 1fr; } }
+
+    .dl-card {
+      padding: 32px;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .dl-card::after {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, #7c3aed, #6366f1, #f472b6);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .dl-card:hover::after { transform: scaleX(1); }
+
+    .dl-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+    .dl-badge {
+      display: inline-block; padding: 4px 10px;
+      border-radius: 100px; font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.06em; text-transform: uppercase;
+      background: rgba(45,212,191,0.15); color: var(--teal);
+      border: 1px solid rgba(45,212,191,0.25);
+      margin-bottom: 0.75rem; width: fit-content;
+    }
+    .dl-name {
+      font-family: var(--font-display);
+      font-size: 1.4rem; font-weight: 800;
+      margin-bottom: 0.4rem;
+    }
+    .dl-desc { font-size: 0.85rem; color: var(--text-2); margin-bottom: 1rem; }
+    .dl-size {
+      font-family: var(--font-display);
+      font-size: 2rem; font-weight: 800;
+      color: var(--accent);
+      margin-bottom: 1.5rem; margin-top: auto;
+    }
+    .btn-dl {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 13px 0;
+      background: linear-gradient(135deg, rgba(124,58,237,0.3), rgba(99,102,241,0.3));
+      border: 1px solid rgba(167,139,250,0.25);
+      border-radius: 12px;
+      color: var(--text); font-family: var(--font-display);
+      font-size: 0.875rem; font-weight: 600;
+      text-decoration: none;
+      transition: all 0.25s;
+      backdrop-filter: blur(8px);
+    }
+    .btn-dl:hover {
+      background: linear-gradient(135deg, rgba(124,58,237,0.5), rgba(99,102,241,0.5));
+      border-color: rgba(167,139,250,0.5);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(124,58,237,0.25);
+    }
+
+    /* ── ROADMAP ── */
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+    }
+    @media(max-width:680px) { .roadmap-grid { grid-template-columns: 1fr; } }
+
+    .rm-card {
+      padding: 24px;
+      display: flex; gap: 1rem; align-items: flex-start;
+      transition: all 0.3s;
+    }
+    .rm-card:hover { transform: translateX(6px); }
+
+    .rm-icon { font-size: 1.5rem; flex-shrink: 0; }
+    .rm-pill {
+      display: inline-flex; align-items: center; gap: 5px;
+      padding: 3px 10px; border-radius: 100px;
+      font-size: 0.7rem; font-weight: 600;
+      letter-spacing: 0.05em; text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .pill-soon  { background: rgba(45,212,191,0.12); color: var(--teal); border: 1px solid rgba(45,212,191,0.2); }
+    .pill-prog  { background: rgba(167,139,250,0.12); color: var(--accent); border: 1px solid rgba(167,139,250,0.2); }
+    .pill-plan  { background: rgba(99,102,241,0.12); color: var(--accent2); border: 1px solid rgba(99,102,241,0.2); }
+
+    .rm-title { font-family: var(--font-display); font-size: 0.95rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .rm-desc { font-size: 0.825rem; color: var(--text-2); line-height: 1.5; }
+
+    /* ── TECH STACK ── */
+    .tech-wrap {
+      display: flex; flex-wrap: wrap; gap: 0.75rem; justify-content: center;
+    }
+    .tech-chip {
+      padding: 8px 18px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: 0.8rem; font-weight: 600;
+      color: var(--text-2);
+      backdrop-filter: blur(8px);
+      transition: all 0.2s;
+    }
+    .tech-chip:hover { color: var(--accent); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.08); }
+
+    /* ── VALUES ── */
+    .values-grid {
+      display: grid; grid-template-columns: repeat(4,1fr); gap: 1rem;
+    }
+    @media(max-width:800px) { .values-grid { grid-template-columns: repeat(2,1fr); } }
+
+    .value-card {
+      padding: 28px 20px;
+      text-align: center;
+    }
+    .value-emoji { font-size: 2.5rem; margin-bottom: 1rem; display: block; }
+    .value-title { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; margin-bottom: 0.4rem; }
+    .value-desc { font-size: 0.8rem; color: var(--text-2); line-height: 1.5; }
+
+    /* ── DEVELOPER ── */
+    .dev-link {
+      display: inline-flex; align-items: center; gap: 1.25rem;
+      padding: 1.5rem 2.25rem;
+      border-radius: 20px;
+      text-decoration: none; color: var(--text);
+      transition: all 0.3s;
+    }
+    .dev-link:hover { transform: translateY(-6px); }
+    .dev-avatar {
+      width: 72px; height: 72px; border-radius: 50%;
+      border: 2px solid rgba(167,139,250,0.4);
+      box-shadow: 0 0 20px rgba(167,139,250,0.2);
+      object-fit: cover;
+    }
+    .dev-name { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; }
+    .dev-role { font-size: 0.85rem; color: var(--text-2); margin-top: 2px; }
+
+    /* ── CONTACT ── */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 0.875rem;
+      max-width: 860px; margin: 0 auto;
+    }
+    .contact-card {
+      padding: 18px 20px;
+      display: flex; align-items: center; gap: 12px;
+      border-radius: 16px;
+      text-decoration: none; color: var(--text);
+      transition: all 0.25s;
+    }
+    .contact-card:hover { transform: translateY(-4px); border-color: rgba(167,139,250,0.3); }
+    .ci {
+      width: 40px; height: 40px; border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      background: rgba(167,139,250,0.1);
+      flex-shrink: 0;
+    }
+    .contact-label { font-size: 0.875rem; font-weight: 600; }
+    .contact-value { font-size: 0.75rem; color: var(--text-3); }
+
+    /* ── CTA ── */
+    .cta-section {
+      position: relative; overflow: hidden;
+      text-align: center;
+    }
+    .cta-glow {
+      position: absolute; top: 50%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(124,58,237,0.2), transparent 70%);
+      pointer-events: none;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 2rem;
+      border-top: 1px solid var(--border);
+      position: relative; z-index: 1;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 1.5rem;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .footer-brand img { width: 26px; height: 26px; opacity: 0.8; }
+    .footer-brand-name { font-family: var(--font-display); font-size: 0.9rem; font-weight: 700; }
+    .footer-copy { font-size: 0.75rem; color: var(--text-3); margin-top: 2px; }
+    .footer-links { display: flex; gap: 1.5rem; }
+    .footer-links a { font-size: 0.8rem; color: var(--text-2); text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--accent); }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.65s ease, transform 0.65s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    .max-w { max-width: 1200px; margin: 0 auto; }
+
+    /* util */
+    .grid-2 { display: grid; grid-template-columns: repeat(2,1fr); gap: 1rem; }
+    @media(max-width:600px) { .grid-2 { grid-template-columns: 1fr; } }
+  </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="nav">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <img src="https://github.com/frkudn/player/raw/main/assets/svgs/logo.svg" alt="Player" class="w-8 h-8">
-                <span class="font-bold text-lg">Player</span>
-            </div>
-            <div class="flex items-center gap-6">
-                <a href="#features" class="hidden md:block hover:text-accent transition" style="color: var(--text-secondary); font-weight: 500;">Features</a>
-                <a href="#download" class="hidden md:block hover:text-accent transition" style="color: var(--text-secondary); font-weight: 500;">Download</a>
-                <a href="#roadmap" class="hidden md:block hover:text-accent transition" style="color: var(--text-secondary); font-weight: 500;">Roadmap</a>
-                <div class="theme-switch" onclick="toggleTheme()">
-                    <div class="theme-switch-thumb">
-                        <span id="theme-icon">🌙</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero -->
-    <section class="relative min-h-screen flex items-center justify-center overflow-hidden" style="padding-top: 80px;">
-        <div class="hero-bg"></div>
-        <div class="gradient-mesh"></div>
-        
-        <div class="max-w-6xl mx-auto px-6 text-center relative z-10">
-            <div class="badge fade-up">Open Source • Privacy First • Forever Free</div>
-            <h1 class="display mt-6 mb-6 fade-up delay-1">
-                Freedom in<br>Every Note
-            </h1>
-            <p class="text-xl md:text-2xl mb-12 fade-up delay-2" style="color: var(--text-secondary); max-width: 700px; margin-left: auto; margin-right: auto;">
-                The ultimate open-source media player. Local playback. Zero tracking. 
-                Infinite possibilities. Built for those who value privacy and freedom.
-            </p>
-            <div class="flex flex-wrap gap-4 justify-center fade-up delay-3">
-                <a href="#download" class="btn btn-primary">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                        <polyline points="7 10 12 15 17 10"/>
-                        <line x1="12" y1="15" x2="12" y2="3"/>
-                    </svg>
-                    Download Now
-                </a>
-                <a href="https://github.com/frkudn/player" target="_blank" class="btn btn-outline">
-                    ⭐ Star on GitHub
-                </a>
-            </div>
-        </div>
-    </section>
+<!-- Background mesh -->
+<div class="mesh" aria-hidden="true">
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+</div>
 
-    <!-- Values -->
-    <section class="section" style="background: var(--bg-secondary);">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="headline mb-4">Built on Principles</h2>
-                <p class="text-lg" style="color: var(--text-secondary);">What we stand for</p>
-            </div>
-            <div class="values-grid">
-                <div class="value-item">
-                    <div class="value-icon">🔓</div>
-                    <h3 class="font-bold mb-2">FOSS</h3>
-                    <p style="color: var(--text-secondary); font-size: 14px;">Free & Open Source Software for everyone</p>
-                </div>
-                <div class="value-item">
-                    <div class="value-icon">🔒</div>
-                    <h3 class="font-bold mb-2">Privacy</h3>
-                    <p style="color: var(--text-secondary); font-size: 14px;">Your data stays on your device, always</p>
-                </div>
-                <div class="value-item">
-                    <div class="value-icon">💬</div>
-                    <h3 class="font-bold mb-2">Freedom of Speech</h3>
-                    <p style="color: var(--text-secondary); font-size: 14px;">No censorship, no restrictions</p>
-                </div>
-                <div class="value-item">
-                    <div class="value-icon">🌍</div>
-                    <h3 class="font-bold mb-2">Open Source</h3>
-                    <p style="color: var(--text-secondary); font-size: 14px;">Transparent, auditable, community-driven</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features -->
-    <section id="features" class="section">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="headline mb-4">Everything You Need</h2>
-                <p class="text-lg" style="color: var(--text-secondary);">Powerful features for the perfect media experience</p>
-            </div>
-
-            <div class="grid md:grid-cols-3 gap-6 mb-12">
-                <div class="card">
-                    <div class="feature-icon">🎵</div>
-                    <h3 class="title mb-3">Audio & Video</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.6;">Play all your local media files with 50+ format support</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">🎚️</div>
-                    <h3 class="title mb-3">10-Band EQ</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.6;">Professional audio control with bass boost & effects</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">🎨</div>
-                    <h3 class="title mb-3">Themes</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.6;">Dark/Light modes with custom accent colors</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">📝</div>
-                    <h3 class="title mb-3">Lyrics & Subs</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.6;">Time-synced lyrics and subtitle support</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">📱</div>
-                    <h3 class="title mb-3">PIP Mode</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.6;">Picture-in-Picture and floating window</p>
-                </div>
-                <div class="card">
-                    <div class="feature-icon">📚</div>
-                    <h3 class="title mb-3">Smart Library</h3>
-                    <p style="color: var(--text-secondary); line-height: 1.6;">Auto-scan, search, playlists, history</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Screenshots -->
-    <section class="section" style="background: var(--bg-secondary);">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="headline mb-4">Beautiful Interface</h2>
-                <p class="text-lg" style="color: var(--text-secondary);">Designed for delight</p>
-            </div>
-            <div class="screenshot-gallery">
-                <div class="screenshot-item portrait" onclick="openModal('https://github.com/frkudn/player/raw/main/assets/screenshot1.jpg')">
-                    <img src="https://github.com/frkudn/player/raw/main/assets/screenshot1.jpg" alt="Player Screenshot 1" loading="lazy">
-                    <div class="screenshot-overlay">
-                        <button class="view-full-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <polyline points="15 3 21 3 21 9"/>
-                                <polyline points="9 21 3 21 3 15"/>
-                                <line x1="21" y1="3" x2="14" y2="10"/>
-                                <line x1="3" y1="21" x2="10" y2="14"/>
-                            </svg>
-                            View Full
-                        </button>
-                    </div>
-                </div>
-                <div class="screenshot-item portrait" onclick="openModal('https://github.com/frkudn/player/raw/main/assets/screenshot2.jpg')">
-                    <img src="https://github.com/frkudn/player/raw/main/assets/screenshot2.jpg" alt="Player Screenshot 2" loading="lazy">
-                    <div class="screenshot-overlay">
-                        <button class="view-full-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <polyline points="15 3 21 3 21 9"/>
-                                <polyline points="9 21 3 21 3 15"/>
-                                <line x1="21" y1="3" x2="14" y2="10"/>
-                                <line x1="3" y1="21" x2="10" y2="14"/>
-                            </svg>
-                            View Full
-                        </button>
-                    </div>
-                </div>
-                <div class="screenshot-item landscape" onclick="openModal('https://github.com/frkudn/player/raw/main/assets/screenshot3.jpg')">
-                    <img src="https://github.com/frkudn/player/raw/main/assets/screenshot3.jpg" alt="Player Video Player" loading="lazy">
-                    <div class="screenshot-overlay">
-                        <button class="view-full-btn">
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-                                <polyline points="15 3 21 3 21 9"/>
-                                <polyline points="9 21 3 21 3 15"/>
-                                <line x1="21" y1="3" x2="14" y2="10"/>
-                                <line x1="3" y1="21" x2="10" y2="14"/>
-                            </svg>
-                            View Full
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Image Modal -->
-    <div id="imageModal" class="modal" onclick="closeModal()">
-        <div class="modal-close" onclick="closeModal()">×</div>
-        <img id="modalImage" class="modal-content" onclick="event.stopPropagation()">
+<!-- Nav -->
+<nav>
+  <a href="#" class="nav-logo">
+    <img src="https://github.com/frkudn/player/raw/main/assets/svgs/logo.svg" alt="Player">
+    Player
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#features">Features</a></li>
+    <li><a href="#screenshots">Screenshots</a></li>
+    <li><a href="#download">Download</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="theme-pill" onclick="toggleTheme()" title="Toggle theme">
+      <div class="theme-pill-thumb"><span id="theme-icon">🌙</span></div>
     </div>
+    <a href="#download" class="btn btn-primary" style="padding: 9px 20px; font-size:0.8rem;">Download</a>
+  </div>
+</nav>
 
-    <!-- Download -->
-    <section id="download" class="section">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="headline mb-4">Download Player</h2>
-                <p class="text-lg" style="color: var(--text-secondary);">Choose your architecture</p>
-            </div>
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-tag">
+    <span class="hero-tag-dot"></span>
+    v2.2.0 — Now Available
+  </div>
 
-            <div class="grid md:grid-cols-3 gap-6">
-                <div class="download-card">
-                    <div class="text-5xl mb-4">📱</div>
-                    <div class="badge mb-3" style="background: rgba(34, 197, 94, 0.15); color: #22c55e; border-color: rgba(34, 197, 94, 0.3);">Recommended</div>
-                    <h3 class="text-2xl font-bold mb-2">ARM64</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Modern devices (2017+)</p>
-                    <div class="text-3xl font-bold mb-6" style="color: var(--accent);">28.8 MB</div>
-                    <a href="https://github.com/frkudn/player/releases/download/v2.0.1/app-arm64-v8a-release.apk" class="btn btn-primary w-full" style="justify-content: center;">Download</a>
-                </div>
+  <h1 class="hero-title">
+    Freedom in<br><span class="grad">Every Note</span>
+  </h1>
 
-                <div class="download-card">
-                    <div class="text-5xl mb-4">📲</div>
-                    <h3 class="text-2xl font-bold mb-2">ARM32</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Older devices</p>
-                    <div class="text-3xl font-bold mb-6" style="color: var(--accent);">27.8 MB</div>
-                    <a href="https://github.com/frkudn/player/releases/download/v2.0.1/app-armeabi-v7a-release.apk" class="btn btn-primary w-full" style="justify-content: center;">Download</a>
-                </div>
+  <p class="hero-sub">
+    The open-source audio player that puts you in control.
+    Local playback, zero tracking, and a beautiful glassmorphic experience
+    that feels right at home.
+  </p>
 
-                <div class="download-card">
-                    <div class="text-5xl mb-4">💻</div>
-                    <h3 class="text-2xl font-bold mb-2">x86_64</h3>
-                    <p style="color: var(--text-secondary); margin-bottom: 16px;">Intel/AMD devices</p>
-                    <div class="text-3xl font-bold mb-6" style="color: var(--accent);">—</div>
-                    <a href="https://github.com/frkudn/player/releases/download/v2.0.1/app-x86_64-release.apk" class="btn btn-primary w-full" style="justify-content: center;">Download</a>
-                </div>
-            </div>
-        </div>
-    </section>
+  <div class="hero-btns">
+    <a href="#download" class="btn btn-primary">
+      <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Download Free
+    </a>
+    <a href="https://github.com/frkudn/player" target="_blank" class="btn btn-ghost">
+      ⭐ Star on GitHub
+    </a>
+  </div>
 
-    <!-- Roadmap -->
-    <section id="roadmap" class="section" style="background: var(--bg-secondary);">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="headline mb-4">What's Next</h2>
-                <p class="text-lg" style="color: var(--text-secondary);">The future of Player</p>
-            </div>
-
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-soon">Coming Soon</span>
-                    <h3 class="text-xl font-bold mb-2">🖥️ Desktop & Web Versions</h3>
-                    <p style="color: var(--text-secondary);">Windows, macOS, Linux desktop apps + offline web version for universal access</p>
-                </div>
-
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-progress">In Progress</span>
-                    <h3 class="text-xl font-bold mb-2">🎼 Hi-Res Audio Support</h3>
-                    <p style="color: var(--text-secondary);">Apple Music M4A, FLAC, DSD, ALAC - lossless audio for audiophiles</p>
-                </div>
-
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-planned">Planned</span>
-                    <h3 class="text-xl font-bold mb-2">🎬 High-Resolution Video</h3>
-                    <p style="color: var(--text-secondary);">4K, 8K support with advanced codecs (H.265, AV1, VP9)</p>
-                </div>
-
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-planned">Planned</span>
-                    <h3 class="text-xl font-bold mb-2">🔊 Dolby Atmos</h3>
-                    <p style="color: var(--text-secondary);">Spatial audio support for compatible devices</p>
-                </div>
-
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-planned">Planned</span>
-                    <h3 class="text-xl font-bold mb-2">🌐 Metadata Fetching</h3>
-                    <p style="color: var(--text-secondary);">Auto-fetch music info, lyrics, album art from internet and embed in local files</p>
-                </div>
-
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-planned">Planned</span>
-                    <h3 class="text-xl font-bold mb-2">🎥 Smart Categorization</h3>
-                    <p style="color: var(--text-secondary);">Auto-categorize movies & series, fetch IMDB/TMDB data, create beautiful libraries</p>
-                </div>
-
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-planned">Planned</span>
-                    <h3 class="text-xl font-bold mb-2">🎯 Multi-Codec Support</h3>
-                    <p style="color: var(--text-secondary);">Expand to 100+ formats including rare and professional codecs</p>
-                </div>
-
-                <div class="roadmap-item">
-                    <span class="roadmap-status status-planned">Planned</span>
-                    <h3 class="text-xl font-bold mb-2">🔌 Plugin System</h3>
-                    <p style="color: var(--text-secondary);">Community extensions, custom themes, and advanced features</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Tech Stack -->
-    <section class="section">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="headline mb-4">Built with Flutter</h2>
-                <p class="text-lg" style="color: var(--text-secondary);">Modern technology for native performance</p>
-            </div>
-            <div class="flex flex-wrap gap-3 justify-center">
-                <span class="badge">Flutter</span>
-                <span class="badge">Dart</span>
-                <span class="badge">Native Audio</span>
-                <span class="badge">Hardware Acceleration</span>
-                <span class="badge">Material Design</span>
-                <span class="badge">Cross-Platform Ready</span>
-            </div>
-        </div>
-    </section>
-
-    <!-- Developer -->
-    <section class="section" style="background: var(--bg-secondary); padding: 4rem 1rem;">
-    <style>
-        /* Premium Card Styling */
-        .dev-card-premium {
-            display: inline-flex;
-            align-items: center;
-            gap: 1.5rem;
-            padding: 1.5rem 2.5rem;
-            background: var(--bg-primary, #ffffff); /* Fallback to white if variable is missing */
-            border-radius: 1rem; /* Smooth rounded corners */
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
-            transition: all 0.3s ease;
-            text-decoration: none;
-            color: inherit;
-            border: 1px solid rgba(0,0,0,0.05);
-        }
-
-        /* Float up and glow on hover */
-        .dev-card-premium:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 15px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
-            border-color: rgba(99, 102, 241, 0.3); /* Subtle indigo glow on the border */
-        }
-
-        /* Beautiful Profile Picture */
-        .dev-avatar-img {
-            width: 85px;
-            height: 85px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid #6366f1; /* Indigo accent border */
-            box-shadow: 0 4px 10px rgba(99, 102, 241, 0.2);
-        }
-    </style>
-
-    <div class="max-w-7xl mx-auto text-center">
-        <div class="mb-10">
-            <h2 class="headline" style="font-size: 2rem; font-weight: 800;">Created By</h2>
-        </div>
-        
-        <a href="https://frkudn.github.io" target="_blank" class="dev-card-premium">
-            
-            <img src="https://github.com/frkudn.png" alt="Furkan Uddin" class="dev-avatar-img">
-            
-            <div style="text-align: left;">
-                <h3 class="text-2xl font-bold mb-1" style="margin-bottom: 0.25rem;">
-                    Furkan Uddin
-                </h3>
-                <p style="color: var(--text-secondary, #6b7280); margin: 0; font-size: 1rem;">
-                    Full Stack Developer <span style="font-weight: 500; font-size: 0.9em; opacity: 0.8;">@frkudn</span>
-                </p>
-            </div>
-        </a>
+  <!-- Phone mockups -->
+  <div class="hero-phones">
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <img src="https://github.com/frkudn/frkudn.github.io/blob/main/screenshot1.png?raw=true" alt="Audio Library" loading="lazy">
+      </div>
+      <div class="phone-glow"></div>
     </div>
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <img src="https://github.com/frkudn/frkudn.github.io/blob/main/screenshot2.png?raw=true" alt="Now Playing" loading="lazy">
+      </div>
+      <div class="phone-glow"></div>
+    </div>
+    <div class="phone-wrap">
+      <div class="phone-frame">
+        <img src="https://github.com/frkudn/frkudn.github.io/blob/main/screenshot3.png?raw=true" alt="Settings" loading="lazy">
+      </div>
+      <div class="phone-glow"></div>
+    </div>
+  </div>
 </section>
 
+<!-- ── STATS ── -->
+<section class="section-pad reveal" style="padding-top: 40px; padding-bottom: 80px;">
+  <div class="max-w">
+    <div class="stats-row">
+      <div class="stat">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">Audio Formats</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">10-Band</div>
+        <div class="stat-label">Equalizer</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">0</div>
+        <div class="stat-label">Trackers / Ads</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">MIT</div>
+        <div class="stat-label">Open Source</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- Contact -->
-    <section class="section">
-        <div class="max-w-7xl mx-auto">
-            <div class="text-center mb-16">
-                <h2 class="headline mb-4">Get in Touch</h2>
-                <p class="text-lg" style="color: var(--text-secondary);">Multiple ways to connect</p>
-            </div>
+<!-- ── VALUES ── -->
+<section class="section-pad reveal" style="padding-top: 40px;">
+  <div class="max-w">
+    <div class="values-grid">
+      <div class="value-card glass">
+        <span class="value-emoji">🔓</span>
+        <div class="value-title">Free & Open Source</div>
+        <div class="value-desc">MIT licensed, forever free. Inspect every line of code.</div>
+      </div>
+      <div class="value-card glass">
+        <span class="value-emoji">🔒</span>
+        <div class="value-title">100% Private</div>
+        <div class="value-desc">Your listening data never leaves your device. Ever.</div>
+      </div>
+      <div class="value-card glass">
+        <span class="value-emoji">🎨</span>
+        <div class="value-title">Glassmorphic UI</div>
+        <div class="value-desc">Apple-inspired frosted glass design that feels premium.</div>
+      </div>
+      <div class="value-card glass">
+        <span class="value-emoji">🌍</span>
+        <div class="value-title">Community Driven</div>
+        <div class="value-desc">Built by the community, for the community. Contributions welcome.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div class="contact-grid max-w-4xl mx-auto">
-                <a href="mailto:frkudn@protonmail.com" class="contact-item">
-                    <div class="contact-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                            <polyline points="22,6 12,13 2,6"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-semibold">Email</div>
-                        <div style="color: var(--text-secondary); font-size: 13px;">frkudn@protonmail.com</div>
-                    </div>
-                </a>
+<!-- ── FEATURES ── -->
+<section id="features" class="section-pad reveal">
+  <div class="max-w">
+    <div class="text-center mb-16">
+      <span class="section-eyebrow">Features</span>
+      <h2 class="section-title">Everything You Need</h2>
+      <p class="section-sub">Powerful audio features wrapped in a beautiful, distraction-free interface.</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card glass">
+        <div class="feature-icon fi-purple">🎵</div>
+        <div class="feature-title">Universal Audio</div>
+        <div class="feature-desc">Play any local audio file — MP3, FLAC, AAC, OGG, WAV, AIFF, M4A and 50+ more formats supported out of the box.</div>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-icon fi-teal">🎚️</div>
+        <div class="feature-title">10-Band Equalizer</div>
+        <div class="feature-desc">Professional EQ with bass boost, preamp, and preset support. Shape your sound exactly the way you want.</div>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-icon fi-pink">🎨</div>
+        <div class="feature-title">Dynamic Themes</div>
+        <div class="feature-desc">Dark & Light modes with dynamic color extraction from album art. Your player adapts to your music.</div>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-icon fi-amber">📝</div>
+        <div class="feature-title">Synced Lyrics</div>
+        <div class="feature-desc">Real-time time-synced lyrics displayed beautifully as your track plays. Never miss a word.</div>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-icon fi-blue">📚</div>
+        <div class="feature-title">Smart Library</div>
+        <div class="feature-desc">Auto-scan and organize your collection by artist, album, genre. Full-text search and smart playlists included.</div>
+      </div>
+      <div class="feature-card glass">
+        <div class="feature-icon fi-rose">⚡</div>
+        <div class="feature-title">Native Performance</div>
+        <div class="feature-desc">Hardware-accelerated playback built with Flutter for buttery smooth 60fps animations and instant response.</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-                <a href="https://github.com/frkudn" target="_blank" class="contact-item">
-                    <div class="contact-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-semibold">GitHub</div>
-                        <div style="color: var(--text-secondary); font-size: 13px;">@frkudn</div>
-                    </div>
-                </a>
+<!-- ── SCREENSHOTS ── -->
+<section id="screenshots" class="section-pad reveal">
+  <div class="max-w">
+    <div class="text-center mb-16">
+      <span class="section-eyebrow">Interface</span>
+      <h2 class="section-title">Beautiful by Design</h2>
+      <p class="section-sub">Glassmorphic audio cards and a clean layout that gets out of your way.</p>
+    </div>
+    <div class="screenshots-wrap">
+      <div class="ss-card" onclick="openLightbox('https://github.com/frkudn/frkudn.github.io/blob/main/screenshot1.png?raw=true')">
+        <img src="https://github.com/frkudn/frkudn.github.io/blob/main/screenshot1.png?raw=true" alt="Audio Library" loading="lazy">
+        <div class="ss-caption">Audio Library</div>
+      </div>
+      <div class="ss-card" onclick="openLightbox('https://github.com/frkudn/frkudn.github.io/blob/main/screenshot2.png?raw=true')">
+        <img src="https://github.com/frkudn/frkudn.github.io/blob/main/screenshot2.png?raw=true" alt="Now Playing" loading="lazy">
+        <div class="ss-caption">Now Playing</div>
+      </div>
+      <div class="ss-card" onclick="openLightbox('https://github.com/frkudn/frkudn.github.io/blob/main/screenshot3.png?raw=true')">
+        <img src="https://github.com/frkudn/frkudn.github.io/blob/main/screenshot3.png?raw=true" alt="Settings" loading="lazy">
+        <div class="ss-caption">Settings</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-                <a href="https://linkedin.com/in/frkudn" target="_blank" class="contact-item">
-                    <div class="contact-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-semibold">LinkedIn</div>
-                        <div style="color: var(--text-secondary); font-size: 13px;">@frkudn</div>
-                    </div>
-                </a>
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-close" onclick="closeLightbox()">×</div>
+  <img id="lightboxImg" src="" alt="Screenshot">
+</div>
 
-                <a href="https://discord.com/users/frkudn" target="_blank" class="contact-item">
-                    <div class="contact-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <div class="font-semibold">Discord</div>
-                        <div style="color: var(--text-secondary); font-size: 13px;">@frkudn</div>
-                    </div>
-                </a>
+<!-- ── DOWNLOAD ── -->
+<section id="download" class="section-pad reveal">
+  <div class="max-w">
+    <div class="text-center mb-16">
+      <span class="section-eyebrow">Download</span>
+      <h2 class="section-title">Get Player v2.2.0</h2>
+      <p class="section-sub">Choose the build for your device architecture.</p>
+    </div>
+    <div class="download-grid">
+      <div class="dl-card glass">
+        <div class="dl-icon">📱</div>
+        <div class="dl-badge">Recommended</div>
+        <div class="dl-name">ARM64</div>
+        <div class="dl-desc">Modern Android devices (2017+). Best performance.</div>
+        <div class="dl-size">28.8 MB</div>
+        <a href="https://github.com/frkudn/player/releases/download/v2.2.0/app-arm64-v8a-release.apk" class="btn-dl">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download APK
+        </a>
+      </div>
+      <div class="dl-card glass">
+        <div class="dl-icon">📲</div>
+        <div class="dl-name">ARM32</div>
+        <div class="dl-desc">Older Android devices. Full compatibility.</div>
+        <div class="dl-size">27.8 MB</div>
+        <a href="https://github.com/frkudn/player/releases/download/v2.2.0/app-armeabi-v7a-release.apk" class="btn-dl">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download APK
+        </a>
+      </div>
+      <div class="dl-card glass">
+        <div class="dl-icon">💻</div>
+        <div class="dl-name">x86_64</div>
+        <div class="dl-desc">Intel/AMD-based emulators and devices.</div>
+        <div class="dl-size">—</div>
+        <a href="https://github.com/frkudn/player/releases/download/v2.2.0/app-x86_64-release.apk" class="btn-dl">
+          <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download APK
+        </a>
+      </div>
+    </div>
 
-                <a href="https://github.com/frkudn/player/issues" target="_blank" class="contact-item">
-                    <div class="contact-icon">❓</div>
-                    <div>
-                        <div class="font-semibold">Anonymous</div>
-                        <div style="color: var(--text-secondary); font-size: 13px;">Report issues</div>
-                    </div>
-                </a>
-            </div>
+    <p style="text-align:center; margin-top: 2rem; font-size: 0.8rem; color: var(--text-3);">
+      All releases on
+      <a href="https://github.com/frkudn/player/releases" target="_blank" style="color: var(--accent); text-decoration: none;">GitHub Releases ↗</a>
+      &nbsp;•&nbsp; MIT Licensed &nbsp;•&nbsp; No ads, no trackers
+    </p>
+  </div>
+</section>
+
+<!-- ── ROADMAP ── -->
+<section id="roadmap" class="section-pad reveal">
+  <div class="max-w">
+    <div class="text-center mb-16">
+      <span class="section-eyebrow">Roadmap</span>
+      <h2 class="section-title">What's Coming</h2>
+      <p class="section-sub">The future of Player — community-shaped and open.</p>
+    </div>
+    <div class="roadmap-grid">
+      <div class="rm-card glass">
+        <div class="rm-icon">🖥️</div>
+        <div>
+          <div class="rm-pill pill-soon">Coming Soon</div>
+          <div class="rm-title">Desktop & Web Versions</div>
+          <div class="rm-desc">Windows, macOS, Linux desktop apps + an offline web version for universal access.</div>
         </div>
-    </section>
-
-    <!-- CTA -->
-    <section class="section" style="background: var(--bg-secondary);">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="headline mb-6">Start Your Journey</h2>
-            <p class="text-xl mb-12" style="color: var(--text-secondary);">
-                Join thousands enjoying true media freedom
-            </p>
-            <div class="flex flex-wrap gap-4 justify-center">
-                <a href="#download" class="btn btn-primary">Download Player</a>
-                <a href="https://github.com/frkudn/player" target="_blank" class="btn btn-outline">View Source</a>
-            </div>
+      </div>
+      <div class="rm-card glass">
+        <div class="rm-icon">🎼</div>
+        <div>
+          <div class="rm-pill pill-prog">In Progress</div>
+          <div class="rm-title">Hi-Res Audio Support</div>
+          <div class="rm-desc">Apple Music M4A, FLAC 24-bit, DSD, ALAC — true lossless playback for audiophiles.</div>
         </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="py-12 px-6" style="border-top: 1px solid var(--border);">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
-                <div class="flex items-center gap-3">
-                    <img src="https://github.com/frkudn/player/raw/main/assets/svgs/logo.svg" alt="Player" class="w-8 h-8">
-                    <div>
-                        <p class="font-semibold">Player</p>
-                        <p style="color: var(--text-muted); font-size: 13px;">© 2026 Furqan Uddin • MIT License</p>
-                    </div>
-                </div>
-                <div class="flex gap-8 text-sm">
-                    <a href="https://github.com/frkudn/player" target="_blank" style="color: var(--text-secondary);" class="hover:text-accent transition">GitHub</a>
-                    <a href="https://github.com/frkudn/player/issues" target="_blank" style="color: var(--text-secondary);" class="hover:text-accent transition">Issues</a>
-                    <a href="https://github.com/frkudn/player/blob/main/LICENSE" target="_blank" style="color: var(--text-secondary);" class="hover:text-accent transition">License</a>
-                    <a href="#" style="color: var(--text-secondary);" class="hover:text-accent transition">Privacy</a>
-                </div>
-            </div>
+      </div>
+      <div class="rm-card glass">
+        <div class="rm-icon">🌐</div>
+        <div>
+          <div class="rm-pill pill-plan">Planned</div>
+          <div class="rm-title">Metadata Fetching</div>
+          <div class="rm-desc">Auto-fetch album art, lyrics, and artist info from the web and embed into local files.</div>
         </div>
-    </footer>
+      </div>
+      <div class="rm-card glass">
+        <div class="rm-icon">🔊</div>
+        <div>
+          <div class="rm-pill pill-plan">Planned</div>
+          <div class="rm-title">Dolby Atmos Support</div>
+          <div class="rm-desc">Spatial audio rendering for compatible devices and headphones.</div>
+        </div>
+      </div>
+      <div class="rm-card glass">
+        <div class="rm-icon">🎯</div>
+        <div>
+          <div class="rm-pill pill-plan">Planned</div>
+          <div class="rm-title">100+ Codec Support</div>
+          <div class="rm-desc">Expand format support to rare and professional audio codecs including DXD and MQA.</div>
+        </div>
+      </div>
+      <div class="rm-card glass">
+        <div class="rm-icon">🔌</div>
+        <div>
+          <div class="rm-pill pill-plan">Planned</div>
+          <div class="rm-title">Plugin System</div>
+          <div class="rm-desc">Community extensions, custom themes, DSP plugins, and advanced audio processing.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script>
-        function toggleTheme() {
-            const html = document.documentElement;
-            const theme = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', theme);
-            document.getElementById('theme-icon').textContent = theme === 'dark' ? '🌙' : '☀️';
-            localStorage.setItem('theme', theme);
-        }
+<!-- ── TECH STACK ── -->
+<section class="section-pad reveal" style="padding-top: 40px; padding-bottom: 80px;">
+  <div class="max-w">
+    <div class="text-center mb-16">
+      <span class="section-eyebrow">Built With</span>
+      <h2 class="section-title">Modern Stack</h2>
+    </div>
+    <div class="tech-wrap">
+      <span class="tech-chip">Flutter</span>
+      <span class="tech-chip">Dart</span>
+      <span class="tech-chip">Native Audio Engine</span>
+      <span class="tech-chip">Hardware Acceleration</span>
+      <span class="tech-chip">Glassmorphism</span>
+      <span class="tech-chip">just_audio</span>
+      <span class="tech-chip">Riverpod</span>
+      <span class="tech-chip">Cross-Platform Ready</span>
+    </div>
+  </div>
+</section>
 
-        // Load theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme);
-        document.getElementById('theme-icon').textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+<!-- ── DEVELOPER ── -->
+<section class="section-pad reveal" style="padding-top:60px;">
+  <div class="max-w text-center">
+    <div class="mb-16">
+      <span class="section-eyebrow">Creator</span>
+      <h2 class="section-title">Made with ♥ by</h2>
+    </div>
+    <a href="https://frkudn.github.io" target="_blank" class="dev-link glass" style="display:inline-flex;">
+      <img src="https://github.com/frkudn.png" alt="Furkan Uddin" class="dev-avatar">
+      <div style="text-align:left;">
+        <div class="dev-name">Furkan Uddin</div>
+        <div class="dev-role">Full Stack Developer · @frkudn</div>
+      </div>
+    </a>
+  </div>
+</section>
 
-        // Modal functions
-        function openModal(imageSrc) {
-            const modal = document.getElementById('imageModal');
-            const modalImg = document.getElementById('modalImage');
-            modal.classList.add('active');
-            modalImg.src = imageSrc;
-            document.body.style.overflow = 'hidden';
-        }
+<!-- ── CONTACT ── -->
+<section class="section-pad reveal" style="padding-top:40px;">
+  <div class="max-w">
+    <div class="text-center mb-16">
+      <span class="section-eyebrow">Connect</span>
+      <h2 class="section-title">Get in Touch</h2>
+    </div>
+    <div class="contact-grid">
+      <a href="mailto:frkudn@gmail.com" class="contact-card glass">
+        <div class="ci">✉️</div>
+        <div>
+          <div class="contact-label">Email</div>
+          <div class="contact-value">frkudn@gmail.com</div>
+        </div>
+      </a>
+      <a href="https://github.com/frkudn" target="_blank" class="contact-card glass">
+        <div class="ci">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.7"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">GitHub</div>
+          <div class="contact-value">@frkudn</div>
+        </div>
+      </a>
+      <a href="https://linkedin.com/in/frkudn" target="_blank" class="contact-card glass">
+        <div class="ci">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.7"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">LinkedIn</div>
+          <div class="contact-value">@frkudn</div>
+        </div>
+      </a>
+      <a href="https://discord.com/users/frkudn" target="_blank" class="contact-card glass">
+        <div class="ci">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="opacity:0.7"><path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+        </div>
+        <div>
+          <div class="contact-label">Discord</div>
+          <div class="contact-value">@frkudn</div>
+        </div>
+      </a>
+      <a href="https://github.com/frkudn/player/issues" target="_blank" class="contact-card glass">
+        <div class="ci">🐛</div>
+        <div>
+          <div class="contact-label">Report Issue</div>
+          <div class="contact-value">GitHub Issues</div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
 
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = 'auto';
-        }
+<!-- ── CTA ── -->
+<section class="cta-section section-pad reveal">
+  <div class="cta-glow"></div>
+  <div class="max-w" style="position:relative; z-index:1;">
+    <span class="section-eyebrow">Free Forever</span>
+    <h2 class="section-title" style="margin-top:0.5rem;">Start Listening</h2>
+    <p class="section-sub" style="margin-bottom: 2.5rem;">
+      Join music lovers enjoying privacy-first, open-source audio freedom.
+    </p>
+    <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center;">
+      <a href="#download" class="btn btn-primary" style="font-size:1rem; padding:15px 36px;">
+        Download Player
+      </a>
+      <a href="https://github.com/frkudn/player" target="_blank" class="btn btn-ghost" style="font-size:1rem; padding:15px 36px;">
+        View Source
+      </a>
+    </div>
+  </div>
+</section>
 
-        // Close modal on escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-brand">
+    <img src="https://github.com/frkudn/player/raw/main/assets/svgs/logo.svg" alt="Player">
+    <div>
+      <div class="footer-brand-name">Player</div>
+      <div class="footer-copy">© 2026 Furkan Uddin · MIT License</div>
+    </div>
+  </div>
+  <div class="footer-links">
+    <a href="https://github.com/frkudn/player" target="_blank">GitHub</a>
+    <a href="https://github.com/frkudn/player/releases" target="_blank">Releases</a>
+    <a href="https://github.com/frkudn/player/issues" target="_blank">Issues</a>
+    <a href="https://github.com/frkudn/player/blob/main/LICENSE" target="_blank">License</a>
+  </div>
+</footer>
 
-        // Smooth scroll
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
+<script>
+  // Theme
+  function toggleTheme() {
+    const html = document.documentElement;
+    const next = html.dataset.theme === 'dark' ? 'light' : 'dark';
+    html.dataset.theme = next;
+    document.getElementById('theme-icon').textContent = next === 'dark' ? '🌙' : '☀️';
+    localStorage.setItem('theme', next);
+  }
+  const saved = localStorage.getItem('theme') || 'dark';
+  document.documentElement.dataset.theme = saved;
+  document.getElementById('theme-icon').textContent = saved === 'dark' ? '🌙' : '☀️';
 
-        // Nav shadow on scroll
-        window.addEventListener('scroll', () => {
-            const nav = document.querySelector('.nav');
-            if (window.scrollY > 50) {
-                nav.style.boxShadow = '0 4px 24px rgba(0, 0, 0, 0.1)';
-            } else {
-                nav.style.boxShadow = 'none';
-            }
-        });
-    </script>
+  // Lightbox
+  function openLightbox(src) {
+    const lb = document.getElementById('lightbox');
+    const img = document.getElementById('lightboxImg');
+    img.src = src;
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+  // Reveal on scroll
+  const reveals = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+  reveals.forEach(el => io.observe(el));
+
+  // Nav shadow on scroll
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.boxShadow = window.scrollY > 20 ? '0 1px 0 var(--border), 0 4px 24px rgba(0,0,0,0.3)' : '';
+  });
+</script>
 </body>
 </html>

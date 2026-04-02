@@ -49,13 +49,13 @@ class AudioFoldersPage extends StatelessWidget {
                 const SizedBox(height: 16),
                 Text('No folders found',
                     style: TextStyle(
-                        color: os.withValues(alpha: 0.45),
+                      color: Colors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600)),
                 const SizedBox(height: 6),
                 Text('No audio files were discovered',
                     style: TextStyle(
-                        color: os.withValues(alpha: 0.28), fontSize: 13)),
+                        color: Colors.white70, fontSize: 13)),
               ],
             ),
           );

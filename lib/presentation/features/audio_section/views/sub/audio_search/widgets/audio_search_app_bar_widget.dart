@@ -18,7 +18,7 @@ class AudioSearchAppBarWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-        //-- Language Code
+    //-- Language Code
     final String lc = context.languageCubit.state.languageCode;
     final mediaQuery = MediaQuery.sizeOf(context);
     return Padding(
@@ -26,44 +26,44 @@ class AudioSearchAppBarWidget extends StatelessWidget {
         horizontal: mediaQuery.width * 0.03,
         vertical: 8,
       ),
-      child: Card(
-        margin: EdgeInsets.zero,
-        shadowColor: Theme.of(context).brightness == Brightness.dark
-            ? Colors.white
-            : null,
-        elevation: 1,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.transparent,
-            borderRadius: BorderRadius.circular(10),
-          ),
-          child: Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  context.pop();
-                  query.value = "";
-                },
-                icon: const Icon(CupertinoIcons.back),
-              ),
-              Expanded(
-                child: VxTextField(
-                  autofocus: true,
-                  onChanged: (search) => query.value = search.toLowerCase(),
-                  hint: AppStrings.searchBy[lc],
-                  borderType: VxTextFieldBorderType.none,
-                  fillColor: Colors.transparent,
-                ),
-              ),
-              IconButton(
-                onPressed: onFilterTap,
-                icon: const Icon(Icons.filter_list),
-              ),
-            ],
-          ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(10),
         ),
-      ),
+        child: Row(
+          children: [
+            IconButton(
+              onPressed: () {
+                context.pop();
+                query.value = "";
+              },
+              icon: const Icon(CupertinoIcons.back),
+              color: Colors.white,
+            ),
+            Expanded(
+              child: VxTextField(
+                autofocus: true,
+                hintStyle: TextStyle(color: Colors.white70),
+                style: TextStyle(color: Colors.white),
+                onChanged: (search) => query.value = search.toLowerCase(),
+                hint: AppStrings.searchBy[lc],
+                borderType: VxTextFieldBorderType.none,
+                fillColor: Colors.transparent,
+                textInputAction: TextInputAction.search,
+                cursorColor: Colors.white,
+              ),
+            ),
+            IconButton(
+              onPressed: onFilterTap,
+              icon: const Icon(
+                Icons.filter_list,
+                color: Colors.white,
+              ),
+            ),
+          ],
+        ),
+      ).glassMorphic(),
     );
   }
 }

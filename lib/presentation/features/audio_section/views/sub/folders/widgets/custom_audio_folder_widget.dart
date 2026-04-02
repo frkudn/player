@@ -92,7 +92,7 @@ class CustomAudioFolderWidget extends StatelessWidget {
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         fontFamily: AppFonts.poppins,
-                        color: os,
+                        color: Colors.white,
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -104,7 +104,7 @@ class CustomAudioFolderWidget extends StatelessWidget {
                       dirPath,
                       style: TextStyle(
                         fontSize: 10,
-                        color: os.withValues(alpha: 0.3),
+                        color: Colors.white70
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,

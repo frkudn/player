@@ -4,7 +4,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:open_player/presentation/features/local_audio_player/widgets/audio_player_lyrics_button_widget.dart';
 import 'package:open_player/presentation/features/local_audio_player/widgets/audio_player_actions_buttons_widget.dart';
-import 'package:open_player/presentation/features/local_audio_player/widgets/audio_player_background_blur_image_widget.dart';
+import 'package:open_player/presentation/shared/widgets/active_audio_bg/active_playing_audio_background_widget.dart';
 import 'package:open_player/presentation/features/local_audio_player/widgets/audio_player_center_stack_widget.dart';
 import 'package:open_player/presentation/features/local_audio_player/widgets/audio_player_position_and_duration_widget.dart';
 import 'package:open_player/presentation/features/local_audio_player/widgets/audio_player_seek_bar_widget.dart';
@@ -108,7 +108,7 @@ class _ClassicLayout extends StatelessWidget {
     return Stack(
       children: [
         // Blurred album art background (with optional flowing animation)
-        const AudioPlayerBackgroundBlurImageWidget(),
+        const ActivePlayingAudioBackgroundWidget(),
 
         // Back button + more menu (speed, pitch, sleep timer, etc.)
         const AudioPlayerTopBarWidget(),
@@ -176,7 +176,7 @@ class _MinimalLayout extends StatelessWidget {
     return Stack(
       children: [
         // Background blur
-        const AudioPlayerBackgroundBlurImageWidget(),
+        const ActivePlayingAudioBackgroundWidget(),
 
         // Full-screen thumbnail — left:0, right:0, no insets
         // horizontalPadding:0 removes the internal padding from the widget
@@ -245,7 +245,7 @@ class _ImmersiveLayout extends StatelessWidget {
     return Stack(
       children: [
         // Full-screen blurred background
-        const AudioPlayerBackgroundBlurImageWidget(),
+        const ActivePlayingAudioBackgroundWidget(),
 
         // Full-screen thumbnail (edge-to-edge, no padding)
         AudioPlayerCenterStackWidget(

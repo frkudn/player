@@ -16,7 +16,6 @@ import 'presentation/features/local_audio_player/cubit/lyrics/lyrics_cubit.dart'
 import 'presentation/features/local_audio_player/cubit/sleep_timer/sleep_timer_cubit.dart';
 import 'presentation/features/local_audio_player/cubit/volume/volume_cubit.dart';
 import 'data/repositories/audio/audio_repository.dart';
-import 'presentation/features/online_section/cubit/online_section_cubit.dart';
 
 ///?----------------   B L O C   P R O V I D E R S   -------------///
 ///////////////////////////////////////////////////////////////////
@@ -58,6 +57,5 @@ blocProviders() {
       create: (context) => LyricsCubit(),
     ),
      BlocProvider(create: (_) => SleepTimerCubit()),
-      BlocProvider(create: (_) => OnlineSectionCubit()),
   ];
 }

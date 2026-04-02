@@ -7,6 +7,7 @@ import 'package:hugeicons/hugeicons.dart';
 import 'package:open_player/data/models/audio_model.dart';
 import 'package:open_player/data/models/audio_playlist_model.dart';
 import 'package:open_player/presentation/features/audio_section/bloc/audio_playlist_bloc/audio_playlist_bloc.dart';
+import 'package:open_player/presentation/shared/widgets/active_audio_bg/active_playing_audio_background_widget.dart';
 import 'package:open_player/utils/formater.dart';
 import '../../../../bloc/audio_bloc/audios_bloc.dart';
 import '../../../../../../shared/widgets/audio_tile_widget.dart';
@@ -25,6 +26,7 @@ class AudioPlaylistPreviewPage extends StatelessWidget {
     final scaffold = Theme.of(context).scaffoldBackgroundColor;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       body: BlocSelector<AudiosBloc, AudiosState, AudiosSuccess?>(
         selector: (s) => s is AudiosSuccess ? s : null,
         builder: (context, audioState) {
@@ -46,71 +48,80 @@ class AudioPlaylistPreviewPage extends StatelessWidget {
               final List<AudioModel> audios = List.from(currentPlaylist.audios)
                 ..sort((a, b) => a.lastModified.compareTo(b.lastModified));
 
-              return CustomScrollView(
-                slivers: [
-                  // ── Custom playlist header ────────────────────────────
-                  _PlaylistSliverAppBar(
-                    playlist: currentPlaylist,
-                    audios: audios,
-                    primary: primary,
-                    scaffold: scaffold,
-                  ),
+              return Stack(
+                children: [
+                  //--- Active Playing Audio Background
+                  ActivePlayingAudioBackgroundWidget(),
 
-                  // ── Empty state ───────────────────────────────────────
-                  if (audios.isEmpty)
-                    SliverFillRemaining(
-                      child: _EmptyPlaylist(
-                          primary: primary, onSurface: onSurface),
-                    ),
+                  CustomScrollView(
+                    slivers: [
+                      // ── Custom playlist header ────────────────────────────
+                      _PlaylistSliverAppBar(
+                        playlist: currentPlaylist,
+                        audios: audios,
+                        primary: primary,
+                        scaffold: scaffold,
+                      ),
 
-                  // ── Section label ─────────────────────────────────────
-                  if (audios.isNotEmpty)
-                    SliverToBoxAdapter(
-                      child: PreviewSectionHeader(
-                        label: 'TRACKS',
-                        trailing: Text(
-                          'Modified ${Formatter.formatDateCustom(currentPlaylist.modified)}',
-                          style: TextStyle(
-                            color: onSurface.withValues(alpha: 0.28),
-                            fontSize: 10,
+                      // ── Empty state ───────────────────────────────────────
+                      if (audios.isEmpty)
+                        SliverFillRemaining(
+                          child: _EmptyPlaylist(
+                              primary: primary, onSurface: onSurface),
+                        ),
+
+                      // ── Section label ─────────────────────────────────────
+                      if (audios.isNotEmpty)
+                        SliverToBoxAdapter(
+                          child: PreviewSectionHeader(
+                            label: 'TRACKS',
+                            trailing: Text(
+                              'Modified ${Formatter.formatDateCustom(currentPlaylist.modified)}',
+                              style: TextStyle(
+                                color: onSurface.withValues(alpha: 0.28),
+                                fontSize: 10,
+                              ),
+                            ),
                           ),
                         ),
-                      ),
-                    ),
 
-                  // ── Track list ────────────────────────────────────────
-                  if (audios.isNotEmpty)
-                    SliverList.builder(
-                      addAutomaticKeepAlives: true,
-                      itemCount: audios.length,
-                      itemBuilder: (context, index) => AudioTileWidget(
-                        audios: audios,
-                        index: index,
-                        state: audioState,
-                        showRemoveFromPlaylistButton: true,
-                        playlistRemoveOnTap: () {
-                          // ── YOUR original logic untouched ─────────────
-                          HapticFeedback.selectionClick();
-                          context.read<AudioPlaylistBloc>().add(
-                              RemoveAudioFromPlaylistEvent(
-                                  currentPlaylist, audios[index]));
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                '${audios[index].title} removed from ${currentPlaylist.name}',
-                              ),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(12)),
-                              margin: const EdgeInsets.fromLTRB(16, 0, 16, 12),
-                              duration: const Duration(seconds: 2),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                      // ── Track list ────────────────────────────────────────
+                      if (audios.isNotEmpty)
+                        SliverList.builder(
+                          addAutomaticKeepAlives: true,
+                          itemCount: audios.length,
+                          itemBuilder: (context, index) => AudioTileWidget(
+                            audios: audios,
+                            index: index,
+                            state: audioState,
+                            showRemoveFromPlaylistButton: true,
+                            playlistRemoveOnTap: () {
+                              // ── YOUR original logic untouched ─────────────
+                              HapticFeedback.selectionClick();
+                              context.read<AudioPlaylistBloc>().add(
+                                  RemoveAudioFromPlaylistEvent(
+                                      currentPlaylist, audios[index]));
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text(
+                                    '${audios[index].title} removed from ${currentPlaylist.name}',
+                                  ),
+                                  behavior: SnackBarBehavior.floating,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  margin:
+                                      const EdgeInsets.fromLTRB(16, 0, 16, 12),
+                                  duration: const Duration(seconds: 2),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
 
-                  const SliverPadding(padding: EdgeInsets.only(bottom: 120)),
+                      const SliverPadding(
+                          padding: EdgeInsets.only(bottom: 120)),
+                    ],
+                  ),
                 ],
               );
             },
@@ -149,22 +160,6 @@ class _PlaylistSliverAppBar extends StatelessWidget {
         background: Stack(
           fit: StackFit.expand,
           children: [
-            // Background: gradient mesh
-            Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    primary.withValues(alpha: 0.55),
-                    primary.withValues(alpha: 0.2),
-                    scaffold.withValues(alpha: 0.9),
-                  ],
-                  stops: const [0.0, 0.5, 1.0],
-                ),
-              ),
-            ),
-
             // Noise dots pattern
             Positioned.fill(
               child: CustomPaint(
@@ -187,23 +182,6 @@ class _PlaylistSliverAppBar extends StatelessWidget {
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 40, sigmaY: 40),
                   child: const SizedBox.expand(),
-                ),
-              ),
-            ),
-
-            // Scaffold colour bleed from bottom
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              height: 100,
-              child: DecoratedBox(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [scaffold, Colors.transparent],
-                  ),
                 ),
               ),
             ),

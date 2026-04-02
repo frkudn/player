@@ -51,7 +51,7 @@ class AudioTileMoreButtonWidget extends StatelessWidget {
         padding: EdgeInsets.all(8.0),
         child: Icon(
           HugeIcons.strokeRoundedMoreVerticalCircle01,
-          color: isPlaying ? Colors.white : null,
+          color: isPlaying ? Colors.white : Colors.white70,
         ),
       ),
     );
@@ -72,10 +72,13 @@ PopupMenuItem<dynamic> _musicAddToFavorite(int id) {
     child: ListTile(
       title: Text(
         isFavorite ? "Remove from Favorites" : "Add to Favorite",
+        style: TextStyle(color: Colors.white),
       ),
-      trailing:
-          Icon(isFavorite ? Icons.favorite : HugeIcons.strokeRoundedFavourite),
-    ),
+      trailing: Icon(
+        isFavorite ? Icons.favorite : HugeIcons.strokeRoundedFavourite,
+        color: Colors.white,
+      ),
+    ).pSymmetric(h: 4).glassMorphic(),
   );
 }
 
@@ -89,9 +92,13 @@ PopupMenuItem<dynamic> _musicAddToPlaylist(
     child: ListTile(
       title: Text(
         "Add to Playlist",
+        style: TextStyle(color: Colors.white),
       ),
-      trailing: Icon(Icons.playlist_add),
-    ),
+      trailing: Icon(
+        Icons.playlist_add,
+        color: Colors.white,
+      ),
+    ).pSymmetric(h: 4).glassMorphic(),
   );
 }
 
@@ -157,9 +164,13 @@ PopupMenuItem<dynamic> _renameMusic(
     child: const ListTile(
       title: Text(
         "Rename",
+        style: TextStyle(color: Colors.white),
       ),
-      trailing: Icon(Icons.text_snippet),
-    ),
+      trailing: Icon(
+        Icons.text_snippet,
+        color: Colors.white,
+      ),
+    ).pSymmetric(h: 4).glassMorphic(),
   );
 }
 
@@ -174,9 +185,13 @@ PopupMenuItem<dynamic> _toggleHideMusic(BuildContext context, String path) {
     child: ListTile(
       title: Text(
         isHidden ? "Unhide" : "Hide",
+        style: TextStyle(color: Colors.white),
       ),
-      trailing: Icon(isHidden ? Icons.visibility : Icons.visibility_off),
-    ),
+      trailing: Icon(
+        isHidden ? Icons.visibility : Icons.visibility_off,
+        color: Colors.white,
+      ),
+    ).pSymmetric(h: 4).glassMorphic(),
   );
 }
 
@@ -198,9 +213,13 @@ PopupMenuItem<dynamic> _deleteMusic(
     child: const ListTile(
       title: Text(
         "Delete",
+        style: TextStyle(color: Colors.white),
       ),
-      trailing: Icon(Icons.delete),
-    ),
+      trailing: Icon(
+        Icons.delete,
+        color: Colors.white,
+      ),
+    ).pSymmetric(h: 4).glassMorphic(),
   );
 }
 
@@ -213,9 +232,13 @@ PopupMenuItem<dynamic> _share(AudioModel audio) {
     child: const ListTile(
       title: Text(
         "Share",
+        style: TextStyle(color: Colors.white),
       ),
-      trailing: Icon(HugeIcons.strokeRoundedShare01),
-    ),
+      trailing: Icon(
+        HugeIcons.strokeRoundedShare01,
+        color: Colors.white,
+      ),
+    ).pSymmetric(h: 4).glassMorphic(),
   );
 }
 
@@ -233,8 +256,12 @@ PopupMenuItem<dynamic> _more(BuildContext context, AudioModel audio) {
     child: const ListTile(
       title: Text(
         "Info",
+        style: TextStyle(color: Colors.white),
       ),
-      trailing: Icon(HugeIcons.strokeRoundedInformationCircle),
-    ),
+      trailing: Icon(
+        HugeIcons.strokeRoundedInformationCircle,
+        color: Colors.white,
+      ),
+    ).pSymmetric(h: 4).glassMorphic(),
   );
 }

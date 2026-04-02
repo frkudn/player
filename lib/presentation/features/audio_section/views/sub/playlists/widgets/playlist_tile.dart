@@ -8,6 +8,7 @@ import 'package:open_player/base/assets/fonts/styles.dart';
 import 'package:open_player/base/router/router.dart';
 import 'package:open_player/data/models/audio_playlist_model.dart';
 import 'package:open_player/presentation/features/audio_section/bloc/audio_playlist_bloc/audio_playlist_bloc.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // PLAYLIST TILE
@@ -66,7 +67,8 @@ class PlaylistTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14),
-            color: Theme.of(context).colorScheme.surfaceContainerLowest,
+            // color: Theme.of(context).colorScheme.surfaceContainerLowest,
+            color: Colors.transparent,
             border: Border.all(color: os.withValues(alpha: 0.07)),
           ),
           child: Row(
@@ -102,7 +104,9 @@ class PlaylistTile extends StatelessWidget {
                         fontSize: 14,
                         fontWeight: FontWeight.w600,
                         fontFamily: AppFonts.poppins,
-                        color: os,
+                        
+                        // color: os,
+                        color: Colors.white
                       ),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -112,7 +116,8 @@ class PlaylistTile extends StatelessWidget {
                       trackCount,
                       style: TextStyle(
                         fontSize: 12,
-                        color: os.withValues(alpha: 0.45),
+                        // color: os.withValues(alpha: 0.45),
+                        color: Colors.white60
                       ),
                     ),
                   ],
@@ -174,7 +179,7 @@ class _DefaultArt extends StatelessWidget {
           size: 24,
         ),
       ),
-    );
+    ).glassMorphic(borderRadius: BorderRadius.circular(10), blur: 4);
   }
 }
 
@@ -196,7 +201,8 @@ class _MoreButton extends StatelessWidget {
       icon: Icon(
         HugeIcons.strokeRoundedMoreVertical,
         size: 20,
-        color: os.withValues(alpha: 0.40),
+        // color: os.withValues(alpha: 0.40),
+        color: Colors.white,
       ),
       onPressed: () => _showOptions(context),
       padding: EdgeInsets.zero,

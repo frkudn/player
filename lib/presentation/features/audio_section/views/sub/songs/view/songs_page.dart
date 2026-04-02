@@ -8,7 +8,6 @@ import 'package:open_player/data/models/audio_model.dart';
 import 'package:open_player/presentation/shared/widgets/audio_tile_widget.dart';
 import 'package:open_player/presentation/features/audio_section/views/sub/songs/widgets/songs_top_bar_buttons_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
-// import '../../../../../../base/db/hive_service.dart';
 import '../../../../../../../data/services/favorite_audio_hive_service/audio_hive_service.dart';
 import '../../../../bloc/audio_bloc/audios_bloc.dart';
 
@@ -56,7 +55,10 @@ class SongsPage extends HookWidget {
 
             return Stack(
               children: [
-                //------------ Songs List
+                // //----------- Still/Active Playing Audio Background ------//
+                // ActivePlayingAudioBackgroundWidget(),
+
+                //------------ Songs List  -------------//
                 RefreshIndicator(
                   onRefresh: () async {
                     context.read<AudiosBloc>().add(AudiosLoadAllEvent());
