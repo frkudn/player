@@ -140,16 +140,8 @@ class _ClassicMiniPlayer extends StatelessWidget {
             final String title =
                 ci != null ? playerState.audios[ci].title : '...';
 
-            return Card(
-              color: color ?? Theme.of(context).colorScheme.primary,
-              shadowColor: shadowColor,
-              shape: const RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.zero,
-                  bottomRight: Radius.zero,
-                ),
-              ),
-              margin: EdgeInsets.zero,
+            return Container(
+              decoration: BoxDecoration(color: Colors.transparent),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5),
                 child: Column(
@@ -242,11 +234,13 @@ class _ClassicMiniPlayer extends StatelessWidget {
                 ),
               ),
             ).glassMorphic(
-              borderRadius: const BorderRadius.only(
-                bottomLeft: Radius.zero,
-                bottomRight: Radius.zero,
-              ),
-            );
+                blur: 4,
+                borderRadius: const BorderRadius.only(
+                  bottomLeft: Radius.zero,
+                  bottomRight: Radius.zero,
+                ),
+                circularRadius: 0,
+                opacity: 0);
           },
         ),
       ),
@@ -296,7 +290,8 @@ class _CompactMiniPlayer extends StatelessWidget {
             final bool playing = snapshot.data?.playing ?? false;
 
             return Container(
-              color: color ?? Theme.of(context).colorScheme.primary,
+              // color: color ?? Theme.of(context).colorScheme.primary,
+              color: Colors.transparent,
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: Row(
                 children: [
@@ -339,7 +334,11 @@ class _CompactMiniPlayer extends StatelessWidget {
           },
         ),
       ),
-    );
+    ).glassMorphic(
+        blur: 4,
+        border: Border.all(style: BorderStyle.none),
+        circularRadius: 0,
+        opacity: 0);
   }
 }
 
@@ -387,7 +386,8 @@ class _ArtworkMiniPlayer extends StatelessWidget {
                 ci != null ? (playerState.audios[ci].artists) : '';
 
             return Container(
-              color: color ?? Theme.of(context).colorScheme.primary,
+              // color: color ?? Theme.of(context).colorScheme.primary,
+              color: Colors.transparent,
               padding: const EdgeInsets.all(6),
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -465,6 +465,10 @@ class _ArtworkMiniPlayer extends StatelessWidget {
           },
         ),
       ),
-    );
+    ).glassMorphic(
+        blur: 4,
+        border: Border.all(style: BorderStyle.none),
+        circularRadius: 0,
+        opacity: 0);
   }
 }

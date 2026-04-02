@@ -10,13 +10,12 @@ class AudioInfoSheetWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs        = Theme.of(context).colorScheme;
+    final cs = Theme.of(context).colorScheme;
     final onSurface = cs.onSurface;
-    final primary   = cs.primary;
-    final scaffold  = Theme.of(context).scaffoldBackgroundColor;
-    final cardBg    = scaffold == Colors.black
-        ? const Color(0xFF0D0D0D)
-        : cs.surface;
+    final primary = cs.primary;
+    final scaffold = Theme.of(context).scaffoldBackgroundColor;
+    final cardBg =
+        scaffold == Colors.black ? const Color(0xFF0D0D0D) : cs.surface;
 
     return Container(
       decoration: BoxDecoration(
@@ -26,19 +25,6 @@ class AudioInfoSheetWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── Drag handle ──────────────────────────────────────────────────
-          Padding(
-            padding: const EdgeInsets.only(top: 12, bottom: 4),
-            child: Container(
-              width: 36,
-              height: 4,
-              decoration: BoxDecoration(
-                color: onSurface.withValues(alpha: 0.18),
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-          ),
-
           // ── Header ───────────────────────────────────────────────────────
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
@@ -112,12 +98,26 @@ class AudioInfoSheetWidget extends StatelessWidget {
                   const Gap(8),
 
                   // ── All your original fields, untouched ─────────────────
-                  _Tile(leading: "Title",     title: audio.title,       onSurface: onSurface, primary: primary),
-                  _Tile(leading: "Album",     title: audio.album,       onSurface: onSurface, primary: primary),
-                  _Tile(leading: "Artists",   title: audio.artists,     onSurface: onSurface, primary: primary),
+                  _Tile(
+                      leading: "Title",
+                      title: audio.title,
+                      onSurface: onSurface,
+                      primary: primary),
+                  _Tile(
+                      leading: "Album",
+                      title: audio.album,
+                      onSurface: onSurface,
+                      primary: primary),
+                  _Tile(
+                      leading: "Artists",
+                      title: audio.artists,
+                      onSurface: onSurface,
+                      primary: primary),
                   _Tile(
                     leading: "Genre",
-                    title: audio.genre.isNotEmpty ? audio.genre.join(", ") : "Unknown",
+                    title: audio.genre.isNotEmpty
+                        ? audio.genre.join(", ")
+                        : "Unknown",
                     onSurface: onSurface,
                     primary: primary,
                   ),
@@ -135,7 +135,11 @@ class AudioInfoSheetWidget extends StatelessWidget {
                     onSurface: onSurface,
                     primary: primary,
                   ),
-                  _Tile(leading: "Sample Rate", title: audio.sampleRate,  onSurface: onSurface, primary: primary),
+                  _Tile(
+                      leading: "Sample Rate",
+                      title: audio.sampleRate,
+                      onSurface: onSurface,
+                      primary: primary),
                   _Tile(
                     leading: "Year",
                     title: audio.year != null
@@ -144,7 +148,11 @@ class AudioInfoSheetWidget extends StatelessWidget {
                     onSurface: onSurface,
                     primary: primary,
                   ),
-                  _Tile(leading: "Extension", title: audio.ext,         onSurface: onSurface, primary: primary),
+                  _Tile(
+                      leading: "Extension",
+                      title: audio.ext,
+                      onSurface: onSurface,
+                      primary: primary),
                 ],
               ),
             ),

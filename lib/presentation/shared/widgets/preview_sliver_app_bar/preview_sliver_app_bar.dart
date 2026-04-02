@@ -132,37 +132,6 @@ class _AppBarBackground extends StatelessWidget {
             ),
           ),
 
-          // ── 4. Scaffold colour bleeds up from bottom ──────────────────
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 80,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [scaffoldBg, Colors.transparent],
-                ),
-              ),
-            ),
-          ),
-
-          // ── 5. Primary colour accent glow (bottom-left) ───────────────
-          Positioned(
-            bottom: 60,
-            left: -30,
-            child: Container(
-              width: 200,
-              height: 200,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: primary.withValues(alpha: 0.18),
-              ),
-            ),
-          ),
-
           // ── 6. Bottom content: thumbnail + title + info ───────────────
           Positioned(
             left: 20,

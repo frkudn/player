@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:open_player/base/assets/fonts/styles.dart';
 import 'package:open_player/data/models/artist_model.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // ARTIST CARD
@@ -43,20 +44,21 @@ class ArtistCard extends StatelessWidget {
         splashColor: primary.withValues(alpha: 0.12),
         child: Container(
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(16),
-            color: Theme.of(context).colorScheme.surfaceContainerLowest,
-            border: Border.all(
-              color: onSurface.withValues(alpha: 0.08),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: onSurface.withValues(alpha: 0.06),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
+              borderRadius: BorderRadius.circular(16),
+              // color: Theme.of(context).colorScheme.surfaceContainerLowest,
+              color: Colors.transparent
+              // border: Border.all(
+              // color: onSurface.withValues(alpha: 0.08),
+              // width: 1,
+              // ),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: onSurface.withValues(alpha: 0.06),
+              //     blurRadius: 8,
+              //     offset: const Offset(0, 3),
+              //   ),
+              // ],
               ),
-            ],
-          ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -86,7 +88,8 @@ class ArtistCard extends StatelessWidget {
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           fontFamily: AppFonts.poppins,
-                          color: onSurface,
+                          // color: onSurface,
+                          color: Colors.white
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
@@ -114,7 +117,7 @@ class ArtistCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        ).glassMorphic(blur: 0.9),
       ),
     );
   }
@@ -211,14 +214,16 @@ class _StatChip extends StatelessWidget {
             style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              color: color.withValues(alpha: 0.7),
+              // color: color.withValues(alpha: 0.7),
+              color: Colors.white70
             ),
           ),
           TextSpan(
             text: ' $label',
             style: TextStyle(
               fontSize: 10,
-              color: color.withValues(alpha: 0.35),
+              // color: color.withValues(alpha: 0.35),
+               color: Colors.white70
             ),
           ),
         ],

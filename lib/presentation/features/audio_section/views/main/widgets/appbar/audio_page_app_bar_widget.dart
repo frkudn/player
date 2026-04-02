@@ -27,6 +27,7 @@ class AudioPageAppBarWidget extends StatelessWidget {
           toolbarHeight: mqHeight * 0.15,
           floating: true,
           primary: state != null ? false : true,
+          backgroundColor: Colors.transparent,
           actions: [
             Expanded(
               child: Column(
@@ -67,10 +68,6 @@ class AudioPageAppBarWidget extends StatelessWidget {
                       //---- Search Button -----//
                       if (state is AudioPlayerSuccessState)
                         const AudioPageAppBarSearchButtonWidget(),
-
-                      //---- ThemeMode Button -----//
-                      if (state is! AudioPlayerSuccessState)
-                        const CustomThemeModeButtonWidget(),
 
                       //------- Space -----//
                       Gap(

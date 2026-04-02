@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:hugeicons/hugeicons.dart';
 import 'package:open_player/base/assets/fonts/styles.dart';
 import 'package:open_player/presentation/features/audio_section/bloc/audio_bloc/audios_bloc.dart';
+import 'package:open_player/presentation/shared/widgets/active_audio_bg/active_playing_audio_background_widget.dart';
 import 'package:open_player/presentation/shared/widgets/audio_tile_widget.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -78,20 +79,27 @@ class FolderSongsPage extends StatelessWidget {
     // Return empty state if no songs
     if (songs.isEmpty) return _buildEmptySongsState(context);
 
-    return Column(
+    return Stack(
       children: [
-        _buildSongsHeader(context, songs.length),
-        Expanded(
-          child: Scrollbar(
-            child: ListView.builder(
-              itemCount: songs.length,
-              itemBuilder: (context, index) => AudioTileWidget(
-                audios: songs,
-                index: index,
-                state: state,
+        //----- Active Audio Background
+        ActivePlayingAudioBackgroundWidget(),
+
+        Column(
+          children: [
+            _buildSongsHeader(context, songs.length),
+            Expanded(
+              child: Scrollbar(
+                child: ListView.builder(
+                  itemCount: songs.length,
+                  itemBuilder: (context, index) => AudioTileWidget(
+                    audios: songs,
+                    index: index,
+                    state: state,
+                  ),
+                ),
               ),
             ),
-          ),
+          ],
         ),
       ],
     );

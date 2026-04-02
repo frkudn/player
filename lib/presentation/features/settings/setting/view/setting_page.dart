@@ -15,8 +15,6 @@ import 'package:open_player/presentation/features/local_audio_player/cubit/lyric
 import 'package:open_player/presentation/shared/widgets/custom_theme_mode_button_widget.dart';
 import 'package:open_player/presentation/features/settings/change_accent_color/view/change_accent_color_page.dart';
 import 'package:open_player/presentation/features/settings/setting/widgets/setting_bottom_navigation_bar_customization_widget.dart';
-import 'package:open_player/presentation/features/settings/setting/widgets/setting_change_app_bar_color_background_tile_widget.dart';
-import 'package:open_player/presentation/features/settings/setting/widgets/setting_change_scaffold_color_tile_widget.dart';
 import 'package:open_player/utils/custom_snackbars.dart';
 import 'package:open_player/utils/extensions.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -158,11 +156,7 @@ class _SettingPageState extends State<SettingPage> {
                               builder: (_) => ChangeAccentColorPage()))),
 
                   _SubDiv(label: 'Colors', pr: pr),
-                  // Reusing your existing tile widgets
-                  SettingChangeScaffoldColorTileWidget(),
-                  SettingChangeAppBarColorBackgroundTileWidget(),
 
-                  _Div(os: os),
 
                   // Contrast level slider
                   _ContrastSlider(pr: pr, os: os, state: state),
@@ -201,6 +195,24 @@ class _SettingPageState extends State<SettingPage> {
 
                 _Div(os: os),
 
+                // Dynamic flowing background toggle
+                _Row(
+                    label: 'Dynamic Background',
+                    subtitle: 'Blurred art drifts + breathes',
+                    icon: Icons.auto_awesome_rounded,
+                    pr: pr,
+                    os: os,
+                    trailing: Switch(
+                      value: state.playerDynamicLightEnabled,
+                      onChanged: (_) =>
+                          context.read<ThemeCubit>().togglePlayerDynamicLight(),
+                      activeThumbColor: pr,
+                    ),
+                    onTap: () =>
+                        context.read<ThemeCubit>().togglePlayerDynamicLight()),
+
+                _Div(os: os),
+
                 // Mini player style picker
                 _MiniPlayerStylePicker(pr: pr, os: os, state: state),
               ]),
@@ -236,26 +248,6 @@ class _SettingPageState extends State<SettingPage> {
                               fontFamily: AppFonts.poppins)),
                     ]),
                     children: [
-                      // Dynamic flowing background toggle
-                      _Row(
-                          label: 'Dynamic Background',
-                          subtitle: 'Blurred art drifts + breathes',
-                          icon: Icons.auto_awesome_rounded,
-                          pr: pr,
-                          os: os,
-                          trailing: Switch(
-                            value: state.playerDynamicLightEnabled,
-                            onChanged: (_) => context
-                                .read<ThemeCubit>()
-                                .togglePlayerDynamicLight(),
-                            activeThumbColor: pr,
-                          ),
-                          onTap: () => context
-                              .read<ThemeCubit>()
-                              .togglePlayerDynamicLight()),
-
-                      _Div(os: os),
-
                       // Player layout style — 3 chips
                       _PlayerStylePicker(pr: pr, os: os, state: state),
 

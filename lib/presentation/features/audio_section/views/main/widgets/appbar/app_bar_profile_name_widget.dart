@@ -14,7 +14,7 @@ class AppBarProfileNameWidget extends StatelessWidget {
     return BlocSelector<UserDataCubit, UserDataState, String>(
       selector: (state) => state.username,
       builder: (context, state) {
-        return state.text.minFontSize(12).fontFamily(AppFonts.nabla).make();
+        return state.text.minFontSize(12).white.shadowBlur(0.4).shadowColor(Colors.black54).fontFamily(AppFonts.nabla).make();
       },
     );
   }

@@ -5,6 +5,7 @@ import 'package:open_player/data/models/artist_model.dart';
 import 'package:open_player/presentation/features/audio_section/bloc/audio_bloc/audios_bloc.dart';
 import '../../../../../../shared/widgets/audio_tile_widget.dart';
 import '../../../../../../shared/widgets/preview_sliver_app_bar/preview_sliver_app_bar.dart';
+import '../../../../../../shared/widgets/active_audio_bg/active_playing_audio_background_widget.dart';
 
 class ArtistPreviewPage extends StatelessWidget {
   const ArtistPreviewPage({
@@ -25,44 +26,51 @@ class ArtistPreviewPage extends StatelessWidget {
         : AssetImage(AppImages.defaultProfile) as ImageProvider;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          // ── Cinematic header ──────────────────────────────────────────
-          PreviewSliverAppBar(
-            backgroundImage: artistImg,
-            thumbnailImage: artistImg,
-            thumbnailIsCircle: true,
-            title: artist.name,
-            infoRow: Wrap(
-              spacing: 8,
-              children: [
-                GlassChip(
-                  label: '${artist.songCount} songs',
-                  icon: Icons.music_note_rounded,
-                  isPrimary: true,
-                  primary: primary,
+      body: Stack(
+        children: [
+          //---- Active Audio Background
+          ActivePlayingAudioBackgroundWidget(),
+
+          CustomScrollView(
+            slivers: [
+              // ── Cinematic header ──────────────────────────────────────────
+              PreviewSliverAppBar(
+                backgroundImage: artistImg,
+                thumbnailImage: artistImg,
+                thumbnailIsCircle: true,
+                title: artist.name,
+                infoRow: Wrap(
+                  spacing: 8,
+                  children: [
+                    GlassChip(
+                      label: '${artist.songCount} songs',
+                      icon: Icons.music_note_rounded,
+                      isPrimary: true,
+                      primary: primary,
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
 
-          // ── Section label ──────────────────────────────────────────────
-          SliverToBoxAdapter(
-            child: PreviewSectionHeader(label: 'DISCOGRAPHY'),
-          ),
+              // ── Section label ──────────────────────────────────────────────
+              SliverToBoxAdapter(
+                child: PreviewSectionHeader(label: 'DISCOGRAPHY'),
+              ),
 
-          // ── Track list ─────────────────────────────────────────────────
-          SliverList.builder(
-            addAutomaticKeepAlives: true,
-            itemCount: artist.songCount,
-            itemBuilder: (context, index) => AudioTileWidget(
-              audios: artist.songs,
-              index: index,
-              state: state,
-            ),
-          ),
+              // ── Track list ─────────────────────────────────────────────────
+              SliverList.builder(
+                addAutomaticKeepAlives: true,
+                itemCount: artist.songCount,
+                itemBuilder: (context, index) => AudioTileWidget(
+                  audios: artist.songs,
+                  index: index,
+                  state: state,
+                ),
+              ),
 
-          const SliverPadding(padding: EdgeInsets.only(bottom: 200)),
+              const SliverPadding(padding: EdgeInsets.only(bottom: 200)),
+            ],
+          ),
         ],
       ),
     );

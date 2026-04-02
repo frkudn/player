@@ -5,6 +5,7 @@ import 'package:open_player/base/assets/fonts/styles.dart';
 import 'package:open_player/base/router/router.dart';
 import 'package:open_player/data/models/album_model.dart';
 import 'package:open_player/presentation/features/audio_section/bloc/audio_bloc/audios_bloc.dart';
+import 'package:velocity_x/velocity_x.dart';
 import '../../../../../../shared/widgets/quality_badge/quality_badge_widget.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -51,19 +52,20 @@ class AlbumCard extends StatelessWidget {
         child: Container(
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
+            color: Colors.transparent
             // Card background — subtle surface tint
-            color: Theme.of(context).colorScheme.surfaceContainerLowest,
-            border: Border.all(
-              color: onSurface.withValues(alpha: 0.08),
-              width: 1,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: onSurface.withValues(alpha: 0.06),
-                blurRadius: 8,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            // color: Theme.of(context).colorScheme.surfaceContainerLowest,
+            // border: Border.all(
+            //   color: onSurface.withValues(alpha: 0.08),
+            //   width: 1,
+            // ),
+            // boxShadow: [
+            //   BoxShadow(
+            //     color: onSurface.withValues(alpha: 0.06),
+            //     blurRadius: 8,
+            //     offset: const Offset(0, 3),
+            //   ),
+            // ],
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -105,7 +107,8 @@ class AlbumCard extends StatelessWidget {
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
                               fontFamily: AppFonts.poppins,
-                              color: onSurface,
+                              // color: onSurface,
+                               color: Colors.white
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -117,7 +120,8 @@ class AlbumCard extends StatelessWidget {
                                 : 'Unknown Artist',
                             style: TextStyle(
                               fontSize: 10,
-                              color: onSurface.withValues(alpha: 0.5),
+                              // color: onSurface.withValues(alpha: 0.5),
+                               color: Colors.white70
                             ),
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
@@ -133,7 +137,8 @@ class AlbumCard extends StatelessWidget {
                             '${album.songCount} songs',
                             style: TextStyle(
                               fontSize: 10,
-                              color: onSurface.withValues(alpha: 0.4),
+                              // color: onSurface.withValues(alpha: 0.4),
+                               color: Colors.white70
                             ),
                           ),
                           QualityBadge(quality: album.quality),
@@ -145,7 +150,7 @@ class AlbumCard extends StatelessWidget {
               ),
             ],
           ),
-        ),
+        ).glassMorphic(blur: 0.9),
       ),
     );
   }

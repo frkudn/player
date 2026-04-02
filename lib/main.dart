@@ -2,7 +2,6 @@ import 'package:device_preview/device_preview.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:open_player/base/db/hive_service.dart';
 import 'package:open_player/base/services/system/system_service.dart';
 import 'package:open_player/base/theme/themes_data.dart';
@@ -16,11 +15,6 @@ import 'base/services/notification/notification_services.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
-  // Enable WebView debugging in debug mode
-  if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-    await InAppWebViewController.setWebContentsDebuggingEnabled(!kReleaseMode);
-  }
 
   // Initialize Get It Dependencies
   await initializeLocator();
@@ -59,7 +53,7 @@ class MyApp extends StatelessWidget {
             themeAnimationDuration: const Duration(milliseconds: 1000),
             debugShowCheckedModeBanner: false,
             theme: getIt<AppThemes>().themes(themeState),
-            title: "Player",
+            title: "Open Player",
           );
         },
       ),

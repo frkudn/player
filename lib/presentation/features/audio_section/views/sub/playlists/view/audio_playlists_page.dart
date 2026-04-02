@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:open_player/presentation/features/audio_section/bloc/audio_playlist_bloc/audio_playlist_bloc.dart';
 import 'package:open_player/presentation/features/audio_section/views/sub/playlists/widgets/playlist_floating_button.dart';
 import 'package:open_player/presentation/features/audio_section/views/sub/playlists/widgets/playlist_tile.dart';
+import 'package:open_player/presentation/shared/widgets/active_audio_bg/active_playing_audio_background_widget.dart';
 // The dialog is used by both the FAB (via PlaylistFloatingButton) and by the
 // empty-state CTA button below — importing it here keeps both entry points
 // using the same function so they stay in sync automatically.
@@ -33,6 +34,7 @@ class PlaylistsPage extends StatelessWidget {
     final double hPad = mq.width >= 600 ? mq.width * 0.08 : 14.0;
 
     return Scaffold(
+      backgroundColor: Colors.transparent,
       // FAB sits above the floating nav bar — PlaylistFloatingButton handles its
       // own bottom offset via .pOnly(bottom: 100, right: 10) internally
       floatingActionButton: const PlaylistFloatingButton(),
@@ -62,10 +64,7 @@ class PlaylistsPage extends StatelessWidget {
                     '${state.playlists.length} '
                     '${state.playlists.length == 1 ? 'playlist' : 'playlists'}',
                     style: TextStyle(
-                      color: Theme.of(context)
-                          .colorScheme
-                          .onSurface
-                          .withValues(alpha: 0.35),
+                      color: Colors.white70,
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
                       letterSpacing: 0.3,
@@ -148,7 +147,8 @@ class _EmptyPlaylists extends StatelessWidget {
             Text(
               'No playlists yet',
               style: TextStyle(
-                color: os.withValues(alpha: 0.55),
+                // color: os.withValues(alpha: 0.55),
+                color: Colors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
               ),
@@ -160,7 +160,8 @@ class _EmptyPlaylists extends StatelessWidget {
               'Tap + to create your first playlist\nand organize your music.',
               textAlign: TextAlign.center,
               style: TextStyle(
-                color: os.withValues(alpha: 0.35),
+                // color: os.withValues(alpha: 0.35),
+                color: Colors.white,
                 fontSize: 13,
                 height: 1.5,
               ),

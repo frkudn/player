@@ -55,7 +55,8 @@ class AudioTileWidget extends StatelessWidget {
                 showDragHandle: false,
                 isScrollControlled: true,
                 context: context,
-                constraints: const BoxConstraints( minWidth: double.infinity), // 👈 force full width
+                constraints: const BoxConstraints(
+                    minWidth: double.infinity), // 👈 force full width
                 builder: (context) => const AudioPlayerPage(),
               );
             },
@@ -140,14 +141,22 @@ class _AudioTile extends StatelessWidget {
             ? true
             : false
         : false;
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        color: color,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 5),
+      child: GestureDetector(
+        onTap: onTap,
         child: Container(
           margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+      
+            //---- Selected will be colored only
+            color: isSelected != null
+                ? isSelected!
+                    ? color
+                    : Colors.transparent
+                : Colors.transparent,
+          ),
           child: Row(
             children: [
               //------ Thumbnail Image -----//
@@ -180,7 +189,7 @@ class _AudioTile extends StatelessWidget {
                               ),
                       ),
                     ),
-
+      
                     //------ Play Button Icon
                     if (isPlaying)
                       Center(
@@ -191,9 +200,9 @@ class _AudioTile extends StatelessWidget {
                   ].stack(),
                 ),
               ),
-
+      
               const Gap(10),
-
+      
               ///------------ Title & Artists -----------///
               Expanded(
                 child: Column(
@@ -205,12 +214,12 @@ class _AudioTile extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
-                          color: isPlaying ? Colors.white : null,
+                          color: isPlaying ? Colors.white : Colors.white,
                           fontSize: 15,
                           fontWeight:
                               isPlaying ? FontWeight.bold : FontWeight.w500),
                     ),
-
+      
                     //----Artist
                     Text(
                       audio.artists.toString(),
@@ -220,16 +229,11 @@ class _AudioTile extends StatelessWidget {
                           fontSize: 11,
                           fontFamily: AppFonts.poppins,
                           fontWeight: FontWeight.w500,
-                          color:
-                              Theme.of(context).brightness == Brightness.light
-                                  ? isPlaying
-                                      ? Colors.white70
-                                      : Colors.grey
-                                  : Colors.white54),
+                          color: isPlaying ? Colors.white70 : Colors.white70),
                     ),
-
+      
                     Gap(2),
-
+      
                     if (isPlaying)
                       QualityBadge(
                         quality: audio.quality,
@@ -239,7 +243,7 @@ class _AudioTile extends StatelessWidget {
                   ],
                 ),
               ),
-
+      
               //-------- More Button
               if (!showRemoveFromPlaylistButton)
                 AudioTileMoreButtonWidget(
@@ -248,14 +252,16 @@ class _AudioTile extends StatelessWidget {
                   audio: audio,
                   isPlaying: isPlaying,
                 ),
-
+      
               if (showRemoveFromPlaylistButton)
                 IconButton(
-                    onPressed: playlistRemoveOnTap,
-                    icon: Icon(Icons.playlist_remove))
+                  onPressed: playlistRemoveOnTap,
+                  icon: Icon(Icons.playlist_remove),
+                  color: Colors.white70,
+                )
             ],
           ),
-        ),
+        ).glassMorphic(),
       ),
     );
   }

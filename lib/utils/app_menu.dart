@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:velocity_x/velocity_x.dart';
 
 class AppMenuHelper {
   static Future<T?> showPopMenuAtPosition<T>({
@@ -14,8 +15,11 @@ class AppMenuHelper {
       context: context,
       surfaceTintColor: Colors.transparent,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      elevation: 1,
-      color: Theme.of(context).colorScheme.surface,
+      elevation: 0,
+      shadowColor: Colors.transparent,
+      // color: Theme.of(context).colorScheme.surface,
+      color: Colors.transparent,
+    
       position: RelativeRect.fromRect(
         Rect.fromPoints(
           position,
