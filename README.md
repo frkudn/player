@@ -117,7 +117,8 @@ Player was built on a simple philosophy: **your music belongs to you**. Whether 
 
 |                                         |                                         |                                         |
 | --------------------------------------- | --------------------------------------- | --------------------------------------- |
-| ![Screenshot 1](assets/screenshot1.jpg) | ![Screenshot 2](assets/screenshot2.jpg) | ![Screenshot 3](assets/screenshot3.jpg) |
+| ![Screenshot 1](https://raw.githubusercontent.com/frkudn/frkudn.github.io/refs/heads/main/screenshot1.png) | ![Screenshot 2](https://raw.githubusercontent.com/frkudn/frkudn.github.io/refs/heads/main/screenshot2.png)| !
+
 
 </div>
 
@@ -141,7 +142,7 @@ Option 2 — Build from Source
   → Clone the repo, run `flutter pub get`, then `flutter run`
 ```
 
-[![Download Latest APK](https://img.shields.io/badge/⬇️%20Download%20Latest%20APK-4f46e5?style=for-the-badge)](https://github.com/frkudn/player/releases/download/v2.0.1/app-arm64-v8a-release.apk)
+[![Download Latest APK](https://img.shields.io/badge/⬇️%20Download%20Latest%20APK-4f46e5?style=for-the-badge)](https://github.com/frkudn/player/releases/download/v2.2.0/app-arm64-v8a-release.apk)
 [![All Releases](https://img.shields.io/badge/📦%20Browse%20All%20Releases-374151?style=for-the-badge)](https://github.com/frkudn/player/releases)
 
 <br/>
